@@ -1,0 +1,60 @@
+{
+    "name": "ai-api-server",
+    "version": "0.0.1",
+    "description": "Node API / REST server for emerging tech AI ",
+    "engines": {
+        "node": ">=8",
+        "npm": ">=5"
+    },
+    "scripts": {
+        "lint": "eslint .",
+        "pretest": "npm run lint",
+        "test": "nyc mocha --reporter spec test/*-test.js",
+        "test-mocha": "./node_modules/mocha/bin/mocha --reporter spec test/*-test.js",
+        "test-livereload": "nodemon -x 'npm run test-mocha'",
+        "start-nodemon": "./node_modules/.bin/nodemon --config ./.nodemon.json",
+        "start": "pm2 startOrReload process-local.json && pm2 logs api-server",
+        "start-server": "pm2 startOrReload process-server.json && pm2 save && pm2 logs api-server",
+        "update-server": "pm2 reload api-server --update-env && pm2 save",
+        "uninstall-server": "pm2 delete api-server && pm2 save"
+    },
+    "engineStrict": true,
+    "author": "joel.shotton@deakin.edu.au",
+    "dependencies": {
+        "async": "^2.5.0",
+        "du-logger": "1.0.x",
+        "du-resource": "1.0.x",
+        "du-server": "1.1.x",
+        "du-utils": "1.0.x",
+        "express-jwt": "^5.1.0",
+        "jsonwebtoken": "^7.3.0",
+        "osprey-method-handler": "^0.11.0"
+    },
+    "devDependencies": {
+        "chai": "^4.2.0",
+        "eslint": "^5.9.0",
+        "mocha": "^5.2.0",
+        "nyc": "^13.1.0",
+        "sinon": "^7.1.1",
+        "sinon-chai": "^3.3.0",
+        "nodemon": "^1.11.0",
+        "should": "^8.3.1",
+        "supertest": "^1.2.0"
+    },
+    "nyc": {
+        "exclude": [
+            "coverage/**",
+            "test/**"
+        ],
+        "reporter": [
+            "text-summary",
+            "html"
+        ],
+        "all": true,
+        "check-coverage": true,
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+    }
+}
