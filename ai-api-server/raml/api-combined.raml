@@ -1,0 +1,8 @@
+#%RAML 1.0
+title: IDR Content server
+description: Combined du- module raml specs.
+version: v1
+baseUri: /api/v1
+
+/server: !include ../node_modules/du-server/raml/du-server.raml
+/user-permission: !include user-permission.raml
