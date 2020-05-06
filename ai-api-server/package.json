@@ -30,6 +30,7 @@
         "du-utils": "1.0.x",
         "express-jwt": "^5.1.0",
         "jsonwebtoken": "^7.3.0",
+        "node-fetch": "^2.6.0",
         "osprey-method-handler": "^0.11.0"
     },
     "devDependencies": {

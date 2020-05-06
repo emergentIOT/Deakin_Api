@@ -85,9 +85,15 @@ const generateQuestion = async function(req, res) {
             return;
         }
 
+        qgService.generateQuestions(resourceText.plainText, req.query.token, function(err, result) {
 
+            if (utilWs.handleError('qg.generateQuestion', res, err)) {
+                return;
+            }
+            
+            utilWs.sendSuccess('qg.generateQuestion', {success: true, questionText: result.questionText}, res, true);                      
+        })
         
-        utilWs.sendSuccess('qg.generateQuestion', {success: true, resourceText: resourceText}, res, true);                      
     });
 
 
