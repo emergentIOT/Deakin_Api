@@ -1,5 +1,5 @@
 { "apps": [{
-    "name"     : "api-server",
+    "name"     : "ai-api-server",
     "script"   : "./index.js",
     "instances": 1,
     "exec_mode": "cluster",

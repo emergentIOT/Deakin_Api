@@ -1,0 +1,64 @@
+#%RAML 1.0
+#title: Question generation and question answering AI service.
+
+/text/{resourceId}:
+  uriParameters:
+    resourceId:
+      type: string
+      description: resource id 
+      displayName: Resource id
+  get:
+    responses:
+      200:
+        description: Retrieve the text for the given resource id
+        body:
+          application/json:
+            example: |
+                {
+                  "success": true,
+                  "result": {}
+                }
+      500:
+        description: Unexpected Error or bad parameters
+  delete:
+    responses:
+      200:
+        description: Removes text
+      500:
+        description: Unexpected Error or bad parameter
+
+/text:
+  put:
+    body:
+      application/json:
+        properties:
+          plainText:
+            type: string
+            required: true    
+    responses:
+      200:
+        description: Store document text for further queries
+        body:
+          application/json:
+            example: |
+              {
+                "success": true
+              }
+      500:
+        description: Unexpected Error or bad parameter
+
+
+/generate-question/{resourceId}:
+  description: Generate questions from resources and answer tokens
+  uriParameters:
+    resourceId:
+      type: string
+      description: resource id 
+      displayName: Resource id
+  get:
+    queryParameters:
+      token:
+        description: The question token
+        displayName: Question Token
+        type: string
+        required: true
