@@ -57,7 +57,22 @@
       displayName: Resource id
   get:
     queryParameters:
-      token:
+      answerToken:
+        description: The answer token
+        displayName: Answer Token
+        type: string
+        required: true
+
+/answer-question/{resourceId}:
+  description: Answer questions from resources and question tokens
+  uriParameters:
+    resourceId:
+      type: string
+      description: resource id 
+      displayName: Resource id
+  get:
+    queryParameters:
+      questionToken:
         description: The question token
         displayName: Question Token
         type: string

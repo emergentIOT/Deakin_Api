@@ -4,7 +4,7 @@ const server = require('du-server').create('IDR Content Server');
 const utils = require('du-utils').UtilGeneral();
 const logger = require('du-logger').LoggingService('api-server');
 const async = require('async');
-const qgWs = require('./src/QgWs');
+const qaWs = require('./src/QaWs');
 
 // Make sure server is ran on a known and supported NodeJS Version.
 utils.assertNodeRuntime();
@@ -44,7 +44,7 @@ const installWebServices = function(server, done) {
 
         server.installAPIDocsWs('raml/api-combined.raml');
 
-        qgWs.installQgWs(server);
+        qaWs.installQaWs(server);
        
         done(null, server);
         return;

@@ -1,0 +1,280 @@
+{
+	"info": {
+		"_postman_id": "2338ffc8-ab58-4a77-bd26-ab252625e226",
+		"name": "Deakin AI - QA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Save Text",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8f80ef79-9400-48b5-8566-57d8f3846179",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Resource ID created\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.resourceId).to.be.a('string');",
+							"    pm.environment.set(\"text-resourceId\", jsonData.resourceId);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "66abb65c-a499-4069-b0cc-3ca64b9110ec",
+						"exec": [
+							"pm.environment.set(\"text\", \"The Normans (Norman: Nourmands; French: Normands; Latin: Normanni) were the people who in the 10th and 11th centuries gave their name to Normandy, a region in France. They were descended from Norse (Norman comes from Norseman) raiders and pirates from Denmark, Iceland and Norway who, under their leader Rollo, agreed to swear fealty to King Charles III of West Francia. Through generations of assimilation and mixing with the native Frankish and Roman-Gaulish populations, their descendants would gradually merge with the Carolingian-based cultures of West Francia. The distinct cultural and ethnic identity of the Normans emerged initially in the first half of the 10th century, and it continued to evolve over the succeeding centuries.\");",
+							"pm.environment.set(\"text-answer-token\", \"Normans\");",
+							"pm.environment.set(\"text-expected-question-token\", \"What people gave their name to Normandy ?\");",
+							"    "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\n\t\"plainText\" : \"{{text}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ai-api-server}}/api/v1/qa/text",
+					"protocol": "http",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"qa",
+						"text"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Text",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bde7a64-88ff-4f4a-bdff-99e5346eed20",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Resource Fetched\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.resourceText.plainText).to.be.a('string');",
+							"    pm.expect(jsonData.resourceText.plainText).to.be.eql(pm.environment.get('text'));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{ai-api-server}}/api/v1/qa/text/{{text-resourceId}}",
+					"protocol": "http",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"qa",
+						"text",
+						"{{text-resourceId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate Question",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f9448fae-c568-4182-bb7e-083bd5461891",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Question generated\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.questionText).to.be.a('string');",
+							"    pm.expect(jsonData.questionText).to.be.eql(pm.environment.get(\"text-expected-question-token\"));",
+							"    pm.environment.set(\"text-question-token\", jsonData.questionText);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{ai-api-server}}/api/v1/qa/generate-question/{{text-resourceId}}?answerToken={{text-answer-token}}",
+					"protocol": "http",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"qa",
+						"generate-question",
+						"{{text-resourceId}}"
+					],
+					"query": [
+						{
+							"key": "answerToken",
+							"value": "{{text-answer-token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Answer Question",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8724479c-1234-43c0-ab11-7902b5b343c7",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Question Answered\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.answerText).to.be.a('string');",
+							"    pm.expect(jsonData.answerText).to.be.contain(pm.environment.get(\"text-answer-token\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{ai-api-server}}/api/v1/qa/answer-question/{{text-resourceId}}?questionToken={{text-question-token}}",
+					"protocol": "http",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"qa",
+						"answer-question",
+						"{{text-resourceId}}"
+					],
+					"query": [
+						{
+							"key": "questionToken",
+							"value": "{{text-question-token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Del Text",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9151bcdb-3637-40de-8704-de3d83c83006",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Resource Fetched\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.result.n).to.be.eql(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://{{ai-api-server}}/api/v1/qa/text/{{text-resourceId}}",
+					"protocol": "http",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"qa",
+						"text",
+						"{{text-resourceId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "8ac0630f-7e5f-4cc1-83a7-491560356232",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "9d01ea85-88bf-4ebd-9bf4-0cfb1dfbcca3",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
