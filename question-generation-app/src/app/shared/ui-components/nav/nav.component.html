@@ -1,0 +1,18 @@
+<mnav-header skiptarget="#skiptomain"></mnav-header>
+<nav>
+  <ul class="nav-list">
+    <li class="nav-item">
+      <a routerLink="">Home</a>
+    </li>
+    <li class="nav-item">
+      <a routerLink="other">Other</a>
+    </li>
+    <li class="nav-item">
+      <div *ngIf="isLoggedIn; then thenBlock; else elseBlock"></div>
+      <ng-template #thenBlock><a (click)="logout()">Logout</a></ng-template>
+      <ng-template #elseBlock
+        ><a (click)="login()">Login with AppConnect</a></ng-template
+      >
+    </li>
+  </ul>
+</nav>

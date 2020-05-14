@@ -1,0 +1,88 @@
+{
+  "unitEnrolments": [
+    {
+      "name": "Legal research and Statutory Interpretation",
+      "code": "MLL110",
+      "status": "ENROLLED",
+      "url": "",
+      "message": "Unit site available",
+      "teachingPeriod": {
+        "year": 2020,
+        "type": "trimester",
+        "period": 1,
+        "dateStart": "2020-03-03",
+        "dateEnd": "2020-05-27"
+      }
+    },
+    {
+      "name": "Laboratory and Fieldwork Safety Induction Program",
+      "code": "SLE010",
+      "status": "ENROLLED",
+      "url": "",
+      "message": "Credit points achieved: 0",
+      "teachingPeriod": {
+        "year": 2020,
+        "type": "trimester",
+        "period": 1,
+        "dateStart": "2020-03-03",
+        "dateEnd": "2020-05-27"
+      }
+    },
+    {
+      "name": "Misleading Conduct and Economic Torts",
+      "code": "ML120",
+      "status": "ENROLLED",
+      "url": "",
+      "message": "Credit points achieved",
+      "teachingPeriod": {
+        "year": 2020,
+        "type": "trimester",
+        "period": 1,
+        "dateStart": "2020-03-03",
+        "dateEnd": "2020-05-27"
+      }
+    },
+    {
+      "name": "Some other course",
+      "code": "SC200",
+      "status": "UNCONFIRMED",
+      "url": "",
+      "message": "A message",
+      "teachingPeriod": {
+        "year": 2021,
+        "type": "trimester",
+        "period": 2,
+        "dateStart": "2021-05-03",
+        "dateEnd": "2021-08-27"
+      }
+    },
+    {
+      "name": "A different course",
+      "code": "AC310",
+      "status": "COMPLETED",
+      "url": "",
+      "message": "",
+      "teachingPeriod": {
+        "year": 2019,
+        "type": "trimester",
+        "period": 1,
+        "dateStart": "2020-03-01",
+        "dateEnd": "2020-05-25"
+      }
+    },
+    {
+      "name": "Yet another course",
+      "code": "YC112",
+      "status": "COMPLETED",
+      "url": "",
+      "message": "Looks good on your CV",
+      "teachingPeriod": {
+        "year": 2019,
+        "type": "trimester",
+        "period": 2,
+        "dateStart": "2020-06-03",
+        "dateEnd": "2020-06-27"
+      }
+    }
+  ]
+}

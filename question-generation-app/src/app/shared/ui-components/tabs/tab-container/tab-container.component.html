@@ -1,0 +1,16 @@
+<div role="tablist"
+     class="tab-button-group"
+     [attr.aria-label]="label">
+  <button *ngFor="let tab of tabs; let i = index"
+          class="tab-button"
+          #tabButton
+          [class.active]="tab.active"
+          role="tab"
+          [attr.aria-selected]="tab.active ? 'true' : 'false'"
+          attr.aria-controls="{{tab.safeTitleForAttributes()}}-tab"
+          [id]="tab.safeTitleForAttributes()"
+          [tabindex]="tab.active ? '0' : '-1'"
+          (click)="selectTab(tab)"
+          (keyup)="handleKeybNav(i, $event)">{{tab.title}}</button>
+</div>
+<ng-content></ng-content>

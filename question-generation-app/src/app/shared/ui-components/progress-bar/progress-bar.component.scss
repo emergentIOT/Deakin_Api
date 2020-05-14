@@ -1,0 +1,52 @@
+@import "../../../shared/scss/design-system-variables.scss";
+
+// Tie the height of the bar to the Foudations layout variables
+$bar-height: $des-layout-spacing-base * $des-layout-spacing-plus-2;
+
+:host {
+  display: block;
+  --bar-width: 0; // Default value, will be set by component class
+}
+
+.bar-background {
+  display: block;
+  border: 1px solid $global-grey;
+  border-radius: 4px;
+  position: relative;
+  height: $bar-height;
+  background-color: $global-grey-light-2;
+  &.indeterminate {
+    background: repeating-linear-gradient(
+      45deg,
+      $global-grey-light-2,
+      $global-grey-light-2 10px,
+      var(--theme-secondary-light-2, $fallback-secondary-light-2) 12px,
+      var(--theme-secondary-light-2, $fallback-secondary-light-2) 20px,
+      $global-grey-light-2 22px
+    );
+  }
+}
+
+.bar-value {
+  display: block;
+  border-radius: 3px 0 0 3px;
+  height: 100%;
+  width: var(--bar-width);
+  max-width: 100%; // Prevent overflow if value > max
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: var(--theme-secondary, $fallback-secondary);
+}
+
+.bar-message {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: $des-layout-spacing-base * $des-layout-spacing-minus-1;
+  transform: translateY(-50%);
+  font-size: $des-font-scale-minus-2;
+  line-height: $des-line-height-small;
+  font-weight: $des-font-weight-bold;
+  color: $des-text-color-inverse;
+}

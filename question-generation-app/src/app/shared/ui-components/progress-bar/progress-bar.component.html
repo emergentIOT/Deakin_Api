@@ -1,0 +1,11 @@
+<div
+  class="bar-background"
+  [class.indeterminate]="isIndeterminate()"
+  role="progressbar"
+  [attr.aria-valuenow]="value"
+  [attr.aria-valuemin]="min"
+  [attr.aria-valuemax]="max"
+>
+  <div class="bar-value"></div>
+  <div class="bar-message">{{ message }}</div>
+</div>

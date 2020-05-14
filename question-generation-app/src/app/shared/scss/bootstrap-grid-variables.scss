@@ -1,0 +1,24 @@
+@import "./design-system-variables.scss";
+/*
+Used to overide variables in Boostrap grid and can also
+be used in components to tie behaviours to the grid
+breakpoints
+*/
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px
+);
+
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px
+);
+
+$grid-columns: 12;
+$grid-gutter-width: $des-layout-spacing-base * $des-layout-spacing-plus-2;

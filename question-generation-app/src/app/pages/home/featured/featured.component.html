@@ -1,0 +1,12 @@
+<div class="row">
+  <div
+    *ngFor="let item of adCards | async"
+    class="col-sm-12 col-lg-6 vertical-grid-spacing"
+  >
+    <des-card layout="advertising">
+      <img [src]="item.imageUrl" />
+      <h3>{{ item.heading }}</h3>
+      <p>{{ item.content }}</p>
+    </des-card>
+  </div>
+</div>

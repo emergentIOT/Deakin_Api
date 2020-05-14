@@ -1,0 +1,50 @@
+@import "../../../shared/scss/design-system-variables.scss";
+
+:host {
+  display: block;
+  background-color: $global-charcoal-dark-1;
+  color: $global-white;
+  padding: ($des-layout-spacing-base * $des-layout-spacing-plus-4) 0;
+}
+
+.footer-link-list {
+  list-style: none;
+  margin: 0 0 ($des-type-spacing-base * $des-type-spacing-plus-2) 0;
+  padding: 0;
+  display: flex;
+  .list-item {
+    padding: 0;
+    font-size: $des-font-scale-base;
+    font-weight: $des-font-weight-semibold;
+    line-height: $des-line-height-large;
+    &:not(:last-child):after {
+      display: inline-block;
+      margin: 0 ($des-layout-spacing-base * $des-layout-spacing-minus-2);
+      content: "|"
+    }
+    a {
+      text-decoration: none;
+    }
+    a:link,
+    a:visited,
+    a:hover,
+    a:active {
+      color: $global-white;
+    }
+  }
+}
+
+.footer-para,
+.copyright-statement {
+  font-size: $des-font-scale-minus-1;
+  font-weight: $des-font-weight-semibold;
+  line-height: $des-line-height-small;
+}
+
+.footer-para {
+  margin: ($des-type-spacing-base * $des-type-spacing-minus-2) 0;
+}
+
+.copyright-statement {
+  margin: ($des-type-spacing-base * $des-type-spacing-plus-2) 0;
+}

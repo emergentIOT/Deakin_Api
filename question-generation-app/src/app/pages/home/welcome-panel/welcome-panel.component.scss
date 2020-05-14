@@ -1,0 +1,43 @@
+@import "../../../shared/scss/design-system-variables.scss";
+@import "../../../shared/scss/bootstrap-grid-variables.scss";
+
+// Match to a global grid breakpoint
+$welcome-panel-breakpoint: map-get($grid-breakpoints, "sm");
+
+:host {
+  display: block;
+  font-family: "Open Sans";
+  @media (max-width: $welcome-panel-breakpoint) {
+    text-align: center;
+  }
+}
+
+.greeting {
+  margin: 0 0 $des-type-spacing-base * $des-type-spacing-minus-2;
+  font-weight: $des-font-weight-bold;
+  font-size: $des-font-scale-plus-2;
+  line-height: $des-line-height-small;
+  color: $global-charcoal-dark-1;
+  text-transform: capitalize;
+  overflow-wrap: break-word;
+}
+
+.id {
+  margin: 0;
+  font-weight: $des-font-weight-base;
+  font-size: $des-font-scale-base;
+  line-height: $des-line-height-small;
+  color: $global-charcoal-dark-1;
+  .cohort {
+    text-transform: capitalize;
+  }
+}
+
+.small-screens {
+  display: none;
+  margin: 0;
+  @media (max-width: $welcome-panel-breakpoint) {
+    display: block;
+    margin: 0;
+  }
+}

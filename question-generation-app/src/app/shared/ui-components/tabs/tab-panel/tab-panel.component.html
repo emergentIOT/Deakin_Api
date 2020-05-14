@@ -1,0 +1,7 @@
+<div [hidden]="!active"
+     tabindex="0"
+     role="tabpanel"
+     id="{{safeTitleForAttributes()}}-tab"
+     [attr.aria-labelledby]="safeTitleForAttributes()">
+  <ng-content></ng-content>
+</div>

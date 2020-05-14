@@ -1,0 +1,8 @@
+@import "../../shared/scss/design-system-variables.scss";
+
+.home-banner {
+  margin: 0 0 $des-layout-spacing-base * $des-layout-spacing-plus-4;
+  padding: $des-layout-spacing-base * $des-layout-spacing-plus-2 0;
+  background-color: $global-grey-light-2;
+  box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.5);
+}

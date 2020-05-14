@@ -1,0 +1,16 @@
+<div class="home-banner">
+  <div class="container">
+    <app-welcome-panel
+      *ngIf="person$ | async as person"
+      [person]="person"
+    ></app-welcome-panel>
+  </div>
+</div>
+
+<!-- <div class="container">
+  <app-my-learning></app-my-learning>
+</div> -->
+<hr />
+<div class="container">
+  <app-featured></app-featured>
+</div>

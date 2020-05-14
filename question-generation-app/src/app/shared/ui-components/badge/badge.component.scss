@@ -1,0 +1,27 @@
+@import "../../scss/design-system-variables.scss";
+@import "../../scss/sr-only.scss";
+
+:host {
+  color: $global-white;
+  font-weight: $des-font-weight-bold;
+  font-size: $des-font-scale-minus-1;
+  border-radius: 999px; // Force rounded end regardless of dimensions
+  padding: 2px $des-layout-spacing-base * $des-layout-spacing-minus-1;
+  &,
+  &[purpose="info"] {
+    background-color: $global-info-dark-2;
+  }
+  &[purpose="success"] {
+    background-color: $global-success-dark-2;
+  }
+  &[purpose="warning"] {
+    background-color: $global-warning-dark-2;
+  }
+  &[purpose="danger"] {
+    background-color: $global-danger-dark-2;
+  }
+}
+
+.badge-icon {
+  margin-right: $des-layout-spacing-base * $des-layout-spacing-minus-3;
+}

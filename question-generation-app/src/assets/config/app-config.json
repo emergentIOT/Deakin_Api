@@ -1,0 +1,28 @@
+{
+  "apiUrl": "http://localhost:10200/api/v1",
+  "authConfig": {
+    "issuer": "http://127.0.0.1:4444/",
+    "clientId": "syncv2",
+    "requireHttps": false,
+    "scope": "openid offline_access",
+    "requestAccessToken": true
+  },
+  "jsBundles": {
+    "mnav-esm": {
+      "rootUrl": "http://localhost:10001",
+      "path": "build/masternav-header.esm.js"
+    },
+    "mnav-bundle": {
+      "rootUrl": "http://localhost:10001",
+      "path": "build/masternav-header.js"
+    },
+    "smart-obj-esm": {
+      "rootUrl": "http://localhost:10004",
+      "path": "smart-objects.esm.js"
+    },
+    "smart-obj-bundle": {
+      "rootUrl": "http://localhost:10004",
+      "path": "smart-objects.js"
+    }
+  }
+}

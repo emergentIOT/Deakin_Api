@@ -1,0 +1,34 @@
+@import "../../../shared/scss/design-system-variables.scss";
+
+:host {
+  display: block;
+  background-color: $global-charcoal-dark-1;
+  color: $global-white;
+}
+
+.nav-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+}
+
+.nav-item {
+  margin: 0;
+  padding: $des-layout-spacing-base * $des-layout-spacing-minus-2;
+}
+
+.nav-item {
+  a {
+    display: block;
+    text-decoration: none;
+    &:visited {
+      color: $global-white;
+    }
+    &:hover,
+    &:focus {
+      color: var(--theme-primary, $fallback-primary);
+    }
+  }
+}
+

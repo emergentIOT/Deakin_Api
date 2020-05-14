@@ -1,0 +1,33 @@
+@import "../../../scss/design-system-variables.scss";
+
+$button-group-border-width: 1px;
+$button-active-border-width: 4px;
+
+:host {
+  display: block;
+}
+
+.tab-button-group {
+  border-bottom: $button-group-border-width solid $global-grey-light-1;
+  position: relative;
+  margin-bottom: $des-layout-spacing-base * $des-layout-spacing-plus-2;
+}
+
+.tab-button {
+  position: relative;
+  bottom: -$button-group-border-width; // Cover the button group bottom border
+  border-width: 0 0 $button-active-border-width 0;
+  border-style: solid;
+  border-color: transparent;
+  background: transparent;
+  margin-right: $des-layout-spacing-base * $des-layout-spacing-plus-2;
+  padding: ($des-layout-spacing-base * $des-layout-spacing-minus-3) 0;
+  color: $des-text-color-light;
+  font-size: $des-font-scale-base;
+  line-height: $des-line-height-large;
+  font-weight: $des-font-weight-bold;
+  &.active {
+    color: $des-text-color-default;
+    border-bottom-color: var(--theme-secondary, $fallback-secondary);
+  }
+}

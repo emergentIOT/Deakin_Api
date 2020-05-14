@@ -1,0 +1,28 @@
+{
+  "apiUrl": "$SYNC_API_URL/api/v1",
+  "authConfig": {
+    "issuer": "${OAUTH_ISSUER_URL}",
+    "clientId": "${OAUTH_CLIENT_ID}",
+    "requireHttps": ${OAUTH_REQUIRE_HTTPS},
+    "scope": "openid offline_access",
+    "requestAccessToken": true
+  },
+  "jsBundles": {
+    "mnav-esm": {
+      "rootUrl": "$MASTERNAV_ROOT_URL",
+      "path": "build/masternav-header.esm.js"
+    },
+    "mnav-bundle": {
+      "rootUrl": "$MASTERNAV_ROOT_URL",
+      "path": "build/masternav-header.js"
+    },
+    "smart-obj-esm": {
+      "rootUrl": "$SMART_OBJECTS_ROOT_URL",
+      "path": "smart-objects.esm.js"
+    },
+    "smart-obj-bundle": {
+      "rootUrl": "$SMART_OBJECTS_ROOT_URL",
+      "path": "smart-objects.js"
+    }
+  }
+}

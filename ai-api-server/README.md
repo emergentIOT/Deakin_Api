@@ -18,7 +18,7 @@ ai-api-server:QUESTION_GENERATION_AI_URL=http://research-gpu-poc-fs1.its.deakin.
 ai-api-server:QUESTION_ANSWER_AI_URL=http://research-gpu-poc-fs1.its.deakin.edu.au:8889/
 ```
 
-Run server
+Run server (Ensure DCM is open)
 
 ```
 npm run start-nodemon
