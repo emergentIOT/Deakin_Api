@@ -17,6 +17,9 @@
     font-size: $des-font-scale-base;
     font-weight: $des-font-weight-semibold;
     line-height: $des-line-height-large;
+    &:first-child {
+      margin-top: 7px;
+    }
     &:not(:last-child):after {
       display: inline-block;
       margin: 0 ($des-layout-spacing-base * $des-layout-spacing-minus-2);
