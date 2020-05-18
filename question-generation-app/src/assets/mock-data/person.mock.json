@@ -2,10 +2,10 @@
   "accountType": "Student",
   "id": 9999999998,
   "username": "tedeaki",
-  "title": "Miss",
-  "givenNames": "Tedeaki",
-  "lastName": "TestLast",
-  "preferredName": "Test",
+  "title": "Mr",
+  "givenNames": "Joe",
+  "lastName": "Bloggs",
+  "preferredName": "Joe",
   "homeCampus": {
     "code": "F",
     "name": "Geelong Waterfront Campus"
