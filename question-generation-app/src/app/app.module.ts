@@ -7,6 +7,7 @@ import { NavComponent } from './shared/ui-components/nav/nav.component';
 import { FooterComponent } from './shared/ui-components/footer/footer.component';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { FeatureCardService } from './services/feature-card.service';
+// import { QuizService } from './services/quiz.service';
 import { PersonService } from './services/person.service';
 import { AppRoutingModule } from './app-routing.module';
 import { StateService } from './services/state.service';

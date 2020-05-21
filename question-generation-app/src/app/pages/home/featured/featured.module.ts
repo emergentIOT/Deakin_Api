@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DesCardModule } from '@des-ds-dev-kit/components-global-ng';
+import { DesCardModule, DesButtonModule } from '@des-ds-dev-kit/components-global-ng';
 import { FeaturedComponent } from './featured.component';
 
 
@@ -11,7 +11,7 @@ import { FeaturedComponent } from './featured.component';
   ],
   imports: [
     CommonModule,
-    DesCardModule
+    DesCardModule, DesButtonModule
   ],
   exports: [
     FeaturedComponent

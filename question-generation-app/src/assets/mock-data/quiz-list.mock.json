@@ -1,0 +1,19 @@
+{
+  "list": [
+    {
+      "title": "The french revolution",
+      "summary": "Summary blar blar",
+      "plainText": "Contents"
+    },
+    {
+      "title": "Henry the VIII",
+      "summary": "Had a lot of wifes",
+      "plainText": "Contents"
+    },
+    {
+      "title": "World war one",
+      "summary": "Blar blar blar",
+      "plainText": "Contents"
+    }
+  ]
+}

@@ -2,28 +2,21 @@
 <div class="row justify-content-end">
   <div class="xcol-sm-12 xcol-lg-6 vertical-grid-spacing">
     <des-button-group>
-      <a  [routerLink]="'other'" >New Quiz</a>
+      <des-button [routerLink]="'edit-quiz'" >New Quiz</des-button>
     </des-button-group>
   </div>
 </div>
 
 <div class="row">
+  <des-alert-panel></des-alert-panel>
   <div
-    *ngFor="let item of adCards | async"
+    *ngFor="let item of (quizList | async)?.list"
     class="col-sm-12 col-lg-6 vertical-grid-spacing"
   >
     <des-card layout="advertising" [desShadow]="2">
-      <!-- <img [src]="item.imageUrl" />
-      <h3>{{ item.heading }}</h3>
-      <p>{{ item.content }}</p> -->
-
-
-      <img src="https://blogs-dev.deakin.edu.au/wp-content/uploads/2017/07/140436_signage_night_044.jpg">
-      <!-- <p class="des-card-meta"><a href="">Meta data</a></p> -->
-
-  
-      <h2 class="des-card-title"><a href="">Card title</a></h2>
-      <p>This is some content in a vertical card</p>
+      <img src="/assets/quiz-icon.png">
+      <h2 class="des-card-title"><a [routerLink]="'edit-quiz'">{{item.title}}</a></h2>
+      <p>{{item.summary}}</p>
       <div class="des-card-footer">
         <des-card-metadata [subtitle]="'Posted by'"
                        [title]="'Author name'"
@@ -35,9 +28,6 @@
           <des-button>Action 1</des-button> <des-button format="inverse">Action 2</des-button>
         </des-button-group>  -->
       </div>
-
     </des-card>
-
-
   </div>
 </div>

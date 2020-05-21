@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 // Modules and components for routed features
 import { HomeModule } from './pages/home/home.module';
 import { OtherModule } from './pages/other/other.module';
+import { QuizModule } from './pages/quiz/quiz.module';
 import { LoginModule } from './pages/login/login.module';
 import { PageNotFoundComponent } from './shared/ui-components/page-not-found/page-not-found.component';
 
@@ -17,6 +18,7 @@ const appRoutes: Routes = [{ path: '**', component: PageNotFoundComponent }];
     CommonModule,
     HomeModule,
     OtherModule,
+    QuizModule,
     LoginModule,
     RouterModule.forRoot(appRoutes)
   ],

@@ -1,0 +1,62 @@
+<div class="container">
+ 
+  <!-- <des-button-group>
+    <label><des-button>1</des-button> Upload content</label>
+    <label><des-button format="outline">2</des-button> Review content</label>
+    <des-button format="outline" size="small" [disabled]="true">2</des-button><label>Review content</label>
+  </des-button-group> -->
+
+  <app-tab-container class="des-margin-top-large des-margin-bottom-large">
+    <app-tab-panel title="1. Upload Content">
+      <div class="row">
+          <app-text-editor class="col-sm-8 vertical-grid-spacing">
+          </app-text-editor>
+
+          <div id="chip-default-wrapper">
+            <ejs-chiplist id="chip-avatar" enableDelete="true">
+           
+              <e-chips>
+                <e-chip *ngFor="let token of tokens" text="{{token}}"></e-chip>
+              </e-chips>
+            </ejs-chiplist>
+          </div>
+
+          <!-- <div class="des-form-group">
+            <label for="form-textarea">How did you hear about us?</label>
+            <textarea id="form-textarea" name="form-textarea" col="4"></textarea>
+    
+            <label for="form-textarea">When did you hear about us?</label>
+            <textarea
+                id="form-textarea"
+                name="form-textarea"
+                col="4"
+                class="des-form-input-fixed"
+            ></textarea>
+          </div> -->
+      </div>
+    </app-tab-panel>
+    <app-tab-panel title="2. Review Content">
+      <div class="row">
+        <ng-container>
+          
+        </ng-container>
+      </div>
+    </app-tab-panel>
+    <app-tab-panel title="3. Select answer token">
+      <div class="row">
+        <ng-container>
+          
+        </ng-container>
+      </div>
+    </app-tab-panel>
+    <app-tab-panel title="4. Question suggestions">
+      <div class="row">
+        <ng-container>
+          
+        </ng-container>
+      </div>
+    </app-tab-panel>
+  </app-tab-container>
+
+</div>
+

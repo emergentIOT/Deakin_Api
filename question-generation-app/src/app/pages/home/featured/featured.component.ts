@@ -16,4 +16,8 @@ export class FeaturedComponent implements OnInit {
   ngOnInit() {
     this.adCards = this._featureCardService.getCards();
   }
+
+  newQuiz() {
+    console.log('new quiz');
+  }
 }
