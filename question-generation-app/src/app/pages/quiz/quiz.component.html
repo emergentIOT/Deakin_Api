@@ -9,15 +9,15 @@
   <app-tab-container class="des-margin-top-large des-margin-bottom-large">
     <app-tab-panel title="1. Upload Content">
       <div class="row">
-          <app-text-editor class="col-sm-8 vertical-grid-spacing">
+          <app-text-editor [tokens]="tokens" [textValue]="textValue" (newToken)='newToken($event)' 
+            class="col-sm-8 order-2 order-sm-1 vertical-grid-spacing">
           </app-text-editor>
 
-          <div id="chip-default-wrapper">
-            <ejs-chiplist id="chip-avatar" enableDelete="true">
-           
-              <e-chips>
-                <e-chip *ngFor="let token of tokens" text="{{token}}"></e-chip>
-              </e-chips>
+          <div  class="col-sm-4 order-1 order-sm-2 vertical-grid-spacing" id="chip-default-wrapper">
+            <ejs-chiplist [chips]="tokens" #chipsList enableDelete="true" (delete)="deleteToken($event)">
+              <!-- <e-chips>
+                <e-chip *ngFor="let token of tokens;" text="{{token}}"></e-chip>
+              </e-chips> -->
             </ejs-chiplist>
           </div>
 
