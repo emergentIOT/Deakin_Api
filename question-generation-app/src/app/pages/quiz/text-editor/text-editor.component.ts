@@ -1,6 +1,7 @@
 import { Component, OnInit, Injectable, ViewChild, Input, Output, EventEmitter, NgZone } from '@angular/core';
 import { ToolbarService, LinkService, ImageService, HtmlEditorService, PasteCleanupService, 
           RichTextEditorComponent, CommandName } from '@syncfusion/ej2-angular-richtexteditor';
+import { isEmpty } from 'npm-stringutils';
 
 @Component({
   selector: 'app-text-editor',
@@ -18,6 +19,8 @@ import { ToolbarService, LinkService, ImageService, HtmlEditorService, PasteClea
   providedIn: 'root'
 })
 export class TextEditorComponent implements OnInit {
+
+  private HIGHLIGHT_COLOR : String = "#85C17A";
 
   @Input('textValue') textValue: String; 
   @Input('tokens') tokens: String[];
@@ -109,15 +112,23 @@ export class TextEditorComponent implements OnInit {
   ngAfterViewInit(): void {
     this.textArea = this.rteObj.contentModule.getEditPanel() as HTMLElement; 
     this.textArea.onclick = (event) => {
-      console.log("click 2", this.rteObj.getSelection(), this.rteObj.getHtml(), 
-                              this.rteObj.getRange());
-      let selection : String =  this.rteObj.getSelection();
-      if (selection.length > 0) {
+      // console.log("click 2", this.rteObj.getSelection(), this.rteObj.getHtml(), 
+      //                         this.rteObj.getRange());
+      let selection : string =  this.rteObj.getSelection();
+      let text : string = this.rteObj.getText();
+      if (!isEmpty(selection) && this.isAllWholeWords(selection, text)) {
         
-        this.rteObj.executeCommand("backColor", "#ff0000");
+        // this.rteObj.executeCommand("backColor", "#ff0000");
         this.newToken.emit(selection);
+        this.rteObj.updateValue(this.selectText(selection, this.rteObj.getHtml()));
       }
     }
+    for (let token of this.tokens) {
+      this.rteObj.updateValue(this.selectText(token, this.rteObj.getHtml()));
+    }
+    console.log("html ", this.rteObj.getHtml());
+    console.log("text ", this.rteObj.getText());
+    console.log("remove ", this.removeHighLights(this.rteObj.getHtml()));
     // let range : Range = new Range();//this.rteObj.getRange();
     // let rootNode = this.rteObj.element.getRootNode();
     // range.setStart(this.rteObj.element, 29);
@@ -134,7 +145,49 @@ export class TextEditorComponent implements OnInit {
     // this.rteObj.executeCommand("backColor", "#ff0000")
   }
 
-  editorEvent(event): void {
-    console.log("event", event);
+  isAllWholeWords(str: String, text: String) : boolean {
+    let regex = new RegExp("\\b(" + this.escapeRegExp(str) + ")\\b", "mig");
+    return text.search(regex) >=0 ;
+  }
+
+  selectText(token : String, plainText: string) {
+    if (isEmpty(token)) {
+      return plainText;
+    }
+    let regex = new RegExp("\\b(" + this.escapeRegExp(token) + ")\\b", "mig");
+    let result = plainText.replace(regex, (subString : string): string => {
+      return '<span style="background-color: ' + this.HIGHLIGHT_COLOR + ';">' + subString + "</span>";
+    });
+    // console.log(result);
+    return result;
+  }
+
+  deleteToken(token : String) {
+    this.tokens = this.tokens.filter(obj => obj !== token);
+    this.rteObj.updateValue(this.removeHighLight(token, this.rteObj.getHtml()));
+  }
+
+  removeHighLights(plainText: String) {
+    let regExStr = '(<span style="background-color: ' + this.HIGHLIGHT_COLOR + ';">)(.+?)(</span>)';
+    let regex = new RegExp(regExStr, "mig");
+    let result = plainText.replace(regex, (g1 : string, g2 : string, g3 : string, g4 : string): string => {
+      return g3;
+    });
+    console.log(result);
+    return result;
+  }
+
+  removeHighLight(token: String, plainText: String) {
+    let regExStr = '(<span style="background-color: ' + this.HIGHLIGHT_COLOR + ';">)(' + 
+                    this.escapeRegExp(token) + ')(</span>)';
+    let regex = new RegExp(regExStr, "mig");
+    let result = plainText.replace(regex, (g1 : string, g2 : string, g3 : string, g4 : string): string => {
+      return g3;
+    });
+    return result;
+  }
+
+  escapeRegExp(string : String) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
   }
 }
