@@ -33,14 +33,6 @@ export class TextEditorComponent implements OnInit {
 
   private tools: object = {
     enable: false
-    // type: 'Expand',
-    // items: ['Bold', 'Italic', 'Underline', 'StrikeThrough',
-    //         'FontName', 'FontSize', 'FontColor', 'BackgroundColor',
-    //         'LowerCase', 'UpperCase', '|',
-    //         'Formats', 'Alignments', 'OrderedList', 'UnorderedList',
-    //         'Outdent', 'Indent', '|',
-    //         'CreateLink', 'Image', '|', 'ClearFormat', 'Print',
-    //         'SourceCode', 'FullScreen', '|', 'Undo', 'Redo']
   };
 
   private pasteCleanup: object = {
@@ -51,7 +43,8 @@ export class TextEditorComponent implements OnInit {
     <table style="border: none; width: 100%;">
       <tr>
         <td style="border: none; text-align: center;" colspan="2"> 
-          <h3>Simply copy and paste text here…</h3>
+          <h4>Simply copy and paste text here…</h4>
+          <h4>Then select key phrases you would like to generate questions for.</h4>
           <p>Here’s a few tips before you start:</p>
         </td>
       </tr>
@@ -93,14 +86,6 @@ export class TextEditorComponent implements OnInit {
   `;
 
 
-
-  // public customHTMLModel: IHtmlFormatterModel = { // formatter is used to configure the custom key
-  //   keyConfig: {
-  //   'insert-link': 'ctrl+q', // confite the desired key
-  //   }
-  //   };
-  //   public formatter: any = new HTMLFormatter(this.customHTMLModel); // to configure custom key
-
   constructor() { 
    
   }
@@ -112,13 +97,9 @@ export class TextEditorComponent implements OnInit {
   ngAfterViewInit(): void {
     this.textArea = this.rteObj.contentModule.getEditPanel() as HTMLElement; 
     this.textArea.onclick = (event) => {
-      // console.log("click 2", this.rteObj.getSelection(), this.rteObj.getHtml(), 
-      //                         this.rteObj.getRange());
       let selection : string =  this.rteObj.getSelection();
       let text : string = this.rteObj.getText();
       if (!isEmpty(selection) && this.isAllWholeWords(selection, text)) {
-        
-        // this.rteObj.executeCommand("backColor", "#ff0000");
         this.newToken.emit(selection);
         this.rteObj.updateValue(this.selectText(selection, this.rteObj.getHtml()));
       }
@@ -126,23 +107,6 @@ export class TextEditorComponent implements OnInit {
     for (let token of this.tokens) {
       this.rteObj.updateValue(this.selectText(token, this.rteObj.getHtml()));
     }
-    console.log("html ", this.rteObj.getHtml());
-    console.log("text ", this.rteObj.getText());
-    console.log("remove ", this.removeHighLights(this.rteObj.getHtml()));
-    // let range : Range = new Range();//this.rteObj.getRange();
-    // let rootNode = this.rteObj.element.getRootNode();
-    // range.setStart(this.rteObj.element, 29);
-    // range.setEnd(this.rteObj.element, 35);
-    // this.rteObj.element.querySelectorAll("*").forEach((e) => {
-    //   console.log("e", e.textContent);
-    // });
-    // console.log('range', this.rteObj.getRange());
-    // this.rteObj.selectRange(range)
-    // range.setStart(range.surroundContents)
-    // range.setSsetStartAfter() = 20;
-    // range.startOffset = 20;   
-    // this.rteObj.selectRange()
-    // this.rteObj.executeCommand("backColor", "#ff0000")
   }
 
   isAllWholeWords(str: String, text: String) : boolean {
@@ -158,8 +122,15 @@ export class TextEditorComponent implements OnInit {
     let result = plainText.replace(regex, (subString : string): string => {
       return '<span style="background-color: ' + this.HIGHLIGHT_COLOR + ';">' + subString + "</span>";
     });
-    // console.log(result);
     return result;
+  }
+
+  public getRichText() {
+    return this.removeHighLights(this.rteObj.getHtml());
+  }
+
+  public getPlainText() {
+    return this.rteObj.getText();
   }
 
   deleteToken(token : String) {
@@ -173,7 +144,6 @@ export class TextEditorComponent implements OnInit {
     let result = plainText.replace(regex, (g1 : string, g2 : string, g3 : string, g4 : string): string => {
       return g3;
     });
-    console.log(result);
     return result;
   }
 
@@ -187,7 +157,7 @@ export class TextEditorComponent implements OnInit {
     return result;
   }
 
-  escapeRegExp(string : String) {
+  private escapeRegExp(string : String) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
   }
 }

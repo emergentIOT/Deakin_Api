@@ -7,35 +7,28 @@
   </des-button-group> -->
 
   <app-tab-container class="des-margin-top-large des-margin-bottom-large">
-    <app-tab-panel title="1. Upload Content">
-      <div class="row">
-          <app-text-editor #textEditor [tokens]="tokens" [textValue]="textValue" (newToken)='newToken($event)' 
-            class="col-sm-8 order-2 order-sm-1 vertical-grid-spacing">
-          </app-text-editor>
-
-          <div  class="col-sm-4 order-1 order-sm-2 vertical-grid-spacing" id="chip-default-wrapper">
-            <ejs-chiplist cssClass="e-success" [chips]="tokens" #chipsList enableDelete="true" (delete)="deleteToken($event)">
-              <!-- <e-chips>
-                <e-chip *ngFor="let token of tokens;" text="{{token}}"></e-chip>
-              </e-chips> -->
-            </ejs-chiplist>
+    <!-- <app-tab-panel title="1. Upload Content"> -->
+    <app-tab-panel title="1. Content & Key Phrases">
+      <div class="container">
+        <div class="row">
+            <app-text-editor #textEditor [tokens]="tokens" [textValue]="textValue" (newToken)='newToken($event)' 
+              class="col-sm-8 order-2 order-sm-1 vertical-grid-spacing">
+            </app-text-editor>
+  
+            <div class="col-sm-4 order-1 order-sm-2 vertical-grid-spacing align-items-end" id="chip-default-wrapper">
+              <div class="row align-items-end">
+                <ejs-chiplist cssClass="e-success" [chips]="tokens" #chipsList enableDelete="true" (delete)="deleteToken($event)">
+                </ejs-chiplist>
+              </div>
+              <div style="position: absolute; bottom: 0px; right: 0;">
+                <des-button (click)="generateQuiz()">Generate Quiz</des-button>
+              </div>
+            </div>
           </div>
-
-          <!-- <div class="des-form-group">
-            <label for="form-textarea">How did you hear about us?</label>
-            <textarea id="form-textarea" name="form-textarea" col="4"></textarea>
-    
-            <label for="form-textarea">When did you hear about us?</label>
-            <textarea
-                id="form-textarea"
-                name="form-textarea"
-                col="4"
-                class="des-form-input-fixed"
-            ></textarea>
-          </div> -->
+                    
       </div>
     </app-tab-panel>
-    <app-tab-panel title="2. Review Content">
+    <!-- <app-tab-panel title="2. Review Content">
       <div class="row">
         <ng-container>
           
@@ -48,8 +41,8 @@
           
         </ng-container>
       </div>
-    </app-tab-panel>
-    <app-tab-panel title="4. Question suggestions">
+    </app-tab-panel> -->
+    <app-tab-panel title="2. Question suggestions">
       <div class="row">
         <ng-container>
           

@@ -12,36 +12,46 @@ const questionAnswerAiUrl = utils.getConfig('QUESTION_ANSWER_AI_URL', utils.CONF
 
 const GET_RESULT_REGEXP = /<label id="ans1">((.|\n)*?)<\/label>/gm;
 
-/**
- * MongooseJS model name.
- * @type {String}
- */
-exports.ResourceText = 'ResourceText';
-
 /*
  * The MongooseJS collection schema definition.
  */
-exports.Schema = { 
+const Schema = { 
     plainText: {
         type: String,
         required: true
-    } 
+    }, 
+    richText: {
+        type: String,
+        required: true
+    },
+    tokens: [
+        {
+            questionToken: String, 
+            answerToken: String,
+            status: String // pending, processing, processed 
+        }
+    ]
 };
 
-dbService.schema(exports.ResourceText, exports.Schema);
+dbService.schema('Quiz', Schema);
+let Quiz = dbService.getModel('Quiz');
+exports.Quiz = Quiz;
 
 /**
- * Save text to Mongo.
+ * Save quiz to Mongo.
  * @param {String} message message to save to database.
  * @param  {Function} cb callback.
  */
-exports.saveText = function(plainText, cb) {
+exports.saveQuiz = function(quiz, cb) {
 
-    var entity = { plainText: plainText };
+    let { plainText, richText, answerTokens } = quiz;
 
-    dbService.save(exports.ResourceText, entity, function(err, result) {
+    let tokens = [];
+    if (answerTokens) {
+        answerTokens.forEach(value => tokens.push({answerToken: value}));
+    }
 
-        const GET_RESULT_REGEXP = /<label id="ans1">((.|\n)*?)<\/label>/gm;
+    dbService.save('Quiz', {plainText, richText, tokens}, function(err, result) {
 
         if (cb) {
             cb(err, result);
@@ -52,22 +62,22 @@ exports.saveText = function(plainText, cb) {
 };
 
 /**
- * Get text from Mongo
- * @param {String} resourceId the text resource id
+ * Get quiz from Mongo
+ * @param {String} quizId the quiz quiz id
  */
-exports.getTextById = function(resourceId, cb) {
-    dbService.get(exports.ResourceText, resourceId, cb);
+exports.getQuizById = function(quizId, cb) {
+    dbService.get(Quiz, quizId, cb);
 }
 
 /**
- * Delete text from Mongo
- * @param {String} resourceId the text resource id
+ * Delete quiz from Mongo
+ * @param {String} quizId the quiz quiz id
  */
-exports.deleteTextById = function(resourceId, cb) {
-    dbService.remove(exports.ResourceText, { _id: resourceId }, cb);
+exports.deleteQuizById = function(quizId, cb) {
+    dbService.remove(Quiz, { _id: quizId }, cb);
 }
 
-exports.generateQuestions = function(plainText, answerToken, cb) {
+exports.generateQuestion = function(plainText, answerToken, cb) {
 
     if (plainText.indexOf(answerToken) == -1) {
         cb("Invalid answer token");
