@@ -103,10 +103,12 @@ const generateQuestions = async function(req, res) {
         }}, function(err) {
 
             if (err) {
-                logger.error('qg.generateQuestion-update-status: ' + err);
+                logger.error('qg.generateQuestions-update-status: ' + err);
                 return;
             }
 
+            quiz.tokens.forEach(token => console.log(`qg.generateQuestions-pending: quizId = ${quiz._id}, answerToken = ${token.answerToken}`));
+            
             async.eachLimit(quiz.tokens, 1, (token, callback) => {
 
                 Quiz.update({_id: quiz._id, 'tokens._id': token._id}, {'$set': {
@@ -117,7 +119,7 @@ const generateQuestions = async function(req, res) {
                         callback(err);
                         return;
                     }
-console.log("token", token.answerToken);
+                    logger.info(`qg.generateQuestions-processing: quizId = ${quiz._id}, answerToken = ${token.answerToken}`);
                     qaService.generateQuestion(quiz.plainText, token.answerToken, function(err, result) {
                         if (err) {
                             logger.error('qg.generateQuestion-generate-queston: ' + err);
@@ -133,6 +135,7 @@ console.log("token", token.answerToken);
                                 callback(err);
                                 return;
                             }
+                            logger.info(`qg.generateQuestions-processed: quizId = ${quiz._id}, ${result.questionText} ${token.answerToken}`);
                             callback();
                         });
                     });

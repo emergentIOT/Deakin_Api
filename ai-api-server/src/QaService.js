@@ -70,6 +70,14 @@ exports.getQuizById = function(quizId, cb) {
 }
 
 /**
+ * Get quiz tokens (question and answers) from Mongo
+ * @param {String} quizId the quiz quiz id
+ */
+exports.getQuizTokens = function(quizId, cb) {
+    Quiz.find(quizId, "tokens", cb);
+}
+
+/**
  * Delete quiz from Mongo
  * @param {String} quizId the quiz quiz id
  */

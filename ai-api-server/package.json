@@ -23,7 +23,7 @@
     "author": "joel.shotton@deakin.edu.au",
     "dependencies": {
         "async": "^2.5.0",
-        "du-dbservice": "1.1.x",
+        "du-dbservice": "1.2.x",
         "du-logger": "1.0.x",
         "du-resource": "1.0.x",
         "du-server": "1.1.x",
