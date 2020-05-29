@@ -1,12 +1,10 @@
 #%RAML 1.0
-#title: Question generation and question answering AI service.
+description: Question generation and question answering AI service.
 
 /quiz/{quizId}:
   uriParameters:
     quizId:
       type: string
-      description: quiz id 
-      displayName: Quiz id
   get:
     responses:
       200:
@@ -15,8 +13,16 @@
           application/json:
             example: |
                 {
-                  "success": true,
-                  "result": {}
+                  success: true,
+                  data: {
+                    "plainText": "<plain text>",
+                    "richText": "<rich text>",
+                    "tokens": [{
+                      "answerToken": "<answer token>",
+                      "questionToken": "<question token>",
+                      "status": "pending|processing|processed"
+                    }]
+                  }
                 }
       500:
         description: Unexpected Error or bad parameters
@@ -27,18 +33,40 @@
       500:
         description: Unexpected Error or bad parameter
 
+/quiz-tokens/{quizId}:
+  uriParameters:
+    quizId:
+      type: string
+  get:
+    description: Get the tokens part of the quiz so that progress of quiz generation can be checked.
+    responses:
+      200:
+        description: Retrieve the quiz tokens and status for the given quiz id
+        body:
+          application/json:
+            example: |
+                {
+                  "success": true,
+                  "data": {}
+                }
+      500:
+        description: Unexpected Error or bad parameters
+
 /quiz:
   put:
     body:
       application/json:
         properties:
+          _id:
+            type: string
+            required: false   
           plainText:
             type: string
             required: true    
           richText:
             type: string
             required: false
-          tokens:    
+          answerTokens:    
             type: string[]
             required: false
     responses:
@@ -49,7 +77,7 @@
             example: |
               {
                 "success": true
-                "quizId": "5eb390b946cc9f61db34bb3c"
+                "data": "<quiz id>"
               }
       500:
         description: Unexpected Error or bad parameter
@@ -60,13 +88,10 @@
   uriParameters:
     quizId:
       type: string
-      description: quiz id 
-      displayName: Quiz id
   get:
     queryParameters:
       answerToken:
         description: The answer token
-        displayName: Answer Token
         type: string
         required: true
 
@@ -75,21 +100,28 @@
   uriParameters:
     quizId:
       type: string
-      description: quiz id 
-      displayName: Quiz id
   put:
+    responses:
+      200:
+        description: Processes all tokens on quiz to generate a questions
+        body:
+          application/json:
+            example: |
+              {
+                "success": true
+                "data": "<quiz id>"
+              }
+      500:
+        description: Unexpected Error or bad parameter
 
 /answer-question/{quizId}:
   description: Answer questions from quiz and question token
   uriParameters:
     quizId:
       type: string
-      description: quiz id 
-      displayName: Quiz id
   get:
     queryParameters:
       questionToken:
         description: The question token
-        displayName: Question Token
         type: string
         required: true

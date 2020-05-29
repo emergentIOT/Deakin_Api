@@ -22,6 +22,7 @@ exports.installQaWs = async function(server) {
 
     server.put(server.getPath('/qa/quiz'), saveQuiz);
     server.get(server.getPath('/qa/quiz/:quizId'), getQuiz);
+    server.get(server.getPath('/qa/quiz-tokens/:quizId'), getQuizTokens);
     server.delete(server.getPath('/qa/quiz/:quizId'), delQuiz);
     server.get(server.getPath('/qa/generate-question/:quizId'), generateQuestion);
     server.put(server.getPath('/qa/generate-questions/:quizId'), generateQuestions);
@@ -40,7 +41,7 @@ const saveQuiz = async function(req, res) {
         if (utilWs.handleError('qg.saveQuiz', res, err)) {
             return;
         }
-        return utilWs.sendSuccess('qg.saveQuiz', {quizId: result.id}, res, true);
+        return utilWs.sendSuccess('qg.saveQuiz', {data: result._id}, res, true);
     });
 
 }
@@ -57,10 +58,30 @@ const getQuiz = async function(req, res) {
             return;
         }
         if (utils.isNull(quiz)) {
-            utilWs.sendUserError('qg.generateQuestion', "Quiz not found.", res);
+            utilWs.sendUserError('qg.getQuiz', "Quiz not found.", res);
             return;
         }
-        utilWs.sendSuccess('qg.getQuiz', {success: true, quiz: quiz}, res, true);                      
+        utilWs.sendSuccess('qg.getQuiz', {success: true, data: quiz}, res, true);                      
+    });
+
+}
+
+/**
+ * GET
+ * /quiz/:quizId
+ * Get quiz.
+ */
+const getQuizTokens = async function(req, res) {
+    
+    qaService.getQuizTokens(req.params.quizId, function(err, quiz) {
+        if (utilWs.handleError('qg.getQuizTokens', res, err)) {
+            return;
+        }
+        if (utils.isNull(quiz)) {
+            utilWs.sendUserError('qg.getQuizTokens', "Quiz not found.", res);
+            return;
+        }
+        utilWs.sendSuccess('qg.getQuizTokens', {success: true, data: quiz.tokens}, res, true);                      
     });
 
 }
@@ -75,7 +96,7 @@ const delQuiz = async function(req, res) {
         if (utilWs.handleError('qg.delQuiz', res, err)) {
             return;
         }
-        utilWs.sendSuccess('qg.delQuiz', {success: true, result: result}, res, true);                      
+        utilWs.sendSuccess('qg.delQuiz', {success: true, data: result}, res, true);                      
     });
 }
 
@@ -146,7 +167,7 @@ const generateQuestions = async function(req, res) {
 
         
 
-        utilWs.sendSuccess('qg.generateQuestion', {success: true}, res, true); 
+        utilWs.sendSuccess('qg.generateQuestion', {success: true, data:  quiz._id}, res, true); 
         // utilWs.sendSuccess('qg.generateQuestion', {success: true, questionText: result.questionText}, res, true);                      
         
     });
@@ -176,7 +197,7 @@ const generateQuestion = async function(req, res) {
                 return;
             }
             
-            utilWs.sendSuccess('qg.generateQuestion', {success: true, questionText: result.questionText}, res, true);                      
+            utilWs.sendSuccess('qg.generateQuestion', {success: true, data: result.questionText}, res, true);                      
         })
         
     });
@@ -206,7 +227,7 @@ const answerQuestion = async function(req, res) {
                 return;
             }
             
-            utilWs.sendSuccess('qg.answerQuestion', {success: true, answerText: result.answerText}, res, true);                      
+            utilWs.sendSuccess('qg.answerQuestion', {success: true, data: result.answerText}, res, true);                      
         })
         
     });

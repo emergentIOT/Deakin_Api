@@ -44,14 +44,15 @@ exports.Quiz = Quiz;
  */
 exports.saveQuiz = function(quiz, cb) {
 
-    let { plainText, richText, answerTokens } = quiz;
+    let { plainText, richText, answerTokens, _id } = quiz;
 
     let tokens = [];
     if (answerTokens) {
         answerTokens.forEach(value => tokens.push({answerToken: value}));
     }
 
-    dbService.save('Quiz', {plainText, richText, tokens}, function(err, result) {
+    console.log("tokens", tokens)
+    dbService.save('Quiz', {_id, plainText, richText, tokens}, function(err, result) {
 
         if (cb) {
             cb(err, result);
@@ -74,7 +75,7 @@ exports.getQuizById = function(quizId, cb) {
  * @param {String} quizId the quiz quiz id
  */
 exports.getQuizTokens = function(quizId, cb) {
-    Quiz.find(quizId, "tokens", cb);
+    Quiz.findById(quizId, "tokens", cb);
 }
 
 /**

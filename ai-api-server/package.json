@@ -5,7 +5,7 @@
     "engines": {
         "node": ">=8",
         "npm": ">=5",
-        "mongo": "3.4.x"
+        "mongo": "3.6.x"
     },
     "scripts": {
         "lint": "eslint .",
