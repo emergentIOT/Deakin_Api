@@ -10,13 +10,14 @@
 <div class="row">
   <des-alert-panel></des-alert-panel>
   <div
-    *ngFor="let item of (quizList | async)?.list"
+    *ngFor="let item of (quizList | async)?.data"
     class="col-sm-12 col-lg-6 vertical-grid-spacing"
   >
-    <des-card layout="advertising" [desShadow]="2">
+    <des-card layout="advertising" [desShadow]="2"
+      [routerLink]="['edit-quiz', item._id]">
       <img src="/assets/quiz-icon.png">
-      <h2 class="des-card-title"><a [routerLink]="'edit-quiz'">{{item.title}}</a></h2>
-      <p>{{item.summary}}</p>
+      <h2 class="des-card-title"><a [routerLink]="['edit-quiz', item._id]">{{item.name}}</a></h2>
+      <p class="block-with-text mr-1">{{item.plainText}}</p>
       <div class="des-card-footer">
         <des-card-metadata [subtitle]="'Posted by'"
                        [title]="'Author name'"

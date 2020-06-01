@@ -2,7 +2,7 @@
     width="100%" height="720"
     [pasteCleanupSettings]="pasteCleanup" [enableTabKey]="true" [placeholder]="placeholder"
     (notifyArgs)="editorEvent($event)"
-    [value]="textValue"
+    [(value)]="textValue"
     >
     <!-- <ng-template #valueTemplate> -->
         <!-- <p>The Rich Text Editor component is WYSIWYG ("what you see is what you get") 

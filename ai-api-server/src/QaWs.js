@@ -20,6 +20,8 @@ exports.installQaWs = async function(server) {
     // };
     // server.use("/api", expressJWT(jwtExpressOptions).unless({ path: "/api/v1/user-permission/generate-token" }));
 
+
+    server.get(server.getPath('/qa/quizzes'), quizzes);
     server.put(server.getPath('/qa/quiz'), saveQuiz);
     server.get(server.getPath('/qa/quiz/:quizId'), getQuiz);
     server.get(server.getPath('/qa/quiz-tokens/:quizId'), getQuizTokens);
@@ -42,6 +44,23 @@ const saveQuiz = async function(req, res) {
             return;
         }
         return utilWs.sendSuccess('qg.saveQuiz', {data: result._id}, res, true);
+    });
+
+}
+
+/**
+ * GET
+ * /quizzes
+ * Search and list quizzes.
+ */
+const quizzes = async function(req, res) {
+    
+    Quiz.find({}, (err, result) => {
+        if (utilWs.handleError('qg.quizzes', res, err)) {
+            return;
+        }
+
+        utilWs.sendSuccess('qg.quizzes', {success: true, data: result}, res, true);                      
     });
 
 }
@@ -140,6 +159,8 @@ const generateQuestions = async function(req, res) {
                         callback(err);
                         return;
                     }
+                    callback();
+                    return;
                     logger.info(`qg.generateQuestions-processing: quizId = ${quiz._id}, answerToken = ${token.answerToken}`);
                     qaService.generateQuestion(quiz.plainText, token.answerToken, function(err, result) {
                         if (err) {

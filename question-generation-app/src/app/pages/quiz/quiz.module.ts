@@ -8,11 +8,12 @@ import { TabsModule } from '../../shared/ui-components/tabs/tabs.module';
 import { TextEditorComponent } from './text-editor/text-editor.component';
 import { RichTextEditorModule } from '@syncfusion/ej2-angular-richtexteditor';
 import { ChipListModule } from '@syncfusion/ej2-angular-buttons';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [QuizComponent, QuizListComponent, TextEditorComponent],
   imports: [CommonModule, QuizRoutingModule, DesCardModule, DesButtonModule, TabsModule, 
-    RichTextEditorModule, ChipListModule],
+    RichTextEditorModule, ChipListModule, FormsModule],
   exports: [QuizComponent, QuizListComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

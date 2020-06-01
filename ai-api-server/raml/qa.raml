@@ -1,6 +1,22 @@
 #%RAML 1.0
 description: Question generation and question answering AI service.
 
+/quizzes:
+  get:
+    description: Get list of quizzes
+    responses:
+      200:
+        description: Retrieve quizzes tokens and status
+        body:
+          application/json:
+            example: |
+                {
+                  "success": true,
+                  "data": {}
+                }
+      500:
+        description: Unexpected Error or bad parameters
+
 /quiz/{quizId}:
   uriParameters:
     quizId:
@@ -59,7 +75,11 @@ description: Question generation and question answering AI service.
         properties:
           _id:
             type: string
-            required: false   
+            required: false 
+          name:
+            type: string
+            required: true
+            description: The title / name of the quiz    
           plainText:
             type: string
             required: true    

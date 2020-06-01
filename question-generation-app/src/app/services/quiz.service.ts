@@ -5,15 +5,17 @@ import { AppConfigService } from './app-config/app-config.service';
 import { publishReplay, refCount, catchError, concatMap, map } from 'rxjs/operators';
 import { IQuiz } from '../interfaces/iQuiz';
 import { handleError } from '../shared/data/util-http';
-import { IQuizResponse } from '../interfaces/iQuizResponse';
+import { IResponse } from '../interfaces/iResponse';
 import { Observable } from 'rxjs';
 import { IQuizUpdate } from '../interfaces/iQuizUpdate';
-import { IResponse } from '../interfaces/iResponse';
+import { IQuizToken } from '../interfaces/iQuizToken';
 
 @Injectable({
   providedIn: 'root'
 })
 export class QuizService {
+
+  private apiUrlQuizzes = this.appConfigService.apiUrl + '/api/v1/qa/quizzes';
   private apiUrlQuiz = this.appConfigService.apiUrl + '/api/v1/qa/quiz';
   private apiUrlQG = this.appConfigService.apiUrl + '/api/v1/qa/generate-questions';
   // private apiUrl = 'assets/mock-data/quiz-list.mock.json';
@@ -24,8 +26,13 @@ export class QuizService {
     private appConfigService: AppConfigService
   ) {}
 
-  getQuizzes() {
-    return this.http.get<IQuizList>(this.apiUrlQuiz).pipe(publishReplay(1), refCount());
+  listQuizzes() : Observable<IQuizList> {
+    return this.http.get<IQuizList>(this.apiUrlQuizzes).pipe(publishReplay(1), refCount());
+  }
+
+  getQuiz(quizId : string) : Observable<IQuiz> {
+    return this.http.get<IResponse<IQuiz>>(`${this.apiUrlQuiz}/${quizId}`).pipe(
+      map<IResponse<IQuiz>, IQuiz>(res => res.data));
   }
 
 
@@ -40,5 +47,27 @@ export class QuizService {
         );
       })
     );
+  }
+
+  getAnswerTokens(quiz : IQuiz) : string[] {
+    let tokens : string[] = [];
+    if (quiz && quiz.tokens) {
+      quiz.tokens.forEach((token : IQuizToken) => 
+          tokens.push(token.answerToken));
+    }
+    return tokens;
+  }
+
+  calcUnprocessedCount(quiz : IQuiz) : number {
+    let count = 0;
+    if (!quiz || !quiz.tokens) {
+      return count;
+    }
+    quiz.tokens.forEach((token : IQuizToken) => {
+      if (token.status !== "processed") {
+        count++;
+      }
+    })
+    return count;
   }
 }

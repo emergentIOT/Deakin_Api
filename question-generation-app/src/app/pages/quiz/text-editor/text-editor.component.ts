@@ -22,8 +22,8 @@ export class TextEditorComponent implements OnInit {
 
   private HIGHLIGHT_COLOR : String = "#85C17A";
 
-  @Input('textValue') textValue: String; 
-  @Input('tokens') tokens: String[];
+  @Input('textValue') textValue: string; 
+  @Input('tokens') tokens: string[];
   @Output() newToken = new EventEmitter();
 
   @ViewChild('toolsRTE') public rteObj: RichTextEditorComponent;
@@ -86,7 +86,7 @@ export class TextEditorComponent implements OnInit {
   `;
 
 
-  constructor() { 
+  constructor(private ngZone: NgZone) { 
    
   }
 
@@ -104,17 +104,25 @@ export class TextEditorComponent implements OnInit {
         this.rteObj.updateValue(this.selectText(selection, this.rteObj.getHtml()));
       }
     }
-    for (let token of this.tokens) {
-      this.rteObj.updateValue(this.selectText(token, this.rteObj.getHtml()));
-    }
   }
 
-  isAllWholeWords(str: String, text: String) : boolean {
+  update(tokens : string[], textValue : string) : string {
+    this.tokens = tokens;
+    let text = textValue;
+    console.log(this.tokens, textValue);
+    for (let token of this.tokens) {
+      text = this.selectText(token, text);
+    }
+    this.textValue = text;
+    return text;
+  }
+
+  isAllWholeWords(str: string, text: string) : boolean {
     let regex = new RegExp("\\b(" + this.escapeRegExp(str) + ")\\b", "mig");
     return text.search(regex) >=0 ;
   }
 
-  selectText(token : String, plainText: string) {
+  selectText(token : string, plainText: string) {
     if (isEmpty(token)) {
       return plainText;
     }
@@ -133,12 +141,16 @@ export class TextEditorComponent implements OnInit {
     return this.rteObj.getText();
   }
 
-  deleteToken(token : String) {
+  public hasPlainText() {
+    return !isEmpty(this.getPlainText());
+  }
+  
+  deleteToken(token : string) {
     this.tokens = this.tokens.filter(obj => obj !== token);
     this.rteObj.updateValue(this.removeHighLight(token, this.rteObj.getHtml()));
   }
 
-  removeHighLights(plainText: String) {
+  removeHighLights(plainText: string) {
     let regExStr = '(<span style="background-color: ' + this.HIGHLIGHT_COLOR + ';">)(.+?)(</span>)';
     let regex = new RegExp(regExStr, "mig");
     let result = plainText.replace(regex, (g1 : string, g2 : string, g3 : string, g4 : string): string => {
@@ -147,7 +159,7 @@ export class TextEditorComponent implements OnInit {
     return result;
   }
 
-  removeHighLight(token: String, plainText: String) {
+  removeHighLight(token: string, plainText: string) {
     let regExStr = '(<span style="background-color: ' + this.HIGHLIGHT_COLOR + ';">)(' + 
                     this.escapeRegExp(token) + ')(</span>)';
     let regex = new RegExp(regExStr, "mig");
@@ -157,7 +169,7 @@ export class TextEditorComponent implements OnInit {
     return result;
   }
 
-  private escapeRegExp(string : String) {
+  private escapeRegExp(string : string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
   }
 }

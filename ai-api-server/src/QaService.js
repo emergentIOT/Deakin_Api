@@ -16,6 +16,7 @@ const GET_RESULT_REGEXP = /<label id="ans1">((.|\n)*?)<\/label>/gm;
  * The MongooseJS collection schema definition.
  */
 const Schema = { 
+    name: String,
     plainText: {
         type: String,
         required: true
@@ -44,7 +45,7 @@ exports.Quiz = Quiz;
  */
 exports.saveQuiz = function(quiz, cb) {
 
-    let { plainText, richText, answerTokens, _id } = quiz;
+    let { name, plainText, richText, answerTokens, _id } = quiz;
 
     let tokens = [];
     if (answerTokens) {
@@ -52,7 +53,7 @@ exports.saveQuiz = function(quiz, cb) {
     }
 
     console.log("tokens", tokens)
-    dbService.save('Quiz', {_id, plainText, richText, tokens}, function(err, result) {
+    dbService.save('Quiz', {_id, name, plainText, richText, tokens}, function(err, result) {
 
         if (cb) {
             cb(err, result);

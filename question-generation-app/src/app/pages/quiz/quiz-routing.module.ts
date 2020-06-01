@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { QuizComponent } from './quiz.component';
 
 const routes: Routes = [
+  { path: 'edit-quiz/:quizId', component: QuizComponent }, 
   { path: 'edit-quiz', component: QuizComponent }
 ];
 

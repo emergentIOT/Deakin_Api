@@ -8,8 +8,20 @@
 
   <app-tab-container class="des-margin-top-large des-margin-bottom-large">
     <!-- <app-tab-panel title="1. Upload Content"> -->
-    <app-tab-panel title="1. Content & Key Phrases">
+    <app-tab-panel title="Content & Key Phrases">
       <div class="container">
+        <div class="row">
+          <div class="col-sm-8 order-2 order-sm-1 des-margin-bottom-small vertical-grid-spacing">
+            <form (ngSubmit)="generateQuiz()">
+              <div class="des-form-group">
+                <!-- <label for="first-name">Last name</label> -->
+                <input placeholder="Quiz Title" type="text" 
+                  [(ngModel)]="name" name="name" id="name" 
+                  required class="des-form-item-field" />
+              </div>
+            </form>
+          </div>
+        </div>
         <div class="row">
             <app-text-editor #textEditor [tokens]="tokens" [textValue]="textValue" (newToken)='newToken($event)' 
               class="col-sm-8 order-2 order-sm-1 vertical-grid-spacing">
@@ -21,7 +33,7 @@
                 </ejs-chiplist>
               </div>
               <div style="position: absolute; bottom: 0px; right: 0;">
-                <des-button (click)="generateQuiz()">Generate Quiz</des-button>
+                <des-button [disabled]="canGenerateQuiz ? null : 'disabled'" (click)="generateQuiz()">Generate Quiz</des-button>
               </div>
             </div>
           </div>
@@ -42,7 +54,7 @@
         </ng-container>
       </div>
     </app-tab-panel> -->
-    <app-tab-panel title="2. Question suggestions">
+    <app-tab-panel [enabled]="false" title="Question suggestions">
       <div class="row">
         <ng-container>
           

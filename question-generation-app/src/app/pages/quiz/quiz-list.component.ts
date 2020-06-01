@@ -8,7 +8,7 @@ import { Router } from '@angular/router'; // CLI imports router
 @Component({
   selector: 'app-quiz-list',
   templateUrl: './quiz-list.component.html',
-  styleUrls: ['./quiz-list.component.scss']
+  styleUrls: ['./quiz-list.component.scss'], 
 })
 export class QuizListComponent implements OnInit {
   
@@ -17,13 +17,13 @@ export class QuizListComponent implements OnInit {
   constructor(private _quizService: QuizService, private router: Router) {}
 
   ngOnInit() {
-    this.quizList = this._quizService.getQuizzes();
+    this.quizList = this._quizService.listQuizzes();
   }
 
-  newQuiz() {
-    this.router.navigate(["edit-quiz"]);
-    return false;
-  }
+  // newQuiz() {
+  //   this.router.navigate(["edit-quiz"]);
+  //   return false;
+  // }
 }
 
 
