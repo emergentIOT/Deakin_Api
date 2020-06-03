@@ -8,7 +8,7 @@ import { IQuizUpdate } from 'src/app/interfaces/iQuizUpdate';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { IQuizToken } from 'src/app/interfaces/iQuizToken';
-import { isEmpty, getTitleCase } from 'npm-stringutils';
+import { isEmpty } from 'npm-stringutils';
 
 @Component({
   selector: 'app-quiz',
@@ -132,7 +132,11 @@ export class QuizComponent implements OnInit {
   }
 
   getAnswerText(token : IQuizToken) : string {
-    return getTitleCase(token.answerToken);
+    let name = token.answerToken;
+    if (isEmpty(name)) {
+      return name;
+    }
+    return name.charAt(0).toUpperCase() + name.slice(1);
   }
 
   getQuestionText(token : IQuizToken) : string {
