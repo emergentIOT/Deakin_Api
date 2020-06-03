@@ -49,7 +49,11 @@ exports.saveQuiz = function(quiz, cb) {
 
     let tokens = [];
     if (answerTokens) {
-        answerTokens.forEach(value => tokens.push({answerToken: value}));
+        answerTokens.forEach(value => {
+            if (utils.isNotEmpty(value)) {
+                tokens.push({answerToken: value.trim()})
+            }
+        });
     }
 
     console.log("saveQuiz", _id, tokens);

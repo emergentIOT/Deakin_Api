@@ -97,7 +97,7 @@ export class TextEditorComponent implements OnInit {
   ngAfterViewInit(): void {
     this.textArea = this.rteObj.contentModule.getEditPanel() as HTMLElement; 
     this.textArea.onclick = (event) => {
-      let selection : string =  this.rteObj.getSelection();
+      let selection : string =  this.rteObj.getSelection().trim();
       let text : string = this.rteObj.getText();
       if (!isEmpty(selection) && this.isAllWholeWords(selection, text)) {
         this.newToken.emit(selection);
