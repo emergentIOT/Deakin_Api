@@ -1,7 +1,25 @@
 @import "../../shared/scss/design-system-variables.scss";
 @import "../../../../node_modules/@syncfusion/ej2-buttons/styles/material.css";
 
+.vertical-grid-spacing {
+  margin-bottom: $des-layout-spacing-base;
+}
+
 // div {
 //     border: solid 1px red;
 // }
 
+.loading-img-container {
+  display: inline-block;
+}
+
+
+.loading-answer-text {
+  margin-left: 40px;
+}
+
+.loading-img {
+  position: absolute;
+  top: 15px;
+  height: 40px;
+}

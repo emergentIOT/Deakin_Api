@@ -106,15 +106,19 @@ export class TextEditorComponent implements OnInit {
     }
   }
 
-  update(tokens : string[], textValue : string) : string {
+  /**
+   * 
+   * @param tokens 
+   * @param text 
+   * @returns The text with the tokens selected
+   */
+  selectTokens(tokens : string[], text : string) : string {
     this.tokens = tokens;
-    let text = textValue;
-    console.log(this.tokens, textValue);
+    let result = text;
     for (let token of this.tokens) {
-      text = this.selectText(token, text);
+      result = this.selectText(token, result);
     }
-    this.textValue = text;
-    return text;
+    return result;
   }
 
   isAllWholeWords(str: string, text: string) : boolean {
@@ -122,12 +126,18 @@ export class TextEditorComponent implements OnInit {
     return text.search(regex) >=0 ;
   }
 
-  selectText(token : string, plainText: string) {
-    if (isEmpty(token)) {
-      return plainText;
+  /**
+   * 
+   * @param token 
+   * @param text 
+   * @returns The text with the tokens selected
+   */
+  selectText(token : string, text: string) {
+    if (isEmpty(token) || isEmpty(text)) {
+      return text;
     }
     let regex = new RegExp("\\b(" + this.escapeRegExp(token) + ")\\b", "mig");
-    let result = plainText.replace(regex, (subString : string): string => {
+    let result = text.replace(regex, (subString : string): string => {
       return '<span style="background-color: ' + this.HIGHLIGHT_COLOR + ';">' + subString + "</span>";
     });
     return result;

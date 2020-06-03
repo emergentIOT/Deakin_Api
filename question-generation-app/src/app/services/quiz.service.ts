@@ -6,20 +6,25 @@ import { publishReplay, refCount, catchError, concatMap, map } from 'rxjs/operat
 import { IQuiz } from '../interfaces/iQuiz';
 import { handleError } from '../shared/data/util-http';
 import { IResponse } from '../interfaces/iResponse';
-import { Observable } from 'rxjs';
+import { Observable, Subject, interval, Subscription } from 'rxjs';
 import { IQuizUpdate } from '../interfaces/iQuizUpdate';
 import { IQuizToken } from '../interfaces/iQuizToken';
+import { isEmpty } from 'npm-stringutils';
 
 @Injectable({
   providedIn: 'root'
 })
 export class QuizService {
 
+  private CHECK_FOR_QUIZ_INTERVAL_SECONDS = 3;
+
   private apiUrlQuizzes = this.appConfigService.apiUrl + '/api/v1/qa/quizzes';
   private apiUrlQuiz = this.appConfigService.apiUrl + '/api/v1/qa/quiz';
+  private apiUrlQuizTokens = this.appConfigService.apiUrl + '/api/v1/qa/quiz-tokens';
   private apiUrlQG = this.appConfigService.apiUrl + '/api/v1/qa/generate-questions';
   // private apiUrl = 'assets/mock-data/quiz-list.mock.json';
-
+  private quizUpdateSubject = new Subject<IQuiz>();
+  private quizWatchSubscription : Subscription;
 
   constructor(
     private http: HttpClient,
@@ -36,10 +41,19 @@ export class QuizService {
   }
 
 
+  getQuizTokens(quizId : string) : Observable<IQuiz> {
+    return this.http.get<IResponse<IQuiz>>(`${this.apiUrlQuizTokens}/${quizId}`).pipe(
+      map<IResponse<IQuiz>, IQuiz>(res => res.data));
+  }
+
+
   saveAndGenerate(quiz : IQuizUpdate) : Observable<IQuiz> {
     return this.http.put<IResponse<string>>(this.apiUrlQuiz, quiz).pipe(
       concatMap((result : IResponse<string>) => {
-          return this.http.put<IResponse<string>>(`${this.apiUrlQG}/${result.data}`, {});
+        if (isEmpty(result.data)) {
+          throw new Error("Bad result.");
+        }
+        return this.http.put<IResponse<string>>(`${this.apiUrlQG}/${result.data}`, {});
       }), 
       concatMap((result : IResponse<string>) => {
         return this.http.get<IResponse<IQuiz>>(`${this.apiUrlQuiz}/${result.data}`).pipe(
@@ -69,5 +83,27 @@ export class QuizService {
       }
     })
     return count;
+  }
+
+  stopWatchQuizStatus() {
+    if (this.quizWatchSubscription) {
+      this.quizWatchSubscription.unsubscribe();
+    }
+  }
+  startWatchQuizStatus(quizId : string) :  Observable<IQuiz> {
+    this.stopWatchQuizStatus();
+
+    let observable : Observable<IQuiz> = new Observable(observer => {
+
+      this.quizWatchSubscription = interval(this.CHECK_FOR_QUIZ_INTERVAL_SECONDS * 1000).subscribe(() => {
+
+        this.getQuizTokens(quizId).subscribe( quiz => {
+          observer.next(quiz);
+          // this.quizUpdateSubject.next(quiz);
+        })
+
+      });
+    });
+    return observable;
   }
 }

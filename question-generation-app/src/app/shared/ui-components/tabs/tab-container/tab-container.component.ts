@@ -5,7 +5,7 @@ import {
   QueryList,
   Input,
   ViewChildren,
-  ElementRef
+  ElementRef, Output, EventEmitter
 } from '@angular/core';
 import { TabPanelComponent } from '../tab-panel/tab-panel.component';
 
@@ -15,6 +15,9 @@ import { TabPanelComponent } from '../tab-panel/tab-panel.component';
   styleUrls: ['./tab-container.component.scss']
 })
 export class TabContainerComponent implements AfterContentInit {
+
+  @Output() tabChanged = new EventEmitter();
+
   @Input()
   label: string;
 
@@ -38,12 +41,18 @@ export class TabContainerComponent implements AfterContentInit {
 
   selectTab(tab: TabPanelComponent) {
     // Iterate over all of th tabs and deactivate them
-    this.tabs.toArray().forEach((tabItem) => {
+    let selectedIndex = 0;
+    this.tabs.toArray().forEach((tabItem, index) => {
       tabItem.active = false;
+      if (tab == tabItem) {
+        selectedIndex = index;
+      }
     });
 
     // Activate the selected tab
     tab.active = true;
+
+    this.tabChanged.emit(selectedIndex);
   }
 
   handleKeybNav(tabNumber: number, event: KeyboardEvent) {

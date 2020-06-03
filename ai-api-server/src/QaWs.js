@@ -100,7 +100,7 @@ const getQuizTokens = async function(req, res) {
             utilWs.sendUserError('qg.getQuizTokens', "Quiz not found.", res);
             return;
         }
-        utilWs.sendSuccess('qg.getQuizTokens', {success: true, data: quiz.tokens}, res, true);                      
+        utilWs.sendSuccess('qg.getQuizTokens', {success: true, data: quiz}, res, true);                      
     });
 
 }
@@ -159,8 +159,9 @@ const generateQuestions = async function(req, res) {
                         callback(err);
                         return;
                     }
-                    callback();
-                    return;
+                    // debug dry run
+                    // callback();
+                    // return;
                     logger.info(`qg.generateQuestions-processing: quizId = ${quiz._id}, answerToken = ${token.answerToken}`);
                     qaService.generateQuestion(quiz.plainText, token.answerToken, function(err, result) {
                         if (err) {

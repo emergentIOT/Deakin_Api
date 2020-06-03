@@ -10,7 +10,7 @@ const questionGenerationAiUrl = utils.getConfig('QUESTION_GENERATION_AI_URL', ut
 const questionAnswerAiUrl = utils.getConfig('QUESTION_ANSWER_AI_URL', utils.CONFIG_REQUIRED);
 
 
-const GET_RESULT_REGEXP = /<label id="ans1">((.|\n)*?)<\/label>/gm;
+const GET_RESULT_REGEXP = /<label id="ans1">((.|\n|\r|\f|\t)*?)<\/label>/mi;
 
 /*
  * The MongooseJS collection schema definition.
@@ -52,8 +52,12 @@ exports.saveQuiz = function(quiz, cb) {
         answerTokens.forEach(value => tokens.push({answerToken: value}));
     }
 
-    console.log("tokens", tokens)
-    dbService.save('Quiz', {_id, name, plainText, richText, tokens}, function(err, result) {
+    console.log("saveQuiz", _id, tokens);
+    let entity = {name, plainText, richText, tokens};
+    if (utils.isNotEmpty(_id)) {
+        entity._id = _id;
+    }
+    dbService.save('Quiz', entity, function(err, result) {
 
         if (cb) {
             cb(err, result);
@@ -116,6 +120,10 @@ exports.generateQuestion = function(plainText, answerToken, cb) {
     
             logger.info(match);
 
+            if (utils.isEmpty(result)) {
+                logger.warn('Empty result: ', body);
+            }
+
             cb(null, {questionText: result});
         } catch(err) {
             cb(err);
@@ -154,6 +162,10 @@ exports.answerQuestions = function(plainText, questionToken, cb) {
                 result = match[1].trim();
             }
             logger.info(match); 
+
+            if (utils.isEmpty(result)) {
+                logger.warn('Empty result: ', body);
+            }
     
             cb(null, {answerText: result});
         } catch(err) {
