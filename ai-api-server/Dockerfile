@@ -4,22 +4,25 @@ RUN apt-get update
 #RUN apt-get install vim
 
 #Create app directory
-WORKDIR ./api-server
+WORKDIR ./ai-api-server
 
 # Install app dependencies
 COPY raml ./raml
-COPY lib ./lib
+COPY src ./src
 # Wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
 COPY process*.json ./
 COPY *.js ./
-COPY connection-org*.json ./
-COPY crypto-config ./crypto-config
 
-RUN npm config set registry https://artifactory.deakin.edu.au/api/npm/emergtech-dev
-    
+RUN npm --version; \
+    node --version
 
-RUN npm install
+RUN npm config set registry https://artifactory.its.deakin.edu.au/api/npm/des-inno-npm
+RUN npm config set _auth anNob3R0b246QVAzVjlrV2J6MjcyVnFkdkVzU0oxS2g0UlpI
+RUN npm config set email joel.shotton@deakin.edu.au
+RUN npm config set always-auth true    
+
+RUN npm -l install
 # RUN npm ci --only=production
 
 # Note cd out as npm local install will get messed up with global install
@@ -33,10 +36,5 @@ RUN ls -al; \
     npm --version; \
     node --version; \
     npm list --depth=1; exit 0
-
-RUN echo "{ \
-    \"bigdata1\": \"asAi2(wr@LW\", \
-    \"bigdata2\": \"asAi2(wr@LW\" \
-}" >  ~/.apiUsers.json
 
 CMD [ "npm", "run", "start-server" ]
