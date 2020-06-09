@@ -1,0 +1,37 @@
+image: docker-hub.artifactory.its.deakin.edu.au/tiangolo/docker-with-compose
+
+stages:
+- build
+- deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_AUTH_CONFIG: '{"auths": {"local-des-inno-docker.artifactory.its.deakin.edu.au": {"auth": "YmFtYm9vOmpoNEh6UkJRU01ad3liaDc="}}}'
+
+build_image:
+  stage: build
+  tags:
+    - docker
+  services:
+    - name: docker-hub.artifactory.its.deakin.edu.au/docker:18.09-dind
+      alias: docker
+  script:
+    - echo $DOCKER_AUTH > ~/password.txt
+    - cat ~/password.txt | docker login --username bamboo --password-stdin $REPO
+    - docker build -t $REPO/$NAME:$CI_COMMIT_SHA --rm -f Dockerfile .
+    - docker push $REPO/$NAME:$CI_COMMIT_SHA
+
+depoy:
+  stage: deploy
+  tags:
+    - docker
+  variables:
+    ENV_TAG: $CI_COMMIT_SHA
+    DOCKER_HOST: "tcp://apps-docker-f1.its.deakin.edu.au:2375"
+  services:
+    - name: docker-hub.artifactory.its.deakin.edu.au/docker:18.09-dind
+      alias: docker
+  script:
+    - echo $DOCKER_AUTH > ~/password.txt
+    - cat ~/password.txt | docker login --username bamboo --password-stdin $REPO
+    - docker stack deploy -c docker-compose.yml des-inno-ai-api
