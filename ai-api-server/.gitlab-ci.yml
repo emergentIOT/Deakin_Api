@@ -9,7 +9,7 @@ build_image:
   script:
     - echo $DOCKER_AUTH > ~/password.txt
     - cat ~/password.txt | docker login --username bamboo --password-stdin $REPO
-    - docker build -t $REPO/$NAME:$CI_COMMIT_SHA --rm -f Dockerfile .
+    - docker build -t $REPO/$NAME:$CI_COMMIT_SHA --rm -f ai-api-server/Dockerfile .
     - docker push $REPO/$NAME:$CI_COMMIT_SHA
 
 depoy:
