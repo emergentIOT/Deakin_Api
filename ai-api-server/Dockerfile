@@ -22,7 +22,15 @@ RUN npm config set _auth anNob3R0b246QVAzVjlrV2J6MjcyVnFkdkVzU0oxS2g0UlpI
 RUN npm config set email joel.shotton@deakin.edu.au
 RUN npm config set always-auth true    
 
-RUN npm -l install
+
+
+RUN npm config set ai-api-server:MONGO_HOST ai-api-mongo
+RUN npm config set ai-api-server:MONGO_DATABASE aiDb
+RUN npm config set ai-api-server:QUESTION_GENERATION_AI_URL http://research-gpu-poc-fs1.its.deakin.edu.au:8888/
+RUN npm config set ai-api-server:QUESTION_ANSWER_AI_URL http://research-gpu-poc-fs1.its.deakin.edu.au:8889/
+
+
+RUN npm install
 # RUN npm ci --only=production
 
 # Note cd out as npm local install will get messed up with global install
