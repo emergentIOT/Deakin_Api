@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  #note: images are for gitlab.
+  ai-api-server:
+    container_name: ai-api-server
+    #image: local-idear-docker.artifactory.its.deakin.edu.au/idear-content-server:${ENV_TAG}
+    restart: unless-stopped
+    build: .
+    ports:
+      - "7040:7040"
+    networks:
+      - ai-api-mongo
+      - web
+    labels:
+      - "traefik.docker.network=web"
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:ai-api.its.deakin.edu.au"
+      - "traefik.port=7040"
+      - "traefik.protocol=http"   
+  ai-api-mongo:
+    container_name: ai-api-mongo
+    restart: always
+    image: docker-hub.artifactory.its.deakin.edu.au/mongo
+    networks:
+      - ai-api-mongo
+    volumes:
+      - mongo-data:/data/db
+      
+networks:
+  ai-api-mongo:
+  web:
+    external: true
+volumes:
+  mongo-data:
