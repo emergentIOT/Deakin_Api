@@ -1,0 +1,24 @@
+version: '3.7'
+services:
+  python-qna-chatbot:
+    container_name: python-qna-chatbot
+    image: local-des-inno-docker.artifactory.its.deakin.edu.au/python-qna-chatbot:${ENV_TAG}
+    env_file:
+      - ./env.env
+    restart: unless-stopped
+    networks:
+      - traefik-int
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+          - "traefik.enable=true"
+          - "traefik.docker.network=traefik-int"
+          - "traefik.http.routers.qnabot.rule=Host(`des-inno-qnabot.its.deakin.edu.au`)"
+          - "traefik.http.routers.qnabot.entrypoints=web"
+          - "traefik.http.routers.qnabot.service=qnabot"
+          - "traefik.http.services.qnabot.loadbalancer.server.port=5000"
+
+networks:
+  traefik-int:
+    external: true
