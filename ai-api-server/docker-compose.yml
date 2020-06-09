@@ -11,13 +11,14 @@ services:
     #   - "7040:7040"
     networks:
       - ai-api-mongo
-      - web
+      - traefik-int
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=web"
-      - "traefik.frontend.rule=Host:ai-api.its.deakin.edu.au"
-      - "traefik.port=7040"
-      - "traefik.protocol=http"   
+      - "traefik.docker.network=traefik-int"
+      - "traefik.http.routers.ai-api.rule=Host(`des-inno-ai-api.its.deakin.edu.au`)"
+      - "traefik.http.routers.ai-api.entrypoints=web"
+      - "traefik.http.routers.ai-api.service=ai-api"
+      - "traefik.http.services.ai-api.loadbalancer.server.port=7040"
   ai-api-mongo:
     container_name: ai-api-mongo
     restart: always
@@ -29,7 +30,11 @@ services:
       
 networks:
   ai-api-mongo:
-  web:
+  traefik-int:
     external: true
 volumes:
   mongo-data:
+
+
+
+
