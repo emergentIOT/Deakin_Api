@@ -1,0 +1,12 @@
+image: docker-hub.artifactory.its.deakin.edu.au/tiangolo/docker-with-compose
+
+stages:
+- build
+- deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_AUTH_CONFIG: '{"auths": {"local-des-inno-docker.artifactory.its.deakin.edu.au": {"auth": "YmFtYm9vOmpoNEh6UkJRU01ad3liaDc="}}}'
+
+include:
+  - local: "ai-api-server/.gitlab-ci.yml"
