@@ -16,7 +16,7 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-int"
       - "traefik.http.routers.ai-api.rule=Host(`des-inno-ai-api.its.deakin.edu.au`)"
-      - "traefik.http.routers.ai-api.entrypoints=traefik-int"
+      - "traefik.http.routers.ai-api.entrypoints=web"
       - "traefik.http.routers.ai-api.service=ai-api"
       - "traefik.http.services.ai-api.loadbalancer.server.port=7040"
   ai-api-mongo:
