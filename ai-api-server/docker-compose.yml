@@ -12,13 +12,16 @@ services:
     networks:
       - ai-api-mongo
       - traefik-int
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=traefik-int"
-      - "traefik.http.routers.ai-api.rule=Host(`des-inno-ai-api.its.deakin.edu.au`)"
-      - "traefik.http.routers.ai-api.entrypoints=web"
-      - "traefik.http.routers.ai-api.service=ai-api"
-      - "traefik.http.services.ai-api.loadbalancer.server.port=7040"
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=traefik-int"
+        - "traefik.http.routers.ai-api.rule=Host(`des-inno-ai-api.its.deakin.edu.au`)"
+        - "traefik.http.routers.ai-api.entrypoints=web"
+        - "traefik.http.routers.ai-api.service=ai-api"
+        - "traefik.http.services.ai-api.loadbalancer.server.port=7040"
   ai-api-mongo:
     container_name: ai-api-mongo
     restart: always
