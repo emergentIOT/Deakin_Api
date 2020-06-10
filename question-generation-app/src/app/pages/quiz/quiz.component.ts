@@ -22,12 +22,12 @@ export class QuizComponent implements OnInit {
 
   private ENABLE_QUIZ_STATUS_CHECK = true;
 
-  private quizId: string;
-  private quiz: IQuiz;
-  private name: string;
-  private tokens: string[] = [];
+  public quiz: IQuiz;
+  public name: string;
+  public tokens: string[] = [];
   public textValue: string;
-  private activeTab = 0;
+  public activeTab = 0;
+  private quizId: string;
   private watchQuizStatusSubscription : Subscription;
 
   constructor(private quizService : QuizService,
