@@ -3,8 +3,11 @@ services:
     ai-qg-app:
       container_name: ai-qg-app
       image: local-des-inno-docker.artifactory.its.deakin.edu.au/ai-qg-app:${ENV_TAG}
-      # env_file:
-      #   - ./env.env
+      secrets:
+        - source: nginx_tls_crt
+          target: its.deakin.edu.au.crt
+        - source: nginx_tls_key
+          target: its.deakin.edu.au.key  
       restart: unless-stopped
       networks:
         - traefik-int
@@ -22,3 +25,10 @@ services:
 networks:
   traefik-int:
     external: true
+    
+secrets:
+  nginx_tls_crt:
+    external: true
+  nginx_tls_key:
+    external: true
+  
