@@ -9,10 +9,10 @@ WORKDIR ./ai-api-server
 # Install app dependencies
 COPY raml ./raml
 COPY src ./src
-# Wildcard is used to ensure both package.json AND package-lock.json are copied
-COPY package*.json ./
-COPY process*.json ./
 COPY *.js ./
+
+# Wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json .npmrc process*.json ./
 
 RUN npm --version; \
     node --version
