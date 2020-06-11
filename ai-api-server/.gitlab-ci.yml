@@ -1,3 +1,5 @@
+variables:
+  NAME: ai-api-server
 
 build_image:
   stage: build
@@ -13,7 +15,7 @@ build_image:
     - docker build -t $REPO/$NAME:$CI_COMMIT_SHA --rm -f Dockerfile .
     - docker push $REPO/$NAME:$CI_COMMIT_SHA
 
-depoy:
+deploy_stage:
   stage: deploy
   tags:
     - docker
