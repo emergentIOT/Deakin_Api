@@ -2,12 +2,7 @@ version: '3.7'
 services:
     ai-qg-app:
       container_name: ai-qg-app
-      image: local-des-inno-docker.artifactory.its.deakin.edu.au/ai-qg-app:${ENV_TAG}
-      secrets:
-        - source: nginx_tls_crt
-          target: its.deakin.edu.au.crt
-        - source: nginx_tls_key
-          target: its.deakin.edu.au.key  
+      image: local-des-inno-docker.artifactory.its.deakin.edu.au/ai-qg-app:${ENV_TAG} 
       restart: unless-stopped
       networks:
         - traefik-int
@@ -20,15 +15,9 @@ services:
             - "traefik.http.routers.ai-qg-app.rule=Host(`des-inno-ai-qg-app.its.deakin.edu.au`)"
             - "traefik.http.routers.ai-qg-app.entrypoints=web"
             - "traefik.http.routers.ai-qg-app.service=ai-qg-app"
-            - "traefik.http.services.ai-qg-app.loadbalancer.server.port=8080"
+            - "traefik.http.services.ai-qg-app.loadbalancer.server.port=80"
 
 networks:
   traefik-int:
-    external: true
-    
-secrets:
-  nginx_tls_crt:
-    external: true
-  nginx_tls_key:
     external: true
   
