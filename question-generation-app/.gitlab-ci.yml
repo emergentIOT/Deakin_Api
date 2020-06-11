@@ -1,0 +1,32 @@
+variables:
+  NAME: ai-qg-app
+
+build_image:
+  stage: build
+  tags:
+    - docker
+  services:
+    - name: docker-hub.artifactory.its.deakin.edu.au/docker:18.09-dind
+      alias: docker
+  script:
+    - cd question-generation-app/
+    - echo $DOCKER_AUTH > ~/password.txt
+    - cat ~/password.txt | docker login --username bamboo --password-stdin $REPO
+    - docker build -t $REPO/$NAME:$CI_COMMIT_SHA --rm -f Dockerfile .
+    - docker push $REPO/$NAME:$CI_COMMIT_SHA
+
+deploy_stage:
+  stage: deploy
+  tags:
+    - docker
+  variables:
+    ENV_TAG: $CI_COMMIT_SHA
+    DOCKER_HOST: "tcp://apps-docker-f1.its.deakin.edu.au:2375"
+  services:
+    - name: docker-hub.artifactory.its.deakin.edu.au/docker:18.09-dind
+      alias: docker
+  script:
+    - cd question-generation-app/
+    - echo $DOCKER_AUTH > ~/password.txt
+    - cat ~/password.txt | docker login --username bamboo --password-stdin $REPO
+    - docker stack deploy -c docker-compose.yml des-inno-ai-qg-app
