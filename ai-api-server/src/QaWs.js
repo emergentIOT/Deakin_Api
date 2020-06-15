@@ -159,10 +159,7 @@ const generateQuestions = async function(req, res) {
                         callback(err);
                         return;
                     }
-                    // debug dry run
-                    // callback();
-                    // return;
-                    logger.info(`qg.generateQuestions-processing: quizId = ${quiz._id}, answerToken = ${token.answerToken}`);
+                    logger.info(`qg.generateQuestions-processing: quizId = ${quiz._id}, tokenId = ${token._id}, answerToken = ${token.answerToken}`);
                     qaService.generateQuestion(quiz.plainText, token.answerToken, function(err, result) {
                         if (err) {
                             logger.error('qg.generateQuestion-generate-queston: ' + err);
@@ -172,13 +169,14 @@ const generateQuestions = async function(req, res) {
                         Quiz.update({_id: quiz._id, 'tokens._id': token._id}, {'$set': {
                             'tokens.$.status': 'processed',
                             'tokens.$.questionToken': result.questionText,
-                        }}, function(err) {
+                        }}, function(err, result2) {
                             if (err) {
                                 logger.error('qg.generateQuestion-update-token-question: ' + err);
                                 callback(err);
                                 return;
                             }
-                            logger.info(`qg.generateQuestions-processed: quizId = ${quiz._id}, ${result.questionText} ${token.answerToken}`);
+                            logger.info(`qg.generateQuestions-processed: quizId = ${quiz._id}, tokenId = ${token._id}, ${result.questionText} ${token.answerToken}`, 
+                                            result2);
                             callback();
                         });
                     });
