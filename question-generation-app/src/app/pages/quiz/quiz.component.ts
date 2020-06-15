@@ -63,6 +63,9 @@ export class QuizComponent implements OnInit {
     if (this.tokens.length === 0) {
       return false;
     }
+    if (isEmpty(this.name)) {
+      return false;
+    }
     if (!this.textEditor.hasPlainText()) {
       return false;
     }

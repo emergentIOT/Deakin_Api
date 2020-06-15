@@ -78,7 +78,7 @@ export class QuizService {
       return count;
     }
     quiz.tokens.forEach((token : IQuizToken) => {
-      if (token.status !== "processed") {
+      if (token.status === "pending" || token.status == "processing") {
         count++;
       }
     })
@@ -99,6 +99,9 @@ export class QuizService {
 
         this.getQuizTokens(quizId).subscribe( quiz => {
           observer.next(quiz);
+          if (this.calcUnprocessedCount(quiz) == 0) {
+            this.stopWatchQuizStatus();  
+          }
           // this.quizUpdateSubject.next(quiz);
         })
 
