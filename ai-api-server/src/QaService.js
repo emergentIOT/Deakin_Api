@@ -30,7 +30,7 @@ const Schema = {
         {
             questionToken: String, 
             answerToken: String,
-            status: String // pending, processing, processed 
+            status: String // pending, processing, processed, error 
         }
     ]
 };

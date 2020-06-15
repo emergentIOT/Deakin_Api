@@ -119,9 +119,10 @@ export class QuizComponent implements OnInit {
   }
 
   startWatchQuizStatus() {
-    if (!this.ENABLE_QUIZ_STATUS_CHECK || this.watchQuizStatusSubscription) {
+    if (!this.ENABLE_QUIZ_STATUS_CHECK) {
       return; // already watching, or turned of for debug purposes
     }
+    this.stopWatchQuizStatus();
     this.watchQuizStatusSubscription = this.quizService.startWatchQuizStatus(this.quizId).subscribe(quiz => {
       this.quiz.tokens = quiz.tokens;
     });
@@ -130,6 +131,7 @@ export class QuizComponent implements OnInit {
   stopWatchQuizStatus() {
     if (this.watchQuizStatusSubscription) {
       this.watchQuizStatusSubscription.unsubscribe();
+      this.watchQuizStatusSubscription = null;
     }
     this.quizService.stopWatchQuizStatus();
   }
@@ -165,10 +167,10 @@ export class QuizComponent implements OnInit {
   }
 
   isProcessing(token : IQuizToken) {
-    return token.status != 'processed';
+    return token.status === 'processing' || token.status === 'pending';
   }
 
   isError(token : IQuizToken) {
-    return isEmpty(token.questionToken) && token.status == 'processed';
+    return (isEmpty(token.questionToken) && token.status === 'processed') || token.status === 'error';
   }
 }

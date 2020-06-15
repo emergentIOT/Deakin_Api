@@ -88,6 +88,7 @@ export class QuizService {
   stopWatchQuizStatus() {
     if (this.quizWatchSubscription) {
       this.quizWatchSubscription.unsubscribe();
+      this.quizWatchSubscription = null;
     }
   }
   startWatchQuizStatus(quizId : string) :  Observable<IQuiz> {
