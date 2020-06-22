@@ -12,7 +12,7 @@ import { Router } from '@angular/router'; // CLI imports router
 })
 export class QuizListComponent implements OnInit {
   
-  private quizList: Observable<IQuizList>;// = { list: IQuiz[] };
+  public quizList: Observable<IQuizList>;// = { list: IQuiz[] };
 
   constructor(private _quizService: QuizService, private router: Router) {}
 

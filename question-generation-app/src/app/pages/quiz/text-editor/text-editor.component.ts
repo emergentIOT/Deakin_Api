@@ -31,15 +31,15 @@ export class TextEditorComponent implements OnInit {
   private textArea: HTMLElement;
   
 
-  private tools: object = {
+  public tools: object = {
     enable: false
   };
 
-  private pasteCleanup: object = {
+  public pasteCleanup: object = {
     keepFormat: false,
   }
 
-  private placeholder = `
+  public placeholder = `
     <table style="border: none; width: 100%;">
       <tr>
         <td style="border: none; text-align: center;" colspan="2"> 

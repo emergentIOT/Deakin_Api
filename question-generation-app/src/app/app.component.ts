@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AppConfigService } from './services/app-config/app-config.service';
+// import { AppConfigService } from './services/app-config/app-config.service';
 import { AppConnectService } from './services/auth/appconnect-oauth.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { AppConnectService } from './services/auth/appconnect-oauth.service';
 })
 export class AppComponent implements OnInit {
   constructor(
-    private appConfigService: AppConfigService,
+    // private appConfigService: AppConfigService,
     private authService: AppConnectService
   ) {
     this.authService.initializeOAuth().subscribe({
@@ -30,15 +30,15 @@ export class AppComponent implements OnInit {
      * config object are modified by the build pipeline.
      * See app/src/assets/config/README.md on how this works
      */
-    const setScriptAttrs = (data) => {
-      Object.keys(data).forEach((key) => {
-        const ref = document.getElementById(key);
-        if (ref) {
-          ref.setAttribute('src', `${data[key].rootUrl}/${data[key].path}`);
-        }
-      });
-    };
+    // const setScriptAttrs = (data) => {
+    //   Object.keys(data).forEach((key) => {
+    //     const ref = document.getElementById(key);
+    //     if (ref) {
+    //       ref.setAttribute('src', `${data[key].rootUrl}/${data[key].path}`);
+    //     }
+    //   });
+    // };
 
-    setScriptAttrs(this.appConfigService.jsBundles);
+    // setScriptAttrs(this.appConfigService.jsBundles);
   }
 }

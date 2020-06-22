@@ -1,7 +1,6 @@
 FROM node:8.15
 
 RUN apt-get update 
-#RUN apt-get install vim
 
 #Create app directory
 WORKDIR ./ai-api-server
@@ -9,19 +8,13 @@ WORKDIR ./ai-api-server
 # Install app dependencies
 COPY raml ./raml
 COPY src ./src
-# Wildcard is used to ensure both package.json AND package-lock.json are copied
-COPY package*.json ./
-COPY process*.json ./
 COPY *.js ./
+
+# Wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json .npmrc process*.json ./
 
 RUN npm --version; \
     node --version
-
-RUN npm config set registry https://artifactory.its.deakin.edu.au/api/npm/des-inno-npm
-RUN npm config set _auth anNob3R0b246QVAzVjlrV2J6MjcyVnFkdkVzU0oxS2g0UlpI
-RUN npm config set email joel.shotton@deakin.edu.au
-RUN npm config set always-auth true    
-
 
 
 RUN npm config set ai-api-server:MONGO_HOST ai-api-mongo

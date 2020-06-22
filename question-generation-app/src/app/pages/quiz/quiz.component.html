@@ -85,7 +85,8 @@
               <h2 class="des-card-title">
                 <a title="{{getQuestionTitle(token)}}">
                   <img *ngIf="isProcessing(token)" class="loading-img" src="/assets/spinner.svg"/> 
-                  <span [ngClass]="{'loading-answer-text': isProcessing(token)}">{{getQuestionText(token)}}</span>
+                  <img *ngIf="isError(token)" class="loading-img" src="/assets/error.png"/> 
+                  <span [ngClass]="{'loading-answer-text': isProcessing(token) || isError(token)}">{{getQuestionText(token)}}</span>
                 </a>
               </h2>
               <p>{{getAnswerText(token)}}</p>

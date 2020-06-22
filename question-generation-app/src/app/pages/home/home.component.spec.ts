@@ -3,7 +3,6 @@ import { MockComponent } from 'ng-mocks';
 
 import { HomeComponent } from './home.component';
 import { WelcomePanelComponent } from './welcome-panel/welcome-panel.component';
-import { FeaturedComponent } from './featured/featured.component';
 import { PersonService } from '../../services/person.service';
 
 describe('HomeComponent', () => {
@@ -17,8 +16,6 @@ describe('HomeComponent', () => {
       declarations: [
         HomeComponent,
         MockComponent(WelcomePanelComponent),
-        MockComponent(MyLearningComponent),
-        MockComponent(FeaturedComponent)
       ],
       providers: [{ provide: PersonService, useValue: spy }]
     }).compileComponents();

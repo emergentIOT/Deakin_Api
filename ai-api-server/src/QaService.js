@@ -11,6 +11,7 @@ const questionAnswerAiUrl = utils.getConfig('QUESTION_ANSWER_AI_URL', utils.CONF
 
 
 const GET_RESULT_REGEXP = /<label id="ans1">((.|\n|\r|\f|\t)*?)<\/label>/mi;
+const NEW_LINES_REGEXP = /(?:\r\n|\r|\n)/g;
 
 /*
  * The MongooseJS collection schema definition.
@@ -29,7 +30,7 @@ const Schema = {
         {
             questionToken: String, 
             answerToken: String,
-            status: String // pending, processing, processed 
+            status: String // pending, processing, processed, error 
         }
     ]
 };
@@ -98,14 +99,17 @@ exports.deleteQuizById = function(quizId, cb) {
 exports.generateQuestion = function(plainText, answerToken, cb) {
 
     if (plainText.indexOf(answerToken) == -1) {
-        cb("Invalid answer token");
+        cb(`Invalid answer token "${answerToken}"`);
+        return;
     }
 
     let formData = {
-        context: plainText,
-        ans_tok: answerToken
+        context: plainText.replace(NEW_LINES_REGEXP, ' '),
+        ans_tok: answerToken.replace(NEW_LINES_REGEXP, ' ')
     };
-    
+    logger.info("Calling AI service: ", formData);
+    // cb(null, {questionText: "Dry Run"});
+    // return;
     fetch(questionGenerationAiUrl, {
         headers: {
             "content-type": "application/x-www-form-urlencoded",

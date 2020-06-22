@@ -1,5 +1,5 @@
 variables:
-  NAME: ai-api-server
+  NAME: ai-qg-app
 
 build_image:
   stage: build
@@ -9,7 +9,7 @@ build_image:
     - name: docker-hub.artifactory.its.deakin.edu.au/docker:18.09-dind
       alias: docker
   script:
-    - cd ai-api-server/
+    - cd question-generation-app/
     - echo $DOCKER_AUTH > ~/password.txt
     - cat ~/password.txt | docker login --username bamboo --password-stdin $REPO
     - docker build -t $REPO/$NAME:$CI_COMMIT_SHA --rm -f Dockerfile .
@@ -26,7 +26,7 @@ deploy_stage:
     - name: docker-hub.artifactory.its.deakin.edu.au/docker:18.09-dind
       alias: docker
   script:
-    - cd ai-api-server/
+    - cd question-generation-app/
     - echo $DOCKER_AUTH > ~/password.txt
     - cat ~/password.txt | docker login --username bamboo --password-stdin $REPO
-    - docker stack deploy -c docker-compose.yml des-inno-ai-api
+    - docker stack deploy -c docker-compose.yml des-inno-ai-qg-app
