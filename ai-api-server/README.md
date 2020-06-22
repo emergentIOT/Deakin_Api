@@ -11,7 +11,7 @@ npm install
 Add npm config to ~/.npmrc
 
 ```
-registry=https://artifactory.its.deakin.edu.au/api/npm/pals-npm
+registry=https://artifactory.its.deakin.edu.au/api/npm/des-inno-npm
 
 ai-api-server:MONGO_DATABASE=aiDb
 ai-api-server:QUESTION_GENERATION_AI_URL=http://research-gpu-poc-fs1.its.deakin.edu.au:8888/
