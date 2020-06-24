@@ -149,7 +149,10 @@ const generateQuestions = async function(req, res) {
 
             quiz.tokens.forEach(token => console.log(`qg.generateQuestions-pending: quizId = ${quiz._id}, answerToken = ${token.answerToken}`));
             
-            async.eachLimit(quiz.tokens, 1, (token, callback) => {
+            let batchSize = quiz.tokens.length;
+            let batchCount = 0;
+            let batchQueue = [];
+            async.eachLimit(quiz.tokens, utils.getConfig("QG-PARALLEL-LIMIT", 1), (token, callback) => {
 
                 Quiz.update({_id: quiz._id, 'tokens._id': token._id}, {'$set': {
                     'tokens.$.status': 'processing'
@@ -159,8 +162,9 @@ const generateQuestions = async function(req, res) {
                         callback(err);
                         return;
                     }
-                    logger.info(`qg.generateQuestions-processing: quizId = ${quiz._id}, tokenId = ${token._id}, answerToken = ${token.answerToken}`);
-                    qaService.generateQuestion(quiz.plainText, token.answerToken, function(err, result) {
+                    logger.info(`qg.generateQuestions-processing: quizId = ${quiz._id}, tokenId = ${token._id}, answerToken = ${token.answerToken}, isDryRun = ${req.query.isDryRun}`);
+                    batchCount++;
+                    qaService.generateQuestion(quiz.plainText, token.answerToken, req.query.isDryRun, batchQueue, batchCount, batchSize, function(err, result) {
                         let status = 'processed';
                         let questionText = "";
                         if (err) {
@@ -176,14 +180,14 @@ const generateQuestions = async function(req, res) {
                         }}, function(err, result2) {
                             if (err) {
                                 logger.error('qg.generateQuestion-update-token-question: ' + err);
-                                callback(err);
+                                // callback(err);
                                 return;
                             }
-                            logger.info(`qg.generateQuestions-processed: quizId = ${quiz._id}, tokenId = ${token._id}, ${questionText} ${token.answerToken}`, 
-                                            result2);
-                            callback();
+                            logger.info(`qg.generateQuestions-processed: quizId = ${quiz._id}, tokenId = ${token._id}, ${questionText} ${token.answerToken}`, result2);
+                            // callback();
                         });
                     });
+                    callback();
                 });
             });
 

@@ -121,6 +121,10 @@ description: Question generation and question answering AI service.
     quizId:
       type: string
   put:
+    queryParameters: 
+      isDryRun: 
+        description: Dry run don't send to AI service.
+        type: boolean
     responses:
       200:
         description: Processes all tokens on quiz to generate a questions

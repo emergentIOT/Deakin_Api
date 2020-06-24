@@ -13,11 +13,16 @@ const questionAnswerAiUrl = utils.getConfig('QUESTION_ANSWER_AI_URL', utils.CONF
 const GET_RESULT_REGEXP = /<label id="ans1">((.|\n|\r|\f|\t)*?)<\/label>/mi;
 const NEW_LINES_REGEXP = /(?:\r\n|\r|\n)/g;
 
+const BATCH_QG_QUEUE = [];
+
 /*
  * The MongooseJS collection schema definition.
  */
-const Schema = { 
-    name: String,
+const QuizSchema = { 
+    name: {
+        type: String,
+        required: true
+    },
     plainText: {
         type: String,
         required: true
@@ -35,8 +40,28 @@ const Schema = {
     ]
 };
 
-dbService.schema('Quiz', Schema);
+const AiCacheSchema = {
+    name: {
+        type: String,
+        index: true, 
+        required: true
+    }, // cache name, example QG_AI (question generation AI), QA_AI (question answer AI)
+    input1Hash: {
+        type: String,
+        index: true, 
+        required: true
+    },
+    input2Hash: {
+        type: String,
+        index: true
+    },
+    data: {}
+}
+
+dbService.schema('Quiz', QuizSchema);
+dbService.schema('AiCache', AiCacheSchema);
 let Quiz = dbService.getModel('Quiz');
+let AiCache = dbService.getModel('AiCache');
 exports.Quiz = Quiz;
 
 /**
@@ -96,43 +121,129 @@ exports.deleteQuizById = function(quizId, cb) {
     dbService.remove(Quiz, { _id: quizId }, cb);
 }
 
-exports.generateQuestion = function(plainText, answerToken, cb) {
+exports.generateQuestion = function(plainText, answerToken, isDryRun, batchQueue, batchCount, batchSize, cb) {
 
     if (plainText.indexOf(answerToken) == -1) {
         cb(`Invalid answer token "${answerToken}"`);
         return;
     }
 
-    let formData = {
-        context: plainText.replace(NEW_LINES_REGEXP, ' '),
-        ans_tok: answerToken.replace(NEW_LINES_REGEXP, ' ')
+    plainText = plainText.replace(NEW_LINES_REGEXP, ' ');
+    answerToken = answerToken.replace(NEW_LINES_REGEXP, ' ');
+    let plainTextHash = utils.hash(plainText);
+    let answerTokenHash = utils.hash(answerToken);
+
+    generateQuestionCheckCache(plainTextHash, answerTokenHash, (err, result) => {
+
+        if (result) {
+            cb(null, result);
+            return;
+        } else if (err) {
+            cb(err);
+            return;
+        }
+
+        batchQueue.push({plainText, plainTextHash, answerToken, answerTokenHash, callback: cb});
+
+        if (batchCount == batchSize) {
+            // last call in the batch now call AI service using list of tokens that where not already cached.
+
+            let answerTokens = [];
+            batchQueue.forEach(data => {
+                answerTokens.push(data.answerToken);
+            });
+
+            if (isDryRun) {
+                batchQueue.forEach(data => {
+                    generateQuestionSaveCache(data.plainTextHash, data.answerTokenHash, 'Dry Run Cached');
+                    data.callback(null, {questionText: 'Dry Run'});
+                });
+                return;
+            }
+
+
+            generateQuestionFetch(plainText, answerTokens, (err, result) => {
+                if (err) {
+                    batchQueue.forEach(data => {
+                        data.callback(err);
+                    });
+                    return;
+                }
+
+                batchQueue.forEach((data, index) => {
+                    let questionText = result.questions[index];
+                    data.callback(null, {questionText});
+                    generateQuestionSaveCache(data.plainTextHash, data.answerTokenHash, questionText);
+                });
+
+            });
+
+
+        }
+
+        
+    });
+    
+}
+
+const generateQuestionSaveCache = function (plainTextHash, answerTokenHash,  questionText) {
+
+    dbService.upsert(AiCache, 
+        {
+            name: "QG_AI", 
+            input1Hash: plainTextHash, 
+            input2Hash: answerTokenHash
+        }, 
+        {
+            name: "QG_AI", 
+            input1Hash: plainTextHash, 
+            input2Hash: answerTokenHash, 
+            data: {questionText}
+        },
+        (err, result) => {
+            if (err) {
+                logger.error("Error saving cache: ", err);
+            }
+    });
+}
+
+const generateQuestionCheckCache = function(plainTextHash, answerTokenHash, cb) {
+    AiCache.findOne({name: "QG_AI", input1Hash: plainTextHash, input2Hash: answerTokenHash}, (err, result) => {
+        if (err) {
+            cb(err);
+            return;
+        }
+        if (result && result.data && utils.isNotEmpty(result.data.questionText)) {
+            cb(null, result.data);
+        } else {
+            cb(null, null);
+        }
+    });
+}
+
+const generateQuestionFetch = function(plainText, answerTokens, cb) {
+
+    
+    let payload = {
+        context: plainText,
+        answer_token: answerTokens
     };
-    logger.info("Calling AI service: ", formData);
-    // cb(null, {questionText: "Dry Run"});
-    // return;
+    logger.info("Calling AI service: ", JSON.stringify(payload));
+    
     fetch(questionGenerationAiUrl, {
         headers: {
-            "content-type": "application/x-www-form-urlencoded",
+            "content-type": "application/json",
         },
-        body: querystring.stringify(formData),
+        body: JSON.stringify(payload),
         method: "POST"
-    }).then(res => res.text())
-      .then(body => {
+    }).then(res => res.json())
+      .then(json => {
 
         try {
-            let match = GET_RESULT_REGEXP.exec(body);
-            let result = '';
-            if (utils.isNotNull(match) && match.length > 1) {
-                result = match[1].trim();
-            }
-    
-            logger.info(match);
 
-            if (utils.isEmpty(result)) {
-                logger.warn('Empty result: ', body);
-            }
+            logger.info("AI service result: ", json);
 
-            cb(null, {questionText: result});
+            cb(null, {questions: json.questions});
         } catch(err) {
             cb(err);
         }
