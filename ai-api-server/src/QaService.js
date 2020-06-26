@@ -7,13 +7,20 @@ const dbService = require('du-dbservice').DbService();
 const querystring = require('querystring');
 
 const questionGenerationAiUrl = utils.getConfig('QUESTION_GENERATION_AI_URL', utils.CONFIG_REQUIRED);
+const answerTokenGenerationAiUrl = utils.getConfig('ANSWER_TOKEN_GENERATION_AI_URL', utils.CONFIG_REQUIRED);
 const questionAnswerAiUrl = utils.getConfig('QUESTION_ANSWER_AI_URL', utils.CONFIG_REQUIRED);
 
+const QG_AI_CACHE_NAME = "QG_AI";
+const TG_AI_CACHE_NAME = "TG_AI";
 
 const GET_RESULT_REGEXP = /<label id="ans1">((.|\n|\r|\f|\t)*?)<\/label>/mi;
 const NEW_LINES_REGEXP = /(?:\r\n|\r|\n)/g;
 
 const BATCH_QG_QUEUE = [];
+
+const cleanUpText = function(text) {
+    return text.replace(NEW_LINES_REGEXP, ' ');
+}
 
 /*
  * The MongooseJS collection schema definition.
@@ -128,12 +135,12 @@ exports.generateQuestion = function(plainText, answerToken, isDryRun, batchQueue
         return;
     }
 
-    plainText = plainText.replace(NEW_LINES_REGEXP, ' ');
-    answerToken = answerToken.replace(NEW_LINES_REGEXP, ' ');
+    plainText = cleanUpText(plainText);
+    answerToken = cleanUpText(answerToken);
     let plainTextHash = utils.hash(plainText);
     let answerTokenHash = utils.hash(answerToken);
 
-    generateQuestionCheckCache(plainTextHash, answerTokenHash, (err, result) => {
+    checkCache(QG_AI_CACHE_NAME, plainTextHash, answerTokenHash, (err, result) => {
 
         if (result) {
             cb(null, result);
@@ -155,7 +162,7 @@ exports.generateQuestion = function(plainText, answerToken, isDryRun, batchQueue
 
             if (isDryRun) {
                 batchQueue.forEach(data => {
-                    generateQuestionSaveCache(data.plainTextHash, data.answerTokenHash, 'Dry Run Cached');
+                    saveCache(QG_AI_CACHE_NAME, data.plainTextHash, data.answerTokenHash, {questionText: 'Dry Run Cached'});
                     data.callback(null, {questionText: 'Dry Run'});
                 });
                 return;
@@ -173,7 +180,7 @@ exports.generateQuestion = function(plainText, answerToken, isDryRun, batchQueue
                 batchQueue.forEach((data, index) => {
                     let questionText = result.questions[index];
                     data.callback(null, {questionText});
-                    generateQuestionSaveCache(data.plainTextHash, data.answerTokenHash, questionText);
+                    saveCache(QG_AI_CACHE_NAME, data.plainTextHash, data.answerTokenHash, {questionText});
                 });
 
             });
@@ -186,41 +193,6 @@ exports.generateQuestion = function(plainText, answerToken, isDryRun, batchQueue
     
 }
 
-const generateQuestionSaveCache = function (plainTextHash, answerTokenHash,  questionText) {
-
-    dbService.upsert(AiCache, 
-        {
-            name: "QG_AI", 
-            input1Hash: plainTextHash, 
-            input2Hash: answerTokenHash
-        }, 
-        {
-            name: "QG_AI", 
-            input1Hash: plainTextHash, 
-            input2Hash: answerTokenHash, 
-            data: {questionText}
-        },
-        (err, result) => {
-            if (err) {
-                logger.error("Error saving cache: ", err);
-            }
-    });
-}
-
-const generateQuestionCheckCache = function(plainTextHash, answerTokenHash, cb) {
-    AiCache.findOne({name: "QG_AI", input1Hash: plainTextHash, input2Hash: answerTokenHash}, (err, result) => {
-        if (err) {
-            cb(err);
-            return;
-        }
-        if (result && result.data && utils.isNotEmpty(result.data.questionText)) {
-            cb(null, result.data);
-        } else {
-            cb(null, null);
-        }
-    });
-}
-
 const generateQuestionFetch = function(plainText, answerTokens, cb) {
 
     
@@ -228,7 +200,7 @@ const generateQuestionFetch = function(plainText, answerTokens, cb) {
         context: plainText,
         answer_token: answerTokens
     };
-    logger.info("Calling AI service: ", JSON.stringify(payload));
+    logger.info(`Calling QG AI service: ${questionGenerationAiUrl}`, JSON.stringify(payload));
     
     fetch(questionGenerationAiUrl, {
         headers: {
@@ -241,7 +213,88 @@ const generateQuestionFetch = function(plainText, answerTokens, cb) {
 
         try {
 
-            logger.info("AI service result: ", json);
+            logger.info("QG AI service result: ", json);
+
+            cb(null, {questions: json.questions});
+        } catch(err) {
+            cb(err);
+        }
+
+    }).catch(err => {
+        if (err) {
+            cb(err);
+            return;
+        }
+    });
+}
+
+/**                                                                                   
+ ************************************************************************************* 
+ */
+
+exports.generateAnswerTokens = function(plainText, isDryRun, cb) {
+    plainText  = cleanUpText(plainText);
+    let plainTextHash = utils.hash(plainText);
+    
+    checkCache(TG_AI_CACHE_NAME, plainTextHash, null, (err, result) => {
+
+        if (result) {
+            cb(null, result);
+            return;
+        } else if (err) {
+            cb(err);
+            return;
+        }
+
+        if (isDryRun) {
+            
+            let textArray = plainText.split(/\b\s+\b/ig);
+            logger.info(textArray);
+            let numberOfTokens = Math.min(5, textArray.length);
+            let listTokenSuggestions = [];
+            for (let i = 0; i < numberOfTokens; i++) {
+                let wordIndex = Math.floor(Math.random() * Math.floor(5));
+                listTokenSuggestions.push(textArray[wordIndex]);
+            }
+
+            saveCache(TG_AI_CACHE_NAME, plainTextHash, null, {answerTokens: listTokenSuggestions});
+            cb(null, {answerTokens: listTokenSuggestions});
+            
+            return;
+        }
+
+        generateAnswerTokensFetch(plainText, (err, result) => {
+            if (err) {
+                cb(err);
+            }
+            cb(null, result);
+            saveCache(TG_AI_CACHE_NAME, plainTextHash, null, result);
+        });
+
+
+    })
+}
+
+const generateAnswerTokensFetch = function(plainText, cb) {
+
+    
+    let payload = {
+        context: plainText
+    };
+    logger.info(`Calling TG AI service: ${answerTokenGenerationAiUrl}`, JSON.stringify(payload));
+    
+    fetch(answerTokenGenerationAiUrl, {
+        headers: {
+            "content-type": "application/json",
+        },
+        body: JSON.stringify(payload),
+        method: "POST"
+    }).then(res => res.json())
+      .then(json => {
+
+        try {
+
+            logger.info("TG AI service result: ", json);
 
             cb(null, {questions: json.questions});
         } catch(err) {
@@ -298,4 +351,39 @@ exports.answerQuestions = function(plainText, questionToken, cb) {
         }
     });
 
+}
+
+const saveCache = function (cacheName, input1Hash, input2Hash,  data) {
+
+    dbService.upsert(AiCache, 
+        {
+            name: cacheName, 
+            input1Hash, 
+            input2Hash
+        }, 
+        {
+            name: cacheName, 
+            input1Hash, 
+            input2Hash, 
+            data
+        },
+        (err, result) => {
+            if (err) {
+                logger.error("Error saving cache: ", err);
+            }
+    });
+}
+
+const checkCache = function(cacheName, input1Hash, input2Hash, cb) {
+    AiCache.findOne({name: cacheName, input1Hash, input2Hash}, (err, result) => {
+        if (err) {
+            cb(err);
+            return;
+        }
+        if (result && result.data) {
+            cb(null, result.data);
+        } else {
+            cb(null, null);
+        }
+    });
 }

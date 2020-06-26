@@ -29,6 +29,8 @@ exports.installQaWs = async function(server) {
     server.get(server.getPath('/qa/generate-question/:quizId'), generateQuestion);
     server.put(server.getPath('/qa/generate-questions/:quizId'), generateQuestions);
     server.get(server.getPath('/qa/answer-question/:quizId'), answerQuestion);
+    server.get(server.getPath('/qa/generate-answer-tokens/:quizId'), generateAnswerTokens);
+    
     logger.info('Web services api installed at /qa');
 
 };
@@ -197,6 +199,36 @@ const generateQuestions = async function(req, res) {
 
         utilWs.sendSuccess('qg.generateQuestion', {success: true, data:  quiz._id}, res, true); 
         // utilWs.sendSuccess('qg.generateQuestion', {success: true, questionText: result.questionText}, res, true);                      
+        
+    });
+
+}
+
+/**
+ * GET
+ * /generate-question
+ * Generate a question from quiz id and an anwser token.
+ */
+const generateAnswerTokens = async function(req, res) {
+ 
+    qaService.getQuizById(req.params.quizId, function(err, quiz) {
+        if (utilWs.handleError('qg.generateAnswerTokens', res, err)) {
+            return;
+        }
+
+        if (utils.isNull(quiz)) {
+            utilWs.sendUserError('qg.generateAnswerTokens', "Quiz not found.", res);
+            return;
+        }
+
+        qaService.generateAnswerTokens(quiz.plainText, req.query.isDryRun, function(err, result) {
+
+            if (utilWs.handleError('qg.generateAnswerTokens', res, err)) {
+                return;
+            }
+            
+            utilWs.sendSuccess('qg.generateAnswerTokens', {success: true, data: result.answerTokens}, res, true);                      
+        })
         
     });
 
