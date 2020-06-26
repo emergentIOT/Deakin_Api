@@ -10,4 +10,4 @@ variables:
 
 include:
   - local: "ai-api-server/.gitlab-ci.yml"
-  # - local: "question-generation-app/.gitlab-ci.yml"
+  - local: "question-generation-app/.gitlab-ci.yml"
