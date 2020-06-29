@@ -29,7 +29,7 @@ exports.installQaWs = async function(server) {
     server.get(server.getPath('/qa/generate-question/:quizId'), generateQuestion);
     server.put(server.getPath('/qa/generate-questions/:quizId'), generateQuestions);
     server.get(server.getPath('/qa/answer-question/:quizId'), answerQuestion);
-    server.get(server.getPath('/qa/generate-answer-tokens/:quizId'), generateAnswerTokens);
+    server.put(server.getPath('/qa/generate-answer-tokens'), generateAnswerTokens);
     
     logger.info('Web services api installed at /qa');
 
@@ -210,27 +210,45 @@ const generateQuestions = async function(req, res) {
  * Generate a question from quiz id and an anwser token.
  */
 const generateAnswerTokens = async function(req, res) {
- 
-    qaService.getQuizById(req.params.quizId, function(err, quiz) {
-        if (utilWs.handleError('qg.generateAnswerTokens', res, err)) {
-            return;
-        }
 
-        if (utils.isNull(quiz)) {
-            utilWs.sendUserError('qg.generateAnswerTokens', "Quiz not found.", res);
-            return;
-        }
+    if (utils.isNotNull(req.body.quizId)) {
 
-        qaService.generateAnswerTokens(quiz.plainText, req.query.isDryRun, function(err, result) {
+        qaService.getQuizById(req.body.quizId, function(err, quiz) {
+            if (utilWs.handleError('qg.generateAnswerTokens', res, err)) {
+                return;
+            }
+    
+            if (utils.isNull(quiz)) {
+                utilWs.sendUserError('qg.generateAnswerTokens', "Quiz not found.", res);
+                return;
+            }
+    
+            qaService.generateAnswerTokens(quiz.plainText, req.query.isDryRun, function(err, result) {
+    
+                if (utilWs.handleError('qg.generateAnswerTokens', res, err)) {
+                    return;
+                }
+                
+                utilWs.sendSuccess('qg.generateAnswerTokens', {success: true, data: result.answerTokens}, res, true);                      
+            })
+            
+        });
 
+    } else if (utils.isNotEmpty(req.body.plainText)) {
+
+        qaService.generateAnswerTokens(req.body.plainText, req.query.isDryRun, function(err, result) {
+    
             if (utilWs.handleError('qg.generateAnswerTokens', res, err)) {
                 return;
             }
             
             utilWs.sendSuccess('qg.generateAnswerTokens', {success: true, data: result.answerTokens}, res, true);                      
         })
-        
-    });
+
+    } else {
+        utilsWs.sendUserError('qg.generateAnswerTokens', "Quiz id or plainText content required.", res);
+    }
+ 
 
 }
 

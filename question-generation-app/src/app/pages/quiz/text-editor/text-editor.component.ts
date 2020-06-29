@@ -25,6 +25,7 @@ export class TextEditorComponent implements OnInit {
   @Input('textValue') textValue: string; 
   @Input('tokens') tokens: string[];
   @Output() newToken = new EventEmitter();
+  @Output() generateSuggestedAnswerTokens = new EventEmitter();
 
   @ViewChild('toolsRTE') public rteObj: RichTextEditorComponent;
 
@@ -104,6 +105,9 @@ export class TextEditorComponent implements OnInit {
         this.rteObj.updateValue(this.selectText(selection, this.rteObj.getHtml()));
       }
     }
+    this.textArea.onpaste = (event) => {
+      this.generateSuggestedAnswerTokens.emit({});
+    }
   }
 
   /**
@@ -161,6 +165,9 @@ export class TextEditorComponent implements OnInit {
   }
 
   removeHighLights(plainText: string) {
+    if (isEmpty(plainText)) {
+      return plainText;
+    }
     let regExStr = '(<span style="background-color: ' + this.HIGHLIGHT_COLOR + ';">)(.+?)(</span>)';
     let regex = new RegExp(regExStr, "mig");
     let result = plainText.replace(regex, (g1 : string, g2 : string, g3 : string, g4 : string): string => {
@@ -170,6 +177,9 @@ export class TextEditorComponent implements OnInit {
   }
 
   removeHighLight(token: string, plainText: string) {
+    if (isEmpty(plainText)) {
+      return plainText;
+    }
     let regExStr = '(<span style="background-color: ' + this.HIGHLIGHT_COLOR + ';">)(' + 
                     this.escapeRegExp(token) + ')(</span>)';
     let regex = new RegExp(regExStr, "mig");

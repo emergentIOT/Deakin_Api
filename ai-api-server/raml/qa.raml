@@ -115,17 +115,25 @@ description: Question generation and question answering AI service.
         type: string
         required: true
 
-/generate-answer-tokens/{quizId}:
-  description: Generate a list of suggested answer tokens from quiz text
-  uriParameters:
-    quizId:
-      type: string
-  get:
+/generate-answer-tokens:
+  description: Generate a list of suggested answer tokens from quiz text    
+  put:
     queryParameters: 
       isDryRun: 
-        description: Dry run don't send to TG AI service.
+        description: Dry run don't send to AI service.
         type: boolean
         required: false
+    body:
+      application/json:
+        properties:
+          quizId:
+            description: Optional if quiz has not been saved yet. Quiz ID or plainText is needed to be submitted
+            type: string
+            required: false
+          plainText:
+            description: If quiz has not been created yet submit the content to generate suggested answer tokens.
+            type: string
+            required: false
     responses:
       200:
         description: Returns list of answer token suggestions

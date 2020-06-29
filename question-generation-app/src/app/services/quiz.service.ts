@@ -21,6 +21,7 @@ export class QuizService {
   private apiUrlQuizzes = this.appConfigService.apiUrl + '/api/v1/qa/quizzes';
   private apiUrlQuiz = this.appConfigService.apiUrl + '/api/v1/qa/quiz';
   private apiUrlQuizTokens = this.appConfigService.apiUrl + '/api/v1/qa/quiz-tokens';
+  private apiUrlGenerateAnswerTokens = this.appConfigService.apiUrl + '/api/v1/qa/generate-answer-tokens';
   private apiUrlQG = this.appConfigService.apiUrl + '/api/v1/qa/generate-questions';
   // private apiUrl = 'assets/mock-data/quiz-list.mock.json';
   private quizUpdateSubject = new Subject<IQuiz>();
@@ -46,6 +47,11 @@ export class QuizService {
       map<IResponse<IQuiz>, IQuiz>(res => res.data));
   }
 
+  generateAnswerTokens(quizId : string, plainText : string) : Observable<string[]> {
+    let body = { quizId, plainText};
+    return this.http.put<IResponse<string[]>>(`${this.apiUrlGenerateAnswerTokens}`, body).pipe(
+      map<IResponse<string[]>, string[]>(res => res.data));
+  }
 
   saveAndGenerate(quiz : IQuizUpdate) : Observable<IQuiz> {
     return this.http.put<IResponse<string>>(this.apiUrlQuiz, quiz).pipe(

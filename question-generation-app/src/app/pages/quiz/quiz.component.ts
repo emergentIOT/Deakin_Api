@@ -48,11 +48,33 @@ export class QuizComponent implements OnInit {
             if (!this.canGenerateQuiz) {
               this.activeTab = 1;
               this.startWatchQuizStatus();
+            } else {
+              this.generateSuggestedAnswerTokens();
             }
           }
         );
       }
     });
+  }
+
+  /**
+   * If no tokens have been selected generate some suggested answer tokens
+   */
+  generateSuggestedAnswerTokens() {
+      if (this.tokens && this.tokens.length > 0) {
+        return;
+      }    
+      let plainText = this.textEditor.getPlainText();
+      if (isEmpty(plainText)) {
+        return;
+      }
+      let richText = this.textEditor.getRichText();
+      this.quizService.generateAnswerTokens(null, plainText).subscribe(
+        tokens => {
+          this.tokens = tokens.slice(0, Math.min(10, tokens.length));
+          this.textValue = this.textEditor.selectTokens(this.tokens, richText);
+        }
+      );
   }
 
   ngOnDestroy() {
@@ -108,7 +130,6 @@ export class QuizComponent implements OnInit {
       answerTokens: this.tokens
     }
     this.quizService.saveAndGenerate(quizUpdate).subscribe((result : IQuiz) => {
-      console.log('result', result);
       this.quizId = result._id;
       this.quiz = result;
       this.activeTab = 1;

@@ -249,12 +249,13 @@ exports.generateAnswerTokens = function(plainText, isDryRun, cb) {
         if (isDryRun) {
             
             let textArray = plainText.split(/\b\s+\b/ig);
-            logger.info(textArray);
+            textArray = textArray.sort((a, b) => {
+                return b.length - a.length;
+            });
             let numberOfTokens = Math.min(5, textArray.length);
             let listTokenSuggestions = [];
             for (let i = 0; i < numberOfTokens; i++) {
-                let wordIndex = Math.floor(Math.random() * Math.floor(5));
-                listTokenSuggestions.push(textArray[wordIndex]);
+                listTokenSuggestions.push(textArray[i]);
             }
 
             saveCache(TG_AI_CACHE_NAME, plainTextHash, null, {answerTokens: listTokenSuggestions});
@@ -296,7 +297,7 @@ const generateAnswerTokensFetch = function(plainText, cb) {
 
             logger.info("TG AI service result: ", json);
 
-            cb(null, {questions: json.questions});
+            cb(null, {answerTokens: json.answer_tokens});
         } catch(err) {
             cb(err);
         }

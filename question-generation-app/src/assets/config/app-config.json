@@ -1,5 +1,6 @@
 {
-  "apiUrl": "https://des-inno-ai-api.its.deakin.edu.au",
+  "apiUrlx": "https://des-inno-ai-api.its.deakin.edu.au",
+  "apiUrl": "http://localhost:7040",
   "authConfig": {
     "issuer": "http://127.0.0.1:4444/",
     "clientId": "syncv2",
