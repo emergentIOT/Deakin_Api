@@ -24,7 +24,7 @@
         </div>
         <div class="row">
             <app-text-editor #textEditor [tokens]="tokens" [textValue]="textValue" (newToken)='newToken($event)' 
-                            (generateSuggestedAnswerTokens)='generateSuggestedAnswerTokens($event)'
+                            (generateSuggestedAnswerTokens)='generateSuggestedAnswerTokens()'
               class="col-sm-8 order-2 order-sm-1 vertical-grid-spacing">
             </app-text-editor>
   
