@@ -1,6 +1,3 @@
-variables:
-  NAME: ai-api-server
-
 build_image_ai_api:
   stage: build
   tags:
@@ -12,8 +9,8 @@ build_image_ai_api:
     - cd ai-api-server/
     - echo $DOCKER_AUTH > ~/password.txt
     - cat ~/password.txt | docker login --username bamboo --password-stdin $REPO
-    - docker build -t $REPO/$NAME:$CI_COMMIT_SHA --rm -f Dockerfile .
-    - docker push $REPO/$NAME:$CI_COMMIT_SHA
+    - docker build -t $REPO/ai-api-server:$CI_COMMIT_SHA --rm -f Dockerfile .
+    - docker push $REPO/ai-api-server:$CI_COMMIT_SHA
 
 deploy_stage_ai_api:
   stage: deploy
