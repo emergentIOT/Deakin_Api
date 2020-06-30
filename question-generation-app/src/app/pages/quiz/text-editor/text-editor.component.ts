@@ -164,6 +164,11 @@ export class TextEditorComponent implements OnInit {
     this.rteObj.updateValue(this.removeHighLight(token, this.rteObj.getHtml()));
   }
 
+  clearTokens() {
+    this.tokens = [];
+    this.rteObj.updateValue(this.removeHighLights(this.rteObj.getHtml()));
+  }
+
   removeHighLights(plainText: string) {
     if (isEmpty(plainText)) {
       return plainText;

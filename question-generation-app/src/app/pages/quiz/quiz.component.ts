@@ -57,13 +57,18 @@ export class QuizComponent implements OnInit {
     });
   }
 
+  clearTokens() {
+    this.tokens = [];
+    this.textEditor.clearTokens();
+  }
+
   /**
    * If no tokens have been selected generate some suggested answer tokens
    */
   generateSuggestedAnswerTokens() {
-      if (this.tokens && this.tokens.length > 0) {
-        return;
-      }    
+      // if (this.tokens && this.tokens.length > 0) {
+      //   return;
+      // }    
       let plainText = this.textEditor.getPlainText();
       if (isEmpty(plainText)) {
         return;
@@ -71,14 +76,34 @@ export class QuizComponent implements OnInit {
       let richText = this.textEditor.getRichText();
       this.quizService.generateAnswerTokens(null, plainText).subscribe(
         tokens => {
-          this.tokens = tokens.slice(0, Math.min(10, tokens.length));
+          for (let i = 0; i < Math.min(10, tokens.length); i++) {
+            if (this.tokens.indexOf(tokens[i]) === -1) {
+              this.tokens.push(tokens[i]);
+            }
+          }
           this.textValue = this.textEditor.selectTokens(this.tokens, richText);
+          this.chipsList.refresh();
         }
       );
   }
 
   ngOnDestroy() {
     this.stopWatchQuizStatus();
+  }
+
+
+  get canSuggestKeyPhrases() {
+    if (!this.textValue || !this.textEditor.hasPlainText()) {
+      return false;
+    }
+    return this.quizService.calcUnprocessedCount(this.quiz) === 0;
+  }
+
+  get canClearTokens() {
+    if (this.tokens.length === 0) {
+      return false;
+    }
+    return this.quizService.calcUnprocessedCount(this.quiz) === 0;
   }
 
   get canGenerateQuiz() : boolean {
@@ -88,7 +113,7 @@ export class QuizComponent implements OnInit {
     if (isEmpty(this.name)) {
       return false;
     }
-    if (!this.textEditor.hasPlainText()) {
+    if (!this.textValue || !this.textEditor.hasPlainText()) {
       return false;
     }
     return this.quizService.calcUnprocessedCount(this.quiz) === 0; 
