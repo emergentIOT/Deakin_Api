@@ -267,6 +267,7 @@ exports.generateAnswerTokens = function(plainText, isDryRun, cb) {
         generateAnswerTokensFetch(plainText, (err, result) => {
             if (err) {
                 cb(err);
+                return;
             }
             cb(null, result);
             saveCache(TG_AI_CACHE_NAME, plainTextHash, null, result);

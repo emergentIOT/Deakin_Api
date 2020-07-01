@@ -70,18 +70,22 @@ export class QuizComponent implements OnInit {
       //   return;
       // }    
       let plainText = this.textEditor.getPlainText();
+      let richText = this.textEditor.getRichText();
+
       if (isEmpty(plainText)) {
         return;
       }
-      let richText = this.textEditor.getRichText();
       this.quizService.generateAnswerTokens(null, plainText).subscribe(
         tokens => {
+          if (!tokens || tokens.length == 0) {
+            return;
+          }
           for (let i = 0; i < Math.min(10, tokens.length); i++) {
             if (this.tokens.indexOf(tokens[i]) === -1) {
               this.tokens.push(tokens[i]);
             }
           }
-          this.textValue = this.textEditor.selectTokens(this.tokens, richText);
+          this.textEditor.selectTokens(this.tokens, richText);
           this.chipsList.refresh();
         }
       );
@@ -93,7 +97,7 @@ export class QuizComponent implements OnInit {
 
 
   get canSuggestKeyPhrases() {
-    if (!this.textValue || !this.textEditor.hasPlainText()) {
+    if (!this.textEditor || !this.textEditor.hasPlainText()) {
       return false;
     }
     return this.quizService.calcUnprocessedCount(this.quiz) === 0;
@@ -113,7 +117,7 @@ export class QuizComponent implements OnInit {
     if (isEmpty(this.name)) {
       return false;
     }
-    if (!this.textValue || !this.textEditor.hasPlainText()) {
+    if (!this.textEditor || !this.textEditor.hasPlainText()) {
       return false;
     }
     return this.quizService.calcUnprocessedCount(this.quiz) === 0; 
