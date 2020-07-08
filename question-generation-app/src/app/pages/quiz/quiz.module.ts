@@ -9,13 +9,14 @@ import { TextEditorComponent } from './text-editor/text-editor.component';
 import { RichTextEditorModule } from '@syncfusion/ej2-angular-richtexteditor';
 import { ChipListModule } from '@syncfusion/ej2-angular-buttons';
 import { FormsModule } from '@angular/forms';
-
+//Pagination 
+import {NgxPaginationModule} from 'ngx-pagination'
 // Search Quizzes module
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 @NgModule({
   declarations: [QuizComponent, QuizListComponent, TextEditorComponent],
   imports: [CommonModule, QuizRoutingModule, DesCardModule, DesButtonModule, TabsModule, 
-    RichTextEditorModule, ChipListModule, FormsModule, Ng2SearchPipeModule],
+    RichTextEditorModule, ChipListModule, FormsModule, Ng2SearchPipeModule, NgxPaginationModule],
   exports: [QuizComponent, QuizListComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
