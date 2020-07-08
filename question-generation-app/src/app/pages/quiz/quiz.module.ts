@@ -10,10 +10,12 @@ import { RichTextEditorModule } from '@syncfusion/ej2-angular-richtexteditor';
 import { ChipListModule } from '@syncfusion/ej2-angular-buttons';
 import { FormsModule } from '@angular/forms';
 
+// Search Quizzes module
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
 @NgModule({
   declarations: [QuizComponent, QuizListComponent, TextEditorComponent],
   imports: [CommonModule, QuizRoutingModule, DesCardModule, DesButtonModule, TabsModule, 
-    RichTextEditorModule, ChipListModule, FormsModule],
+    RichTextEditorModule, ChipListModule, FormsModule, Ng2SearchPipeModule],
   exports: [QuizComponent, QuizListComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
