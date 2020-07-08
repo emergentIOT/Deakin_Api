@@ -14,9 +14,11 @@ export class QuizListComponent implements OnInit {
   
   public quizList: Observable<IQuizList>;// = { list: IQuiz[] };
 
+  //Pagination initial page
+  page: 1
   //search Quiz (ng model)
   searchQuiz;
-  
+
   constructor(private _quizService: QuizService, private router: Router) {}
 
   ngOnInit() {

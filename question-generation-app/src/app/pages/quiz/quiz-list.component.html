@@ -25,7 +25,7 @@
     </des-card>
   </div>
   <div
-    *ngFor="let item of (quizList | async)?.data | filter: searchQuiz" 
+    *ngFor="let item of (quizList | async)?.data | filter: searchQuiz | paginate : { itemsPerPage: 6, currentPage: page }" 
     class="col-sm-12 col-lg-6 vertical-grid-spacing"
   >
     <des-card layout="advertising" [desShadow]="2"
@@ -46,4 +46,8 @@
       </div>
     </des-card>
   </div>
+</div>
+
+<div>
+  <pagination-controls  maxSize = "5" directionLinks = "true" (pageChange) = "page = $event"></pagination-controls>
 </div>
