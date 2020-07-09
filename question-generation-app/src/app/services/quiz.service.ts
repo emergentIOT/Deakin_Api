@@ -47,6 +47,10 @@ export class QuizService {
       map<IResponse<IQuiz>, IQuiz>(res => res.data));
   }
 
+  deleteQuiz(quizId : string) : Observable<void>{
+    return this.http.delete<void>(`${this.apiUrlQuiz}/${quizId}`);
+  }
+
   generateAnswerTokens(quizId : string, plainText : string) : Observable<string[]> {
     let body = { quizId, plainText};
     return this.http.put<IResponse<string[]>>(`${this.apiUrlGenerateAnswerTokens}`, body).pipe(

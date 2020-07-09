@@ -14,7 +14,7 @@ export class QuizListComponent implements OnInit {
   
   public quizList: Observable<IQuizList>;// = { list: IQuiz[] };
 
-  //Pagination initial page
+  //Pagination initial page & change events
   page: 1
   //search Quiz (ng model)
   searchQuiz;
@@ -29,6 +29,7 @@ export class QuizListComponent implements OnInit {
   //   this.router.navigate(["edit-quiz"]);
   //   return false;
   // }
+
 }
 
 
