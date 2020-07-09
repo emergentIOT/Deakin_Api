@@ -8,7 +8,10 @@
 
   <app-tab-container (tabChanged)="tabChanged($event)" class="des-margin-top-large des-margin-bottom-large">
     <!-- <app-tab-panel title="1. Upload Content"> -->
+    
     <app-tab-panel [active]="activeTab === 0"  title="Content & Key Phrases">
+
+    
       <div class="container">
         <div class="row">
           <div class="col-sm-8 order-2 order-sm-1 des-margin-bottom-small vertical-grid-spacing">
@@ -38,6 +41,12 @@
                 <des-button shape="round-left" size="small" type="inverse-outline" [disabled]="canSuggestKeyPhrases ? null : 'disabled'" (click)="generateSuggestedAnswerTokens()">Suggest Key Phrases</des-button>
                 <des-button shape="round-right" size="small" [disabled]="canGenerateQuiz ? null : 'disabled'" (click)="generateQuiz()">Generate Quiz</des-button>
               </des-button-group>
+
+              <des-button-group>
+       
+                <des-button (click)="deleteQuiz(quizId)">Delete Quiz</des-button> 
+                <!--<des-button format="inverse">Action 2</des-button>!-->
+              </des-button-group>  
             </div>
           </div>
                     
@@ -59,6 +68,7 @@
     </app-tab-panel> -->
     <app-tab-panel [active]="activeTab === 1" title="Question Suggestions">
       <div class="container">
+       
         <div class="row">
           <app-progress-bar
             min="0"
@@ -107,6 +117,7 @@
         </div>
       </div>
     </app-tab-panel>
+  
   </app-tab-container>
 
 </div>

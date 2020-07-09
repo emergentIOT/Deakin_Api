@@ -223,4 +223,17 @@ export class QuizComponent implements OnInit {
   isError(token : IQuizToken) {
     return (isEmpty(token.questionToken) && token.status === 'processed') || token.status === 'error';
   }
+
+  deleteQuiz(id: string){
+    
+    console.log("delete pressed" + id);
+    if(confirm('Are you sure?') == true){
+     this.quizService.deleteQuiz(id).subscribe(() => {
+       this.router.navigate(['/']);   
+    });
+    } else {
+
+    }
+
+  }
 }
