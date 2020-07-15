@@ -14,6 +14,9 @@ import { isEmpty } from 'npm-stringutils';
  * https://ej2.syncfusion.com/angular/demos/rich-text-editor/paste-cleanup/
  * https://ej2.syncfusion.com/angular/documentation/api/rich-text-editor/pasteCleanupSettings/
  * 
+ * Ref:
+ * https://javascript.info/selection-range
+ * 
  */
 @Injectable({
   providedIn: 'root'
@@ -62,7 +65,7 @@ export class TextEditorComponent implements OnInit {
           <img src="/assets/icon-happy.png"/>
         </td>
         <td style="border: none; text-align: center;">
-          <img src="/assets/icon-happy.png"/>
+          <img src="/assets/icon-dodgy.png"/>
         </td>
       </tr>
       <tr>
@@ -100,14 +103,27 @@ export class TextEditorComponent implements OnInit {
     this.textArea.onclick = (event) => {
       let selection : string =  this.rteObj.getSelection().trim();
       let text : string = this.rteObj.getText();
-      if (!isEmpty(selection) && this.isAllWholeWords(selection, text)) {
+      let range : Range = this.rteObj.getRange();
+      //console.log(this.rteObj.getHtml(), selection, range.startOffset, range.endOffset);
+      if (this.isValidToken(selection, text)) {
         this.newToken.emit(selection);
         this.rteObj.updateValue(this.selectText(selection, this.rteObj.getHtml()));
       }
     }
     this.textArea.onpaste = (event) => {
-      this.generateSuggestedAnswerTokens.emit({});
+      let data = event.clipboardData.getData("text");
+      this.generateSuggestedAnswerTokens.emit({data});
     }
+  }
+
+  selectTokensAndUpdateText(tokens : string[], richText : string) : string {
+    let updatedRichText = this.selectTokens(tokens, richText);
+    this.rteObj.updateValue(updatedRichText);
+    return updatedRichText;
+  }
+
+  updateRichText(richText : string) {
+    this.rteObj.updateValue(richText);
   }
 
   /**
@@ -125,9 +141,21 @@ export class TextEditorComponent implements OnInit {
     return result;
   }
 
-  isAllWholeWords(str: string, text: string) : boolean {
+  /**
+   * 
+   * @param str Must be a whole word and not contain certain characters
+   * @param text 
+   */
+  isValidToken(str: string, text: string) : boolean {
+    if (isEmpty(str)) {
+      return false;
+    }
+    let illegalRegex = new RegExp('[\\(|\\)|\\[|\\]|\\"]');
+    if (str.search(illegalRegex) >= 0) {
+      return false;
+    }
     let regex = new RegExp("\\b(" + this.escapeRegExp(str) + ")\\b", "mig");
-    return text.search(regex) >=0 ;
+    return text.search(regex) >=0;
   }
 
   /**
@@ -140,7 +168,7 @@ export class TextEditorComponent implements OnInit {
     if (isEmpty(token) || isEmpty(text)) {
       return text;
     }
-    let regex = new RegExp("\\b(" + this.escapeRegExp(token) + ")\\b", "mig");
+    let regex = new RegExp("\\b(" + this.escapeRegExp(token) + ")\\b(?!</span>)", "mig");
     let result = text.replace(regex, (subString : string): string => {
       return '<span style="background-color: ' + this.HIGHLIGHT_COLOR + ';">' + subString + "</span>";
     });

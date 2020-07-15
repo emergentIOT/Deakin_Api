@@ -10,6 +10,7 @@
     <!-- <app-tab-panel title="1. Upload Content"> -->
     <app-tab-panel [active]="activeTab === 0"  title="Content & Key Phrases">
       <div class="container">
+        <des-alert-panel *ngIf="userError" purpose="warning">{{userError}}</des-alert-panel>
         <div class="row">
           <div class="col-sm-8 order-2 order-sm-1 des-margin-bottom-small vertical-grid-spacing">
             <form (ngSubmit)="generateQuiz()">
@@ -22,9 +23,10 @@
             </form>
           </div>
         </div>
+
         <div class="row">
             <app-text-editor #textEditor [tokens]="tokens" [textValue]="textValue" (newToken)='newToken($event)' 
-                            (generateSuggestedAnswerTokens)='generateSuggestedAnswerTokens()'
+                            (generateSuggestedAnswerTokens)='generateSuggestedAnswerTokens($event)'
               class="col-sm-8 order-2 order-sm-1 vertical-grid-spacing">
             </app-text-editor>
   
@@ -33,10 +35,12 @@
                 <ejs-chiplist cssClass="e-success" [chips]="tokens" #chipsList enableDelete="true" (delete)="deleteToken($event)">
                 </ejs-chiplist>
               </div>
-              <des-button-group spacing="none" style="position: absolute; top: 0px; right: 0; white-space: nowrap;">
-                <des-button shape="round-left" size="small" type="text" [disabled]="canClearTokens ? null : 'disabled'" (click)="clearTokens()">Clear</des-button>
-                <des-button shape="round-left" size="small" type="inverse-outline" [disabled]="canSuggestKeyPhrases ? null : 'disabled'" (click)="generateSuggestedAnswerTokens()">Suggest Key Phrases</des-button>
-                <des-button shape="round-right" size="small" [disabled]="canGenerateQuiz ? null : 'disabled'" (click)="generateQuiz()">Generate Quiz</des-button>
+              <des-button-group spacing="none" style="position: absolute; top: -55px; right: 0; text-align: right;">
+                <des-button shape="round-both" size="small" [disabled]="canGenerateQuiz ? null : 'disabled'" (click)="generateQuiz()">Generate Quiz</des-button>
+                <br/>
+                <br/>
+                <des-button size="small" type="text" [disabled]="canClearTokens ? null : 'disabled'" (click)="clearTokens()">Clear</des-button>
+                <des-button shape="round-both" size="small" type="inverse-outline" [disabled]="canSuggestKeyPhrases ? null : 'disabled'" (click)="generateSuggestedAnswerTokens()">Suggest Key Phrases</des-button>
               </des-button-group>
             </div>
           </div>
