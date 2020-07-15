@@ -40,7 +40,7 @@
                 <br/>
                 <br/>
                 <des-button size="small" type="text" [disabled]="canClearTokens ? null : 'disabled'" (click)="clearTokens()">Clear</des-button>
-                <des-button shape="round-both" size="small" type="inverse-outline" [disabled]="canSuggestKeyPhrases ? null : 'disabled'" (click)="generateSuggestedAnswerTokens()">Suggest Key Phrases</des-button>
+                <des-button shape="round-both" size="small" type="inverse-outline" [disabled]="canSuggestKeyPhrases ? null : 'disabled'" (click)="generateSuggestedAnswerTokens({})">Suggest Key Phrases</des-button>
               </des-button-group>
             </div>
           </div>

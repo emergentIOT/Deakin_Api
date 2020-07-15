@@ -72,7 +72,7 @@ export class QuizComponent implements OnInit {
       // if (this.tokens && this.tokens.length > 0) {
       //   return;
       // }    
-      let plainText = event ? event.data : this.textEditor.getPlainText();
+      let plainText = event && event.data ? event.data : this.textEditor.getPlainText();
 
       if (isEmpty(plainText)) {
         return;
