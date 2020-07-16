@@ -42,10 +42,9 @@
                 <des-button shape="round-right" size="small" [disabled]="canGenerateQuiz ? null : 'disabled'" (click)="generateQuiz()">Generate Quiz</des-button>
               </des-button-group>
 
+              <!--Delete Quiz Button-->
               <des-button-group>
-       
-                <des-button (click)="deleteQuiz(quizId)">Delete Quiz</des-button> 
-                <!--<des-button format="inverse">Action 2</des-button>!-->
+                <des-button size="small" (click)="deleteQuiz(quizId)" [disabled]="canDeleteQuiz">Delete Quiz</des-button> 
               </des-button-group>  
             </div>
           </div>

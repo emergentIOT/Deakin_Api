@@ -27,7 +27,7 @@ export class QuizComponent implements OnInit {
   public tokens: string[] = [];
   public textValue: string;
   public activeTab = 0;
-  private quizId: string;
+  public quizId: string;
   private watchQuizStatusSubscription : Subscription;
 
   constructor(private quizService : QuizService,
@@ -121,6 +121,10 @@ export class QuizComponent implements OnInit {
       return false;
     }
     return this.quizService.calcUnprocessedCount(this.quiz) === 0; 
+  }
+
+  get canDeleteQuiz() : boolean{
+    return false;
   }
 
   // get chipTokens() : ChipModel[] {
