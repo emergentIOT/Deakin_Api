@@ -48,7 +48,7 @@ export class QuizComponent implements OnInit {
             this.name = quiz.name;
             this.tokens = this.quizService.getAnswerTokens(this.quiz);
             this.textEditor.selectTokensAndUpdateText(this.tokens, this.quiz.richText);
-            if (!this.canGenerateQuiz) {
+            if (this.quizService.isProcessingOrHasBeenProcessed(this.quiz)) {
               this.activeTab = 1;
               this.startWatchQuizStatus();
             } else {
@@ -170,7 +170,7 @@ export class QuizComponent implements OnInit {
       return;
     }
     let wordCount = this.countWords(this.textEditor.getPlainText());
-    if (wordCount + 500 > this.MAX_WORD_LIMIT) {
+    if (wordCount > this.MAX_WORD_LIMIT) {
       let isAlreadySet = !isEmpty(this.userError);
       this.userError = `The document word count of ${wordCount} is over the ${this.MAX_WORD_LIMIT} maximum word count allowed!`;
       if (!isAlreadySet) {
