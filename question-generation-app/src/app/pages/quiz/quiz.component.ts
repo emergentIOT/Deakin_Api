@@ -124,6 +124,9 @@ export class QuizComponent implements OnInit {
   }
 
   get canDeleteQuiz() : boolean{
+    if(!isEmpty(this.quizId)){
+      return true;
+    }
     return false;
   }
 

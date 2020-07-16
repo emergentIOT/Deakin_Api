@@ -44,7 +44,7 @@
 
               <!--Delete Quiz Button-->
               <des-button-group>
-                <des-button size="small" (click)="deleteQuiz(quizId)" [disabled]="canDeleteQuiz">Delete Quiz</des-button> 
+                <des-button size="small" (click)="deleteQuiz(quizId)" [disabled]="canDeleteQuiz ? null : 'disabled'">Delete Quiz</des-button> 
               </des-button-group>  
             </div>
           </div>
