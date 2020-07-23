@@ -82,6 +82,23 @@ export class QuizService {
     return tokens;
   }
 
+  /**
+   * False is none of the tokens have a status, this quiz has
+   * not been generated / attempted to be processed yet.
+   */
+  isProcessingOrHasBeenProcessed(quiz : IQuiz) : boolean {
+    if (!quiz || !quiz.tokens || quiz.tokens.length === 0) {
+      return false;
+    }
+    let hasStatus = false;
+    quiz.tokens.forEach((token : IQuizToken) => {
+      if (!isEmpty(token.status)) {
+        hasStatus = true;
+      }
+    });
+    return hasStatus;
+  }
+
   calcUnprocessedCount(quiz : IQuiz) : number {
     let count = 0;
     if (!quiz || !quiz.tokens) {

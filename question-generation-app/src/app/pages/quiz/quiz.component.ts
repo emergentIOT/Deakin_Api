@@ -17,6 +17,8 @@ import { isEmpty } from 'npm-stringutils';
 })
 export class QuizComponent implements OnInit {
 
+  private MAX_WORD_LIMIT = 400;
+
   @ViewChild('chipsList') public chipsList: ChipList;
   @ViewChild('textEditor') public textEditor: TextEditorComponent;
 
@@ -28,6 +30,7 @@ export class QuizComponent implements OnInit {
   public textValue: string;
   public activeTab = 0;
   public quizId: string;
+  public userError;
   private watchQuizStatusSubscription : Subscription;
 
   constructor(private quizService : QuizService,
@@ -44,12 +47,12 @@ export class QuizComponent implements OnInit {
             this.quiz = quiz
             this.name = quiz.name;
             this.tokens = this.quizService.getAnswerTokens(this.quiz);
-            this.textValue = this.textEditor.selectTokens(this.tokens, this.quiz.richText);
-            if (!this.canGenerateQuiz) {
+            this.textEditor.selectTokensAndUpdateText(this.tokens, this.quiz.richText);
+            if (this.quizService.isProcessingOrHasBeenProcessed(this.quiz)) {
               this.activeTab = 1;
               this.startWatchQuizStatus();
             } else {
-              this.generateSuggestedAnswerTokens();
+              //this.generateSuggestedAnswerTokens({data: this.quiz.plainText});
             }
           }
         );
@@ -65,12 +68,11 @@ export class QuizComponent implements OnInit {
   /**
    * If no tokens have been selected generate some suggested answer tokens
    */
-  generateSuggestedAnswerTokens() {
+  generateSuggestedAnswerTokens(event) {
       // if (this.tokens && this.tokens.length > 0) {
       //   return;
       // }    
-      let plainText = this.textEditor.getPlainText();
-      let richText = this.textEditor.getRichText();
+      let plainText = event && event.data ? event.data : this.textEditor.getPlainText();
 
       if (isEmpty(plainText)) {
         return;
@@ -81,14 +83,24 @@ export class QuizComponent implements OnInit {
             return;
           }
           for (let i = 0; i < Math.min(10, tokens.length); i++) {
-            if (this.tokens.indexOf(tokens[i]) === -1) {
+            if (this.hasNotExistingToken(tokens[i])) {
               this.tokens.push(tokens[i]);
             }
           }
-          this.textEditor.selectTokens(this.tokens, richText);
+          let richText = this.textEditor.selectTokensAndUpdateText(this.tokens, plainText);
+          console.log(plainText);
+          console.log(richText);
           this.chipsList.refresh();
         }
       );
+  }
+
+  countWords(s : string) {
+    s = s.replace(/(^\s*)|(\s*$)/gi,"");//exclude  start and end white-space
+    s = s.replace(/[ ]{2,}/gi," ");//2 or more space to 1
+    s = s.replace(/\n /,"\n"); // exclude newline with a start spacing
+    return s.split(' ').filter(function(str){return str!="";}).length;
+    //return s.split(' ').filter(String).length; - this can also be used
   }
 
   ngOnDestroy() {
@@ -145,9 +157,15 @@ export class QuizComponent implements OnInit {
     this.activeTab = selectedTabIndex;
   }
 
+  hasNotExistingToken(newToken : string) {
+    return this.tokens.indexOf(newToken) === -1;
+  }
+
   newToken(token : string) {
-    this.tokens.push(token);
-    this.chipsList.refresh();
+    if (this.hasNotExistingToken(token)) {
+      this.tokens.push(token);
+      this.chipsList.refresh();
+    }
   }
 
   deleteToken({text, index}) {
@@ -156,6 +174,17 @@ export class QuizComponent implements OnInit {
 
   generateQuiz() {
     if (!this.canGenerateQuiz) {
+      return;
+    }
+    let wordCount = this.countWords(this.textEditor.getPlainText());
+    if (wordCount > this.MAX_WORD_LIMIT) {
+      let isAlreadySet = !isEmpty(this.userError);
+      this.userError = `The document word count of ${wordCount} is over the ${this.MAX_WORD_LIMIT} maximum word count allowed!`;
+      if (!isAlreadySet) {
+        setTimeout(()=>{
+            this.userError = null;
+        }, 20000);
+      }
       return;
     }
     let quizUpdate : IQuizUpdate = {
