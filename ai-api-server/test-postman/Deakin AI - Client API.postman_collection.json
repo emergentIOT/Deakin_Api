@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "2338ffc8-ab58-4a77-bd26-ab252625e226",
-		"name": "Deakin AI - QA",
+		"_postman_id": "1539be29-c52c-45d6-8911-97f8d0548353",
+		"name": "Deakin AI - Client API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -150,7 +150,7 @@
 							"pm.environment.get(\"variable_key\");",
 							"    var jsonData = pm.response.json();",
 							"    pm.expect(jsonData.success).to.be.true;",
-							"    pm.expect(jsonData.data.length).to.be.gt(1);",
+							"    pm.expect(jsonData.data.length).to.be.gte(1);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -259,6 +259,164 @@
 			"response": []
 		},
 		{
+			"name": "Generate Answer Tokens",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "744cf431-d849-4c35-b6f8-ac09e5142905",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Question generated\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.data.length).to.be.eql(5);",
+							"    pm.environment.set(\"text-answer-tokens-suggested\", jsonData.data);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/qa/generate-answer-tokens/{{quizId}}?isDryRun=true",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"qa",
+						"generate-answer-tokens",
+						"{{quizId}}"
+					],
+					"query": [
+						{
+							"key": "isDryRun",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate Answer Tokens without ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "744cf431-d849-4c35-b6f8-ac09e5142905",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Question generated\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.data.length).to.be.eql(5);",
+							"    pm.environment.set(\"text-answer-tokens-suggested\", jsonData.data);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"plainText\" : \"{{text}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/qa/generate-answer-tokens?isDryRun=true",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"qa",
+						"generate-answer-tokens"
+					],
+					"query": [
+						{
+							"key": "isDryRun",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate Questions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f4e1f903-3808-43b3-91d8-d2fde7ace7cf",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Questions generated\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/qa/generate-questions/{{quizId}}",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"qa",
+						"generate-questions",
+						"{{quizId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Generate Question",
 			"event": [
 				{
@@ -302,46 +460,6 @@
 							"key": "answerToken",
 							"value": "{{text-answer-token1}}"
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Generate Questions",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "f4e1f903-3808-43b3-91d8-d2fde7ace7cf",
-						"exec": [
-							"pm.test(\"Status test\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"pm.test(\"Questions generated\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.success).to.be.true;",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"url": {
-					"raw": "{{ai-api-server}}/api/v1/qa/generate-questions/{{quizId}}",
-					"host": [
-						"{{ai-api-server}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"qa",
-						"generate-questions",
-						"{{quizId}}"
 					]
 				}
 			},
