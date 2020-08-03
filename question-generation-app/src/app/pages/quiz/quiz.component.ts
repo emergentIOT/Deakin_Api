@@ -90,7 +90,7 @@ export class QuizComponent implements OnInit {
               this.tokens.push(tokens[i]);
             }
           }
-          let richText = this.textEditor.selectTokensAndUpdateText(this.tokens, plainText);
+          let richText = this.textEditor.selectTokens(this.tokens);
           console.log(plainText);
           console.log(richText);
           this.chipsList.refresh();
@@ -221,7 +221,7 @@ export class QuizComponent implements OnInit {
     if (this.isValidToken(token, true)) {
       this.tokens.push(token);
       this.chipsList.refresh();
-      this.textEditor.selectTokensAndUpdateText([token], this.textEditor.getRichText());
+      this.textEditor.selectTokens([token]);
     }
   }
 

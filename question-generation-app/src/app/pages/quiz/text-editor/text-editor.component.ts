@@ -116,9 +116,15 @@ export class TextEditorComponent implements OnInit {
       this.generateSuggestedAnswerTokens.emit({data});
     }
   }
-  
+
+  selectTokens(tokens : string[]) : string {
+    let updatedRichText = this. selectTokensInText(tokens, this.rteObj.getHtml());
+    this.rteObj.updateValue(updatedRichText);
+    return updatedRichText;
+  }
+
   selectTokensAndUpdateText(tokens : string[], richText : string) : string {
-    let updatedRichText = this.selectTokens(tokens, richText);
+    let updatedRichText = this. selectTokensInText(tokens, richText);
     this.rteObj.updateValue(updatedRichText);
     return updatedRichText;
   }
@@ -133,11 +139,11 @@ export class TextEditorComponent implements OnInit {
    * @param text 
    * @returns The text with the tokens selected
    */
-  selectTokens(tokens : string[], text : string) : string {
+  selectTokensInText(tokens : string[], text : string) : string {
     this.tokens = tokens;
     let result = text;
     for (let token of this.tokens) {
-      result = this.selectText(token, result);
+      result = this.selectTokenInText(token, result);
     }
     return result;
   }
@@ -148,7 +154,7 @@ export class TextEditorComponent implements OnInit {
    * @param text 
    * @returns The text with the tokens selected
    */
-  selectText(token : string, text: string) {
+  selectTokenInText(token : string, text: string) {
     if (isEmpty(token) || isEmpty(text)) {
       return text;
     }
