@@ -1,0 +1,10 @@
+{
+  "apiUrl": "https://des-inno-ai-api.its.deakin.edu.au",
+  "authConfig": {
+    "issuer": "http://127.0.0.1:4444/",
+    "clientId": "syncv2",
+    "requireHttps": false,
+    "scope": "openid offline_access",
+    "requestAccessToken": true
+  }
+}
