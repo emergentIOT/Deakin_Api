@@ -22,4 +22,11 @@ describe('TextEditorComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+
+  it('select text multi words', () => {
+    let str = component.selectText("two three four", "one two three four five six");
+    console.log("@@@@@@@@@", str);
+    console.log(component.selectText("two three four", str));
+  });
 });

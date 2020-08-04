@@ -2,6 +2,7 @@ import { Component, OnInit, Injectable, ViewChild, Input, Output, EventEmitter, 
 import { ToolbarService, LinkService, ImageService, HtmlEditorService, PasteCleanupService, 
           RichTextEditorComponent, CommandName } from '@syncfusion/ej2-angular-richtexteditor';
 import { isEmpty } from 'npm-stringutils';
+import { escapeRegExp } from '../quiz-utils';
 
 @Component({
   selector: 'app-text-editor',
@@ -99,16 +100,16 @@ export class TextEditorComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    if (!this.rteObj || !this.rteObj.contentModule) {
+      return; // maybe running tests
+    }
     this.textArea = this.rteObj.contentModule.getEditPanel() as HTMLElement; 
     this.textArea.onclick = (event) => {
       let selection : string =  this.rteObj.getSelection().trim();
       let text : string = this.rteObj.getText();
       let range : Range = this.rteObj.getRange();
       //console.log(this.rteObj.getHtml(), selection, range.startOffset, range.endOffset);
-      if (this.isValidToken(selection, text)) {
-        this.newToken.emit(selection);
-        this.rteObj.updateValue(this.selectText(selection, this.rteObj.getHtml()));
-      }
+      this.newToken.emit(selection);
     }
     this.textArea.onpaste = (event) => {
       let data = event.clipboardData.getData("text");
@@ -116,8 +117,14 @@ export class TextEditorComponent implements OnInit {
     }
   }
 
+  selectTokens(tokens : string[]) : string {
+    let updatedRichText = this. selectTokensInText(tokens, this.rteObj.getHtml());
+    this.rteObj.updateValue(updatedRichText);
+    return updatedRichText;
+  }
+
   selectTokensAndUpdateText(tokens : string[], richText : string) : string {
-    let updatedRichText = this.selectTokens(tokens, richText);
+    let updatedRichText = this. selectTokensInText(tokens, richText);
     this.rteObj.updateValue(updatedRichText);
     return updatedRichText;
   }
@@ -132,30 +139,13 @@ export class TextEditorComponent implements OnInit {
    * @param text 
    * @returns The text with the tokens selected
    */
-  selectTokens(tokens : string[], text : string) : string {
+  selectTokensInText(tokens : string[], text : string) : string {
     this.tokens = tokens;
     let result = text;
     for (let token of this.tokens) {
-      result = this.selectText(token, result);
+      result = this.selectTokenInText(token, result);
     }
     return result;
-  }
-
-  /**
-   * 
-   * @param str Must be a whole word and not contain certain characters
-   * @param text 
-   */
-  isValidToken(str: string, text: string) : boolean {
-    if (isEmpty(str)) {
-      return false;
-    }
-    let illegalRegex = new RegExp('[\\(|\\)|\\[|\\]|\\"]');
-    if (str.search(illegalRegex) >= 0) {
-      return false;
-    }
-    let regex = new RegExp("\\b(" + this.escapeRegExp(str) + ")\\b", "mig");
-    return text.search(regex) >=0;
   }
 
   /**
@@ -164,11 +154,11 @@ export class TextEditorComponent implements OnInit {
    * @param text 
    * @returns The text with the tokens selected
    */
-  selectText(token : string, text: string) {
+  selectTokenInText(token : string, text: string) {
     if (isEmpty(token) || isEmpty(text)) {
       return text;
     }
-    let regex = new RegExp("\\b(" + this.escapeRegExp(token) + ")\\b(?!</span>)", "mig");
+    let regex = new RegExp("\\b(" + escapeRegExp(token) + ")\\b(?!</span>)", "mig");
     let result = text.replace(regex, (subString : string): string => {
       return '<span style="background-color: ' + this.HIGHLIGHT_COLOR + ';">' + subString + "</span>";
     });
@@ -214,7 +204,7 @@ export class TextEditorComponent implements OnInit {
       return plainText;
     }
     let regExStr = '(<span style="background-color: ' + this.HIGHLIGHT_COLOR + ';">)(' + 
-                    this.escapeRegExp(token) + ')(</span>)';
+                    escapeRegExp(token) + ')(</span>)';
     let regex = new RegExp(regExStr, "mig");
     let result = plainText.replace(regex, (g1 : string, g2 : string, g3 : string, g4 : string): string => {
       return g3;
@@ -222,7 +212,5 @@ export class TextEditorComponent implements OnInit {
     return result;
   }
 
-  private escapeRegExp(string : string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-  }
+
 }

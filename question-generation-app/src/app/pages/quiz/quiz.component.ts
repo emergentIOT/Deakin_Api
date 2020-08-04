@@ -9,6 +9,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { IQuizToken } from 'src/app/interfaces/iQuizToken';
 import { isEmpty } from 'npm-stringutils';
+import { escapeRegExp } from './quiz-utils';
 
 @Component({
   selector: 'app-quiz',
@@ -17,12 +18,13 @@ import { isEmpty } from 'npm-stringutils';
 })
 export class QuizComponent implements OnInit {
 
-  private MAX_WORD_LIMIT = 400;
+  private MAX_WORD_LIMIT = 350;
 
   @ViewChild('chipsList') public chipsList: ChipList;
   @ViewChild('textEditor') public textEditor: TextEditorComponent;
 
   private ENABLE_QUIZ_STATUS_CHECK = true;
+  private NUMBER_OF_SUGGESTED_KEY_PHRASES_TO_ADD = 10;
 
   public quiz: IQuiz;
   public name: string;
@@ -82,12 +84,13 @@ export class QuizComponent implements OnInit {
           if (!tokens || tokens.length == 0) {
             return;
           }
-          for (let i = 0; i < Math.min(10, tokens.length); i++) {
-            if (this.hasNotExistingToken(tokens[i])) {
+          for (let i = 0; i < tokens.length 
+                && this.tokens.length < this.NUMBER_OF_SUGGESTED_KEY_PHRASES_TO_ADD; i++) {
+            if (this.isValidToken(tokens[i], false)) {
               this.tokens.push(tokens[i]);
             }
           }
-          let richText = this.textEditor.selectTokensAndUpdateText(this.tokens, plainText);
+          let richText = this.textEditor.selectTokens(this.tokens);
           console.log(plainText);
           console.log(richText);
           this.chipsList.refresh();
@@ -102,6 +105,30 @@ export class QuizComponent implements OnInit {
     return s.split(' ').filter(function(str){return str!="";}).length;
     //return s.split(' ').filter(String).length; - this can also be used
   }
+
+  /** 
+   * Function that count occurrences of a substring in a string;
+   * @param {String} string               The string
+   * @param {String} subString            The sub string to search for
+   */
+  countOccurrences(str : string, subString : string) {
+    if (subString.length <= 0) {
+      return 0;
+    }
+    let n = 0, pos = 0, step = subString.length;
+    let counting = true;
+    while (counting) {
+        pos = str.indexOf(subString, pos);
+        if (pos >= 0) {
+            ++n;
+            pos += step;
+        } else {
+          counting = false;
+        }
+    }
+    return n;
+  }
+
 
   ngOnDestroy() {
     this.stopWatchQuizStatus();
@@ -157,19 +184,70 @@ export class QuizComponent implements OnInit {
     this.activeTab = selectedTabIndex;
   }
 
-  hasNotExistingToken(newToken : string) {
-    return this.tokens.indexOf(newToken) === -1;
+  /**
+   * @param newToken Must be a whole word and not contain certain characters, 
+   * must not exist already, must not be ambiguous, must not be a sub string of another token. 
+   * @param showMessage True is to show a user error message. 
+   */
+  isValidToken(newToken : string, showMessage : boolean) {
+
+  
+    if (isEmpty(newToken)) {
+      return false;
+    }
+    let illegalRegex = new RegExp('[\\(|\\)|\\[|\\]|\\"]');
+    if (newToken.search(illegalRegex) >= 0) {
+      this.setUserError(`Invalid key phrase: "${newToken}" contains invalid character.`, showMessage);
+      return false;
+    }
+    // check if is whole word
+    let regex = new RegExp("\\b(" + escapeRegExp(newToken) + ")\\b", "mig");
+    let text = this.textEditor.getPlainText();
+    if (text.search(regex) == 0) {
+      this.setUserError(`Invalid key phrase: "${newToken}" is not a whole word or phrase.`, showMessage);
+      return false;
+    }
+    if (this.tokens.indexOf(newToken) >= 0) {
+      this.setUserError(`Invalid key phrase: "${newToken}" already exists.`, showMessage);
+      return false;
+    }
+    if (this.countOccurrences(text, newToken) >=2) {
+      this.setUserError(`Invalid key phrase: "${newToken}" is ambiguous.`, showMessage);
+      return false;
+    }
+    for (let token of this.tokens) {
+      if (token.indexOf(newToken) >=0) {
+        this.setUserError(`Invalid key phrase: "${newToken}" is a sub phrase of "${token}".`, showMessage);
+        return false; 
+      }
+    }
+    return true;
   }
 
   newToken(token : string) {
-    if (this.hasNotExistingToken(token)) {
+    if (this.isValidToken(token, true)) {
       this.tokens.push(token);
       this.chipsList.refresh();
+      this.textEditor.selectTokens([token]);
     }
   }
 
   deleteToken({text, index}) {
     this.textEditor.deleteToken(text);
+  }
+
+  setUserError(msg : string, isShowMessage : boolean) {
+    if (!isShowMessage) {
+      console.log("UserError: ", msg);
+      return;
+    }
+    let isAlreadySet = !isEmpty(this.userError);
+    this.userError = msg;
+    if (!isAlreadySet) {
+      setTimeout(()=>{
+          this.userError = null;
+      }, 20000);
+    }
   }
 
   generateQuiz() {
@@ -178,13 +256,7 @@ export class QuizComponent implements OnInit {
     }
     let wordCount = this.countWords(this.textEditor.getPlainText());
     if (wordCount > this.MAX_WORD_LIMIT) {
-      let isAlreadySet = !isEmpty(this.userError);
-      this.userError = `The document word count of ${wordCount} is over the ${this.MAX_WORD_LIMIT} maximum word count allowed!`;
-      if (!isAlreadySet) {
-        setTimeout(()=>{
-            this.userError = null;
-        }, 20000);
-      }
+      this.setUserError(`The document word count of ${wordCount} is over the ${this.MAX_WORD_LIMIT} maximum word count allowed!`, true);
       return;
     }
     let quizUpdate : IQuizUpdate = {

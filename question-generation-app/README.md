@@ -2,6 +2,12 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.4.
 
+## Configure
+
+Copy either `src/assets/config/app-config.[local | dev | uat].json` to `src/assets/config/app-config.json`
+Or run `npm run config-[local|dev|uat]`
+Example: `npm run config-dev`
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
