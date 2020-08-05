@@ -14,10 +14,11 @@ import { FormsModule } from '@angular/forms';
 import {NgxPaginationModule} from 'ngx-pagination'
 // Search Quizzes module
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
+import { DialogModule } from '@syncfusion/ej2-angular-popups';
 @NgModule({
   declarations: [QuizComponent, QuizListComponent, TextEditorComponent],
   imports: [CommonModule, QuizRoutingModule, DesCardModule, DesButtonModule, TabsModule, 
-    RichTextEditorModule, ChipListModule, FormsModule, Ng2SearchPipeModule, NgxPaginationModule],
+    RichTextEditorModule, ChipListModule, FormsModule, Ng2SearchPipeModule, NgxPaginationModule, DialogModule],
   exports: [QuizComponent, QuizListComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

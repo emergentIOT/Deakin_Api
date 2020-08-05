@@ -1,5 +1,7 @@
 <div class="container">
- 
+  <!--Delete quiz icon-->
+  <button  class="des-float-right" [disabled]="canDeleteQuiz ? null : 'disabled'" id="targetButton" (click)="onOpenDialog($event)" style="position: absolute; right: 30px; margin: 4px; height: 30px;" ><i class="fa fa-trash"></i></button>
+
   <!-- <des-button-group>
     <label><des-button>1</des-button> Upload content</label>
     <label><des-button format="outline">2</des-button> Review content</label>
@@ -46,10 +48,6 @@
                 <des-button shape="round-both" size="small" type="inverse-outline" [disabled]="canSuggestKeyPhrases ? null : 'disabled'" (click)="generateSuggestedAnswerTokens({})">Suggest Key Phrases</des-button>
               </des-button-group>
 
-              <!--Delete Quiz Button-->
-              <des-button-group>
-                <des-button size="small" (click)="deleteQuiz(quizId)" [disabled]="canDeleteQuiz ? null : 'disabled'">Delete Quiz</des-button> 
-              </des-button-group>  
             </div>
           </div>
                     
@@ -122,6 +120,11 @@
     </app-tab-panel>
   
   </app-tab-container>
+  
+  <!-- Delete confirmation dialog-->
+  <div #container class='root-container'></div>
+  <ejs-dialog id='dialog' #ejDialog header='Dialog'  [visible]='visible' [content]='dialogHeader' [target]='targetElement' width='250px' [buttons]='buttons'>
+  </ejs-dialog>
 
 </div>
 

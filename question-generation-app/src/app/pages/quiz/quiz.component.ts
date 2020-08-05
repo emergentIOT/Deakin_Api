@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild , ElementRef} from '@angular/core';
 import { Location } from '@angular/common';
 import { ChipList, ChipModel } from '@syncfusion/ej2-angular-buttons';
 import { TextEditorComponent } from './text-editor/text-editor.component';
@@ -10,6 +10,8 @@ import { Subscription } from 'rxjs';
 import { IQuizToken } from 'src/app/interfaces/iQuizToken';
 import { isEmpty } from 'npm-stringutils';
 import { escapeRegExp } from './quiz-utils';
+import { DialogComponent } from '@syncfusion/ej2-angular-popups';
+import { EmitType } from '@syncfusion/ej2-base';
 
 @Component({
   selector: 'app-quiz',
@@ -34,6 +36,17 @@ export class QuizComponent implements OnInit {
   public quizId: string;
   public userError;
   private watchQuizStatusSubscription : Subscription;
+
+  public confirmDelete = false;
+  public visible: boolean = false;
+  public dialogHeader: string = "Are you sure you want to delete this Quiz?";
+
+  //Dialog confirmation
+  @ViewChild('ejDialog') ejDialog: DialogComponent ;
+  // Create element reference for dialog target element.
+  @ViewChild('container', { read: ElementRef }) container: ElementRef;
+  // The Dialog shows within the target element.
+  public targetElement: HTMLElement;
 
   constructor(private quizService : QuizService,
               private route: ActivatedRoute, private router : Router, 
@@ -332,16 +345,41 @@ export class QuizComponent implements OnInit {
     return (isEmpty(token.questionToken) && token.status === 'processed') || token.status === 'error';
   }
 
-  deleteQuiz(id: string){
-    
-    console.log("delete pressed" + id);
-    if(confirm('Are you sure?') == true){
-     this.quizService.deleteQuiz(id).subscribe(() => {
-       this.router.navigate(['/']);   
-    });
-    } else {
-
-    }
-
+  // Hide the Dialog when click the footer button.
+  public confirmDeleteQuiz: EmitType<object> = () => {
+    this.quizService.deleteQuiz(this.quizId).subscribe(() => {
+      this.router.navigate(['/']);   
+   });
   }
+
+  public cancel: EmitType<object> = () => {
+    
+    this.ejDialog.hide();
+  }
+
+  // Enables the footer buttons
+  public buttons: Object = [
+  {
+    'click': this.confirmDeleteQuiz.bind(this),
+      // Accessing button component properties by buttonModel property
+      buttonModel:{
+      content: 'Yes',
+      // Enables the primary button
+      isPrimary: true
+    }
+  },
+  {
+    'click': this.cancel.bind(this),
+    buttonModel: {
+      content: 'No'
+    }
+  }
+];
+
+  // Sample level code to handle the button click action
+  public onOpenDialog(){
+    this.ejDialog.show();
+    this.ejDialog.buttons
+  }
+
 }

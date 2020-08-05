@@ -1,5 +1,6 @@
 @import "../../shared/scss/design-system-variables.scss";
 @import "../../../../node_modules/@syncfusion/ej2-buttons/styles/material.css";
+@import '../../../../node_modules/@syncfusion/ej2-angular-popups/styles/material.css';
 
 .vertical-grid-spacing {
   margin-bottom: $des-layout-spacing-base;
@@ -22,4 +23,27 @@
 
 des-button-group[spacing=none] des-button {
   // margin: 0px;
+}
+
+html,
+body,
+#dialog-container {
+    display: block;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    width: 100%;
+}
+
+#container {
+    visibility: hidden;
+}
+
+#loader {
+    color: #008cff;
+    height: 40px;
+    left: 45%;
+    position: absolute;
+    top: 45%;
+    width: 30%;
 }

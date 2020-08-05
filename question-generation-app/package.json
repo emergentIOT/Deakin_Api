@@ -28,6 +28,7 @@
     "@des-ds-dev-kit/theme-core-fallback": "^2.0.2",
     "@fortawesome/fontawesome-pro": "^5.13.0",
     "@syncfusion/ej2-angular-buttons": "^18.1.52",
+    "@syncfusion/ej2-angular-popups": "^18.2.46",
     "@syncfusion/ej2-angular-richtexteditor": "^18.1.52",
     "angular-oauth2-oidc": "^9.2.2",
     "angular-oauth2-oidc-jwks": "^9.0.0",
