@@ -11,6 +11,8 @@ build_image_ai_api:
     - cat ~/password.txt | docker login --username bamboo --password-stdin $REPO
     - docker build -t $REPO/ai-api-server:$CI_COMMIT_SHA --rm -f Dockerfile .
     - docker push $REPO/ai-api-server:$CI_COMMIT_SHA
+  only:
+    - master
 
 deploy_stage_ai_api:
   stage: deploy
