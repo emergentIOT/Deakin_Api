@@ -55,16 +55,39 @@ const saveQuiz = async function(req, res) {
  * /quizzes
  * Search and list quizzes.
  */
-const quizzes = async function(req, res) {
+const quizzes = async function(req, res){
+    //If No parameter comes in , keep it default skip=0 & limit=10  
+    let page = utils.notNull(Number(req.query.page), 0);
+    let limit = utils.notNull(Number(req.query.limit), 6);
     
-    Quiz.find({}, (err, result) => {
-        if (utilWs.handleError('qg.quizzes', res, err)) {
-            return;
-        }
+    //Search Query
+    var search = req.query.search;
+    var SEARCH_RESULT_REGEXP = new RegExp(search);
+   
+    let query = {};
+   
+        
+    if (utils.isNotNull(req.query.search)) {
+        query.name =  SEARCH_RESULT_REGEXP ;
+    }
+          
+    Quiz.find(query)
+        .limit(limit)
+        .skip(page * limit)
+        .sort({ name: 'asc' })
+        .exec(function(err, result) {
+    Quiz.count(query).exec(function(err, count) {
+        utilWs.sendSuccess('qg.quizzes', {
+            
+            page: page,
+            limit: limit,
+            totalCount: count,
+            data: result,
 
-        utilWs.sendSuccess('qg.quizzes', {success: true, data: result}, res, true);                      
+        }, res, true);
+        });
     });
-
+    
 }
 
 /**
