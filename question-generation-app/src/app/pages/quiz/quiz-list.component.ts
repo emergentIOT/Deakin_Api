@@ -15,7 +15,7 @@ import { publishReplay, refCount, catchError, concatMap, map, debounce, distinct
 })
 export class QuizListComponent implements OnInit {
   
-  public quizList: Observable<IQuizList>;// = { list: IQuiz[] };
+  public quizList: IQuizList;// = { list: IQuiz[] };
 
   //New Mongo changes 
   public p: number = 0;
@@ -34,13 +34,20 @@ export class QuizListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.quizList = this._quizService.listQuizzes(this.p, this.limit);
+    this.search();
+    this._quizService.listQuizzes(this.p, this.limit).subscribe((data : IQuizList) => {
+      this.quizList = data;
+      console.log("ng on init" + this.quizList);
+    });
   }
 
+  
+  //Search form
   public searchForm = new FormGroup({
     search: new FormControl("", Validators.required),
   });
 
+  //Search quizzes
   public search(){
     this.searchTerm.pipe(
       map((e: any) => {
@@ -56,10 +63,10 @@ export class QuizListComponent implements OnInit {
       })
     ).subscribe(searchResults => {
       this.loading = false;
-      //this.quizList = searchResults;
+      this.quizList = searchResults;
       this.total = searchResults.totalCount;
      // this.paginationElements = this.quizList;
-      console.log(this.quizList);
+      console.log("search" + this.quizList);
     })
   }
 
