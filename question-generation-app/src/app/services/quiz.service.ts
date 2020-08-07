@@ -32,8 +32,12 @@ export class QuizService {
     private appConfigService: AppConfigService
   ) {}
 
-  listQuizzes() : Observable<IQuizList> {
-    return this.http.get<IQuizList>(this.apiUrlQuizzes).pipe(publishReplay(1), refCount());
+  listQuizzes(page: number, limit: number, search? : string) : Observable<IQuizList> {
+    let params = {};
+    if(!isEmpty(search)){
+      params = {search}
+    }
+    return this.http.get<IQuizList>(`${this.apiUrlQuizzes}?page=${page}&limit=${limit}`, {params}).pipe(publishReplay(1), refCount());
   }
 
   getQuiz(quizId : string) : Observable<IQuiz> {

@@ -1,13 +1,18 @@
-<!--Search bar -->
-<div class="row">
-  <div class="col-sm-8 order-2 order-sm-1 des-margin-bottom-small vertical-grid-spacing">
-    <form>
-      <div class="des-form-group">
-        <input class="des-form-item-field" type="text" name="search" [(ngModel)]="searchQuiz" autocomplete="off" placeholder=" Search a Quiz"  />
-      </div>
-    </form>
+  <!--Search bar -->
+  <div class="row">
+    <div class="col-sm-8 order-2 order-sm-1 des-margin-bottom-small vertical-grid-spacing">
+      <form [formGroup]="searchForm">
+        <div class="des-form-group">
+          <input class="des-form-item-field" type="text" placeholder="search"
+       (keyup)="searchTerm.next($event)" formControlName="search"/>
+          <div *ngIf="loading">
+            <p class="search-message">Searching</p>
+            <div class="lds-ellipsis"></div>
+          </div>
+          </div>
+      </form>
+    </div>
   </div>
-</div>
 
 <div class="row justify-content-end">
   <div class="xcol-sm-12 xcol-lg-6 vertical-grid-spacing">

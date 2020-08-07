@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { IQuizList } from 'src/app/interfaces/IQuizList';
 import { IQuiz } from 'src/app/interfaces/iQuiz';
 import { QuizService } from 'src/app/services/quiz.service';
 import { Router, ActivatedRoute } from '@angular/router'; // CLI imports router
+import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
+import { publishReplay, refCount, catchError, concatMap, map, debounce, distinctUntilChanged, switchMap, debounceTime } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-quiz-list',
@@ -14,34 +17,54 @@ export class QuizListComponent implements OnInit {
   
   public quizList: Observable<IQuizList>;// = { list: IQuiz[] };
 
-  //search Quiz (ng model)
-  searchQuiz;
-  //pagination config
-  config: any;
+  //New Mongo changes 
+  public p: number = 0;
+  public limit: number = 4;
+  public total: number;
+
+  //Search bar
+  public loading: boolean;
+  public searchTerm = new Subject<string>();
+  public searchResults: IQuizList;
+  public paginationElements: any;
+  public errorMessage: any;
 
   constructor(private _quizService: QuizService, private router: Router, private activatedRoute: ActivatedRoute) {
-
-    //set the config
-    this.config = {
-      currentPage: 1,
-      itemsPerPage : 6,
-      totalItems : 0
-    }
-
-    activatedRoute.queryParams.subscribe(
-      params => this.config.currentPage = params['page'] ? params['page']:1
-    )
-
+   
   }
 
   ngOnInit() {
-    this.quizList = this._quizService.listQuizzes();
+    this.quizList = this._quizService.listQuizzes(this.p, this.limit);
   }
 
-  //Pagination change event
-  pageChange(newPage: number){
-    this.router.navigate([''], {queryParams : {page: newPage}});
-   }
+  public searchForm = new FormGroup({
+    search: new FormControl("", Validators.required),
+  });
+
+  public search(){
+    this.searchTerm.pipe(
+      map((e: any) => {
+        console.log(e.target.value);
+        return e.target.value;
+      }), 
+      debounceTime(400),
+      distinctUntilChanged(),
+      switchMap(searchInput => {
+        this.loading = true;
+
+        return this._quizService.listQuizzes(0, this.limit, searchInput);
+      })
+    ).subscribe(searchResults => {
+      this.loading = false;
+      //this.quizList = searchResults;
+      this.total = searchResults.totalCount;
+     // this.paginationElements = this.quizList;
+      console.log(this.quizList);
+    })
+  }
+
+
+ 
 
   // newQuiz() {
   //   this.router.navigate(["edit-quiz"]);
