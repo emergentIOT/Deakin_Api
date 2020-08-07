@@ -30,7 +30,7 @@ export class QuizListComponent implements OnInit {
   public errorMessage: any;
 
   constructor(private _quizService: QuizService, private router: Router, private activatedRoute: ActivatedRoute) {
-   
+    this.getQuizzes(this.p);
   }
 
   ngOnInit() {
@@ -61,13 +61,33 @@ export class QuizListComponent implements OnInit {
 
         return this._quizService.listQuizzes(0, this.limit, searchInput);
       })
-    ).subscribe(searchResults => {
+    ).subscribe((searchResults : IQuizList) => {
       this.loading = false;
       this.quizList = searchResults;
       this.total = searchResults.totalCount;
      // this.paginationElements = this.quizList;
-      console.log("search" + this.quizList);
+      console.log("search" + this.total);
     })
+  }
+
+
+  //Page change event from pagination div.
+  pageChange(pageNo: number){
+    this.p = pageNo;
+    this.getQuizzes(this.p);
+  }
+
+  //Update the page number.
+  getQuizzes(p: number){
+    let page = (p - 1);
+    //Retreive quizzes based on page number
+    this._quizService.listQuizzes(page, this.limit).subscribe(
+      (data : IQuizList) => {
+        this.total = data.totalCount;
+        this.quizList = data;
+        
+      }
+    )
   }
 
 

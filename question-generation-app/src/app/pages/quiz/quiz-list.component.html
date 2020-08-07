@@ -30,7 +30,7 @@
     </des-card>
   </div>
   <div
-    *ngFor="let item of quizList?.data" 
+    *ngFor="let item of quizList?.data | paginate : { itemsPerPage: limit, currentPage: p, totalItems: total }" 
     class="col-sm-12 col-lg-6 vertical-grid-spacing"
   >
     <des-card layout="advertising" [desShadow]="2"
@@ -52,4 +52,9 @@
     </des-card>
   </div>
 </div>
+
+  <!--Pagination div-->
+  <div>
+  <pagination-controls maxSize = "6" directionLinks = "true" (pageChange) = "pageChange($event)"></pagination-controls>
+  </div>
 
