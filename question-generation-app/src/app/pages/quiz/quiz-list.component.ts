@@ -17,8 +17,8 @@ export class QuizListComponent implements OnInit {
   
   public quizList: IQuizList;// = { list: IQuiz[] };
 
-  //New Mongo changes 
-  public p: number = 0;
+  //Limit the results 
+  public pageNumber: number = 0;
   public limit: number = 4;
   public total: number;
 
@@ -30,12 +30,12 @@ export class QuizListComponent implements OnInit {
   public errorMessage: any;
 
   constructor(private _quizService: QuizService, private router: Router, private activatedRoute: ActivatedRoute) {
-    this.getQuizzes(this.p);
+    this.getQuizzes(this.pageNumber);
   }
 
   ngOnInit() {
     this.search();
-    this._quizService.listQuizzes(this.p, this.limit).subscribe((data : IQuizList) => {
+    this._quizService.listQuizzes(this.pageNumber, this.limit).subscribe((data : IQuizList) => {
       this.quizList = data;
       console.log("ng on init" + this.quizList);
     });
@@ -65,16 +65,15 @@ export class QuizListComponent implements OnInit {
       this.loading = false;
       this.quizList = searchResults;
       this.total = searchResults.totalCount;
-     // this.paginationElements = this.quizList;
-      console.log("search" + this.total);
+      console.log("search" + this.quizList);
     })
   }
 
 
   //Page change event from pagination div.
   pageChange(pageNo: number){
-    this.p = pageNo;
-    this.getQuizzes(this.p);
+    this.pageNumber = pageNo;
+    this.getQuizzes(this.pageNumber);
   }
 
   //Update the page number.
