@@ -11,6 +11,8 @@ build_image_ai_qg_app:
     - cat ~/password.txt | docker login --username bamboo --password-stdin $REPO
     - docker build -t $REPO/ai-qg-app:$CI_COMMIT_SHA --rm -f Dockerfile .
     - docker push $REPO/ai-qg-app:$CI_COMMIT_SHA
+  only:
+    - master
 
 deploy_stage_ai_qg_app:
   stage: deploy

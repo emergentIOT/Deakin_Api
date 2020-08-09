@@ -377,7 +377,7 @@ export class QuizComponent implements OnInit {
 ];
 
   // Sample level code to handle the button click action
-  public onOpenDialog(){
+  public onOpenDialog(event){
     this.ejDialog.show();
     this.ejDialog.buttons
   }
