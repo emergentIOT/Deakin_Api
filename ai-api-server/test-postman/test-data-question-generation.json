@@ -1,0 +1,32 @@
+[
+  {
+    "input": {
+      "context": "The Chernobyl accident in 1986 was the result of a flawed reactor design that was operated with inadequately trained personnel. The resulting steam explosion and fires released at least 5% of the radioactive reactor core into the environment, with the deposition of radioactive materials in many parts of Europe. Two Chernobyl plant workers died due to the explosion on the night of the accident, and a further 28 people died within a few weeks as a result of acute radiation syndrome. The United Nations Scientific Committee on the Effects of Atomic Radiation has concluded that, apart from some 6500 thyroid cancers (resulting in 15 fatalities), \"there is no evidence of a major public health impact attributable to radiation exposure 20 years after the accident.\" Some 350,000 people were evacuated as a result of the accident, but resettlement of areas from which people were relocated is ongoing.  The April 1986 disaster at the Chernobyla nuclear power plant in Ukraine was the product of a flawed Soviet reactor design coupled with serious mistakes made by the plant operatorsb. It was a direct consequence of Cold War isolation and the resulting lack of any safety culture.    The accident destroyed the Chernobyl 4 reactor, killing 30 operators and firemen within three months and several further deaths later. One person was killed immediately and a second died in hospital soon after as a result of injuries received. Another person is reported to have died at the time from a coronary thrombosisc. Acute radiation syndrome (ARS) was originally diagnosed in 237 people onsite and involved with the clean-up and it was later confirmed in 134 cases. Of these, 28 people died as a result of ARS within a few weeks of the accident.",
+      "answer_token": [
+        "acute radiation effects",
+        "radioactive materials",
+        "Cold War isolation"
+      ]
+    },
+    "expected-question-tokens": [
+      "What was the cause of the deaths of 28 people ?",
+      "What did the Chernobyl reactor release into the environment ?",
+      "What was the cause of the Chernobyl disaster ?"
+    ]
+  },
+  {
+    "input": {
+      "context": "Machine learning is the study of computer algorithms that improve automatically through experience. It is seen as a subset of artificial intelligence. Machine learning algorithms build a mathematical model based on sample data known as \"training data\", in order to make predictions or decisions without being explicitly programmed to do so. Machine learning algorithms are used in a wide variety of applications, such as email filtering and computer vision, where it is difficult or infeasible to develop conventional algorithms to perform the needed tasks. Machine learning is closely related to computational statistics, which focuses on making predictions using computers. The study of mathematical optimization delivers methods, theory and application domains to the field of machine learning.",
+      "answer_token": [
+        "Machine learning algorithms",
+        "Conventional algorithms",
+        "mathematical optimization"
+      ]
+    },
+    "expected-question-tokens": [
+      "What is used in a wide variety of applications ?",
+      "What is difficult or infeasible to develop in computer vision ?",
+      "What is the study of that delivers methods , theory and application domains to the field of machine learning ?"
+    ]
+  }
+]

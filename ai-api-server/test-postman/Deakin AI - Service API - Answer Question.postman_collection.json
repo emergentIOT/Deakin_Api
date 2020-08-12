@@ -1,0 +1,86 @@
+{
+	"info": {
+		"_postman_id": "600871c2-2395-4b21-ba5e-5e7b20cc9e7f",
+		"name": "Deakin AI - Service API - Answer Question",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Answer Question",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "db3429aa-a6ac-445d-88a8-d2958bc6eeee",
+						"exec": [
+							"let input = {",
+							"    context: \"The Normans (Norman: Nourmands; French: Normands; Latin: Normanni) were the people who in the 10th and 11th centuries gave their name to Normandy, a region in France. They were descended from Norse (Norman comes from Norseman) raiders and pirates from Denmark, Iceland and Norway who, under their leader Rollo, agreed to swear fealty to King Charles III of West Francia. Through generations of assimilation and mixing with the native Frankish and Roman-Gaulish populations, their descendants would gradually merge with the Carolingian-based cultures of West Francia. The distinct cultural and ethnic identity of the Normans emerged initially in the first half of the 10th century, and it continued to evolve over the succeeding centuries.\",",
+							"    question_tok: [\"What people gave their name to Normandy ?\", \"What region did the Normans come from ?\"]",
+							"};",
+							"",
+							"pm.environment.set(\"input\", input);",
+							"pm.environment.set(\"inputJSON\", JSON.stringify(input));",
+							"",
+							"pm.environment.set(\"expected-question-answers\", ",
+							"    [",
+							"        \"Normans\", ",
+							"        \"West Francia\"",
+							"    ]",
+							");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "ca427423-d47d-4a9f-8305-e2e01becf2ba",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Question Generation\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    let expected = pm.environment.get(\"expected-question-answers\");",
+							"    pm.expect(jsonData.answers.length).to.be.eql(expected.length);",
+							"    for (let i = 0; i < expected.length; i++) {",
+							"        pm.expect(jsonData.questions[i]).to.be.eql(expected[i]);",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{inputJSON}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ai-server-question-answer}}",
+					"host": [
+						"{{ai-server-question-answer}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
