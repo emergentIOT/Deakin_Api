@@ -35,7 +35,9 @@ export class QuizListComponent implements OnInit {
 
   ngOnInit() {
     this.search();
+    this.loading = true;
     this._quizService.listQuizzes(this.pageNumber, this.limit).subscribe((data : IQuizList) => {
+      this.loading = false;
       this.quizList = data;
       console.log("ng on init" + this.quizList);
     });
@@ -58,7 +60,6 @@ export class QuizListComponent implements OnInit {
       distinctUntilChanged(),
       switchMap(searchInput => {
         this.loading = true;
-
         return this._quizService.listQuizzes(0, this.limit, searchInput);
       })
     ).subscribe((searchResults : IQuizList) => {
@@ -79,9 +80,10 @@ export class QuizListComponent implements OnInit {
   //Update the page number.
   getQuizzes(p: number){
     let page = (p - 1);
-    //Retreive quizzes based on page number
+    this.loading = true;
     this._quizService.listQuizzes(page, this.limit).subscribe(
       (data : IQuizList) => {
+        this.loading = false;
         this.total = data.totalCount;
         this.quizList = data;
         

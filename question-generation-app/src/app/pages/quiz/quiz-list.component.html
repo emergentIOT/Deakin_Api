@@ -1,14 +1,16 @@
   <!--Search bar -->
   <div class="row">
+   
     <div class="col-sm-8 order-2 order-sm-1 des-margin-bottom-small vertical-grid-spacing">
       <form [formGroup]="searchForm">
         <div class="des-form-group">
           <input class="des-form-item-field" type="text" placeholder="search"
        (keyup)="searchTerm.next($event)" formControlName="search"/>
-          <div *ngIf="loading">
+          <!--<div *ngIf="loading">
             <p class="search-message">Searching</p>
             <div class="lds-ellipsis"></div>
-          </div>
+          </div>!-->
+          
           </div>
       </form>
     </div>
@@ -51,7 +53,15 @@
       </div>
     </des-card>
   </div>
+  
+<!--Loading spinner-->
+<div class="row" *ngIf="loading">
+  <i class="fa fa-spinner fa-spin fa-3x fa-fw center"></i><br/><br/>
+         <span>Loading Results..</span>
 </div>
+  
+</div>
+
 
   <!--Pagination div-->
   <div>
