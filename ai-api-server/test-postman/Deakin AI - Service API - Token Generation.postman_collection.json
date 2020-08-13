@@ -1,0 +1,85 @@
+{
+	"info": {
+		"_postman_id": "ecfd7383-2e2f-4053-9d01-486aceb2ab04",
+		"name": "Deakin AI - Service API - Token Generation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Token Generation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "06735fc3-79eb-4ea8-9773-b3c4af3de912",
+						"exec": [
+							"pm.environment.set(\"text\", \"The Normans (Norman: Nourmands; French: Normands; Latin: Normanni) were the people who in the 10th and 11th centuries gave their name to Normandy, a region in France. They were descended from Norse (Norman comes from Norseman) raiders and pirates from Denmark, Iceland and Norway who, under their leader Rollo, agreed to swear fealty to King Charles III of West Francia. Through generations of assimilation and mixing with the native Frankish and Roman-Gaulish populations, their descendants would gradually merge with the Carolingian-based cultures of West Francia. The distinct cultural and ethnic identity of the Normans emerged initially in the first half of the 10th century, and it continued to evolve over the succeeding centuries.\");",
+							"pm.environment.set(\"expected-answer-tokens\", [",
+							"    \"King Charles III\",",
+							"    \"West Francia\",",
+							"    \"Norman\",",
+							"    \"Charles III\",",
+							"    \"Norse\",",
+							"    \"Normans\",",
+							"    \"Norseman\",",
+							"    \"Iceland\",",
+							"    \"Latin\",",
+							"    \"fealty\"",
+							"]);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "86864707-ee1a-456c-b3d7-f65ca9ec1f1a",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Token Generation\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    let expected = pm.environment.get(\"expected-answer-tokens\");",
+							"    pm.expect(jsonData.answer_tokens.length).to.be.gt(expected.length);",
+							"    for (let i = 0; i < expected.length; i++) {",
+							"        pm.expect(jsonData.answer_tokens[i]).to.be.eql(expected[i]);",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\n\t\"context\": \"{{text}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ai-server-token-generation}}",
+					"host": [
+						"{{ai-server-token-generation}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

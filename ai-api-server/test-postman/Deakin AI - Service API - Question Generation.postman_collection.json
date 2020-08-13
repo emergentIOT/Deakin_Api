@@ -1,0 +1,87 @@
+{
+	"info": {
+		"_postman_id": "8503c54e-c5c5-413e-b4c4-79e36bdd3c80",
+		"name": "Deakin AI - Service API - Question Generation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Question Generation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e1832e3d-6068-4013-b179-705036e9465f",
+						"exec": [
+							"// console.log(\"it data\",pm.iterationData);",
+							"let input = {",
+							"    context: \"The Normans (Norman: Nourmands; French: Normands; Latin: Normanni) were the people who in the 10th and 11th centuries gave their name to Normandy, a region in France. They were descended from Norse (Norman comes from Norseman) raiders and pirates from Denmark, Iceland and Norway who, under their leader Rollo, agreed to swear fealty to King Charles III of West Francia. Through generations of assimilation and mixing with the native Frankish and Roman-Gaulish populations, their descendants would gradually merge with the Carolingian-based cultures of West Francia. The distinct cultural and ethnic identity of the Normans emerged initially in the first half of the 10th century, and it continued to evolve over the succeeding centuries.\",",
+							"    answer_token: [\"Normans\", \"West Francia\"]",
+							"};",
+							"",
+							"let expectedQuestionTokens =      [",
+							"    \"What people gave their name to Normandy ?\", ",
+							"    \"What region did the Normans come from ?\"",
+							"]",
+							"",
+							"// if data provided from data file use that as input.",
+							"if (pm.iterationData.get(\"input\")) {",
+							"    input = pm.iterationData.get(\"input\");",
+							"}",
+							"",
+							"pm.environment.set(\"inputJSON\", JSON.stringify(input));",
+							"",
+							"// if not using iteration file set expected response.",
+							"if (!pm.iterationData.get(\"expected-question-tokens\")) {",
+							"    pm.environment.set(\"expected-question-tokens\", expectedQuestionTokens);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b8c31372-a0e3-4fcb-bba0-aa9d73bbca2b",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Question Generation\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    let expected = pm.iterationData.get(\"expected-question-tokens\");",
+							"    pm.expect(jsonData.questions.length).to.be.eql(expected.length);",
+							"    for (let i = 0; i < expected.length; i++) {",
+							"        pm.expect(jsonData.questions[i]).to.be.eql(expected[i]);",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{inputJSON}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ai-server-question-generation}}",
+					"host": [
+						"{{ai-server-question-generation}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

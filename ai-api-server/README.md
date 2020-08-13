@@ -28,11 +28,16 @@ npm run start-nodemon
 
 Install postman for desktop
 
-Import collection 'test-postman/Deakin AI - QA.postman_collection.json'
+Import collection 'test-postman/Deakin AI - Client API.postman_collection.json'
 
 Can run individually defaults are set in Save Text -> Pre-request Script
 
-Or run multiple tests by Running Collection and selection data file 'test-postman/test-data1.json' in the Collection Runner
+'Deakin AI - Service API - Question Generation.json' can run multiple iterations using data file 'test-postman/test-data-question-generation.json' in the Collection Runner
+
+Run using command line
+```
+newman run --iteration-data test-data-question-generation.json --environment ai-env-1.postman_environment.json Deakin\ AI\ -\ Service\ API\ -\ Question\ Generation.postman_collection.json
+```
 
 ## API Documenation
 

@@ -270,7 +270,7 @@ const generateAnswerTokens = async function(req, res) {
         })
 
     } else {
-        utilsWs.sendUserError('qg.generateAnswerTokens', "Quiz id or plainText content required.", res);
+        utilWs.sendUserError('qg.generateAnswerTokens', "Quiz id or plainText content required.", res);
     }
  
 
