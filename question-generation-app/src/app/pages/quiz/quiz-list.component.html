@@ -25,12 +25,14 @@
 </div>
 
 <div class="row">
+  
   <div *ngIf="quizList?.data.length == 0" class="col-12 vertical-grid-spacing">
     <des-card>
       <h2 class="des-card-title no-items-found">No items found...</h2>
       <!-- <p class="block-with-text xmr-1">No items found...</p> -->
     </des-card>
   </div>
+ 
   <div
     *ngFor="let item of quizList?.data | paginate : { itemsPerPage: limit, currentPage: pageNumber, totalItems: total }" 
     class="col-sm-12 col-lg-6 vertical-grid-spacing"
@@ -54,14 +56,14 @@
     </des-card>
   </div>
   
-<!--Loading spinner-->
-<div class="row" *ngIf="loading">
-  <i class="fa fa-spinner fa-spin fa-3x fa-fw center"></i><br/><br/>
-         <span>Loading Results..</span>
-</div>
   
 </div>
 
+  <!--Loading spinner-->
+  <div class="loadingSpinner"  *ngIf="loading" >
+    <i class="fa fa-spinner fa-spin fa-3x"></i><br/><br/>
+           <span>Loading Results..</span>
+  </div>
 
   <!--Pagination div-->
   <div *ngIf="hidePagination">
