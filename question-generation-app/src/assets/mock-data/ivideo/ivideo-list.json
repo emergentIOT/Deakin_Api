@@ -1,0 +1,14 @@
+{
+    "success": true,
+    "data": [
+        {
+            "_id": "001",
+            "name": "Test 1",
+            "description": "Interactive web component",
+            "transciption": "app/pages/ivideo/mock-data/sample001.json",
+            "resourcePath": "/Users/jshotton/workspace-ai/ai-api/question-generation-app/src/app/pages/ivideo/mock-data/sample001.mp4",
+            "dateCreated": "2020-08-12T00:42:07.330Z",
+            "dateModified": "2020-08-12T00:42:07.330Z"
+        }
+    ]
+}   
