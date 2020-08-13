@@ -63,7 +63,8 @@ const quizzes = async function(req, res){
     //Search Query
     var search = req.query.search;
     var SEARCH_RESULT_REGEXP = new RegExp(search);
-   
+    var LATEST_ID = -1;
+    
     let query = {};
    
         
@@ -74,7 +75,7 @@ const quizzes = async function(req, res){
     Quiz.find(query)
         .limit(limit)
         .skip(page * limit)
-        .sort({ name: 'asc' })
+        .sort({ _id : LATEST_ID })
         .exec(function(err, result) {
     Quiz.count(query).exec(function(err, count) {
         utilWs.sendSuccess('qg.quizzes', {
