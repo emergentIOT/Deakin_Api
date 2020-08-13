@@ -64,7 +64,7 @@
 
 
   <!--Pagination div-->
-  <div>
+  <div *ngIf="hidePagination">
   <pagination-controls maxSize = "6" directionLinks = "true" (pageChange) = "pageChange($event)"></pagination-controls>
   </div>
 

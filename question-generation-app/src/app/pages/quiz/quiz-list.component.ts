@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, throwError } from 'rxjs';
 import { IQuizList } from 'src/app/interfaces/IQuizList';
 import { IQuiz } from 'src/app/interfaces/iQuiz';
 import { QuizService } from 'src/app/services/quiz.service';
@@ -19,19 +19,19 @@ export class QuizListComponent implements OnInit {
 
   //Limit the results 
   public pageNumber: number = 0;
-  public limit: number = 4;
+  public limit: number = 6;
   public total: number;
-
+  public hidePagination: boolean = true;
+  private LIMIT_FOR_HIDE_PAGINATION = 6;
   //Search bar
   public loading: boolean;
   public searchTerm = new Subject<string>();
   public searchResults: IQuizList;
-  public paginationElements: any;
   public errorMessage: any;
 
-  constructor(private _quizService: QuizService, private router: Router, private activatedRoute: ActivatedRoute) {
-    this.getQuizzes(this.pageNumber);
-  }
+  constructor(private _quizService: QuizService, 
+    private router: Router, 
+    private activatedRoute: ActivatedRoute) {}
 
   ngOnInit() {
     this.search();
@@ -39,7 +39,7 @@ export class QuizListComponent implements OnInit {
     this._quizService.listQuizzes(this.pageNumber, this.limit).subscribe((data : IQuizList) => {
       this.loading = false;
       this.quizList = data;
-      console.log("ng on init" + this.quizList);
+      this.total = data.totalCount;
     });
   }
 
@@ -57,7 +57,7 @@ export class QuizListComponent implements OnInit {
         return e.target.value;
       }), 
       debounceTime(400),
-      distinctUntilChanged(),
+      distinctUntilChanged(),  
       switchMap(searchInput => {
         this.loading = true;
         return this._quizService.listQuizzes(0, this.limit, searchInput);
@@ -66,8 +66,13 @@ export class QuizListComponent implements OnInit {
       this.loading = false;
       this.quizList = searchResults;
       this.total = searchResults.totalCount;
-      console.log("search" + this.quizList);
-    })
+      if(this.total < this.LIMIT_FOR_HIDE_PAGINATION){
+        this.hidePagination = false;
+      }
+      else {
+        this.hidePagination = true;
+      }
+     })
   }
 
 
@@ -86,7 +91,6 @@ export class QuizListComponent implements OnInit {
         this.loading = false;
         this.total = data.totalCount;
         this.quizList = data;
-        
       }
     )
   }
