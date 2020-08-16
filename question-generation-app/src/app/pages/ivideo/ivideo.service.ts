@@ -7,6 +7,7 @@ import { handleError } from '../../shared/data/util-http';
 import { IResponse } from '../../interfaces/iResponse';
 import { Observable, Subject, interval, Subscription } from 'rxjs';
 import { isEmpty } from 'npm-stringutils';
+import { IVideo } from 'src/app/interfaces/IVideo';
 
 @Injectable({
   providedIn: 'root'
@@ -15,17 +16,26 @@ export class IVideoService {
 
   private CHECK_FOR_QUIZ_INTERVAL_SECONDS = 3;
 
-  private apiUrlIVideos = '';//this.appConfigService.apiUrl + '/api/v1/iv/ivideos';
-
+  private apiUrlIVideos = this.appConfigService.apiUrl + '/mock-data/ivideo/ivideo-list.json';
 
   constructor(
     private http: HttpClient,
     private appConfigService: AppConfigService
   ) {}
 
+  getIVideo(videoId : string) : Observable<IVideo> {
+    return this.listIVideos().pipe(map<IVideoList, IVideo>( iVideoList => {
+      return iVideoList.data.find(iVideo => iVideo._id === videoId);
+    }));
+  }
+
+  getTranscription(iVideo : IVideo) : Observable<any> {
+    return this.http.get<any>(this.appConfigService.apiUrl + iVideo.transcriptionUrl);
+  }
+
   listIVideos() : Observable<IVideoList> {
-    return this.http.get<IVideoList>('assets/mock-data/ivideo/ivideo-list.json');
-    // return this.http.get<IVideoList>(this.apiUrlIVideos).pipe(publishReplay(1), refCount());
+    // return this.http.get<IVideoList>('assets/mock-data/ivideo/ivideo-list.json');
+    return this.http.get<IVideoList>(this.apiUrlIVideos).pipe(publishReplay(1), refCount());
   }
 
 

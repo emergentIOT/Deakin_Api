@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { IVideoService } from './ivideo.service';
 
-describe('QuizService', () => {
+describe('IVideoService', () => {
   let service: IVideoService;
 
   beforeEach(() => {
@@ -13,4 +13,12 @@ describe('QuizService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  // it('getIVideo', (done) => {
+  //   service.getIVideo("001").subscribe( iVideo => {
+  //     console.log("ivideo", iVideo);
+  //     expect(iVideo).toBeDefined();
+  //     done();
+  //   });
+  // });
 });

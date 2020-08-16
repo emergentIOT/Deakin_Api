@@ -45,6 +45,8 @@ const installWebServices = function(server, done) {
         server.installAPIDocsWs('raml/api-combined.raml');
 
         qaWs.installQaWs(server);
+
+        server.addStatic('/mock-data', 'mock-data');
        
         done(null, server);
         return;

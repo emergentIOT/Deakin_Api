@@ -1,5 +1,5 @@
-<div class="container">
-  <div class="row">
+<div class="container des-margin-top-large des-margin-bottom-large">
+  <!-- <div class="row">
     <div class="col-md-3">
       <div class="form-group">
         <label for="video">Video</label>
@@ -12,19 +12,20 @@
         <input type="file" (change)="onFileUpload($event)" class="form-control" id="video" placeholder="Email">
       </div>
     </div>
-  </div>
+  </div> -->
+    
+  <ng-container *ngIf="isLoaded">
 
-  <ng-container *ngIf="Video && JSON">
     <div class="row">
       <div class="col-md-8">
         <video id="myvideo" width="100%" height="500" controls autoplay>
-          <source [src]="VideoUrl" type="video/mp4">
+          <source [src]="videoDataUrl" type="video/mp4">
         </video>
-        <button *ngIf="PauseTime" (click)="playOnPhrase()">play the answer</button>
+        <button *ngIf="pauseTime" (click)="playOnPhrase()">play the answer</button>
       </div>
       <div class="col-md-4">
         <div (click)="onTextClick($event)" id="textToDisplay">
-          <span *ngFor="let txt of Blocks" [ngClass]="{'highlight':txt.IsSelected,'gray':txt.isGray}"
+          <span *ngFor="let txt of transcriptionBlocks" [ngClass]="{'highlight':txt.isSelected,'gray':txt.isGray}"
             [attr.data-sectionvalue]="txt.i">
             &nbsp;{{txt.w}}
           </span>
@@ -38,7 +39,7 @@
       <div class="col-md-8">
         <div class="form-group">
           <label for="video">Search</label>
-          <textarea [(ngModel)]="SearchContent" class="form-control">
+          <textarea [(ngModel)]="searchContent" class="form-control">
 
         </textarea>
         </div>
@@ -47,13 +48,13 @@
 
     <button type="button" class="btn btn-primary" (click)="onSearch()">Search</button>&nbsp;
     <button type="button" class="btn btn-info" (click)="getKeys()">Get Answer Tokens</button>&nbsp;
-    <button type="button" class="btn btn-danger" (click)="getResponse()" [disabled]="!Keys.length">Get
+    <button type="button" class="btn btn-danger" (click)="getResponse()" [disabled]="!keys.length">Get
       Questions</button>
 
-    <div class="row m-b-15" *ngIf="Keys.length">
+    <div class="row m-b-15" *ngIf="keys.length">
       <div class="col-md-12">
         <div style="float:right;">
-          <span *ngFor="let key of Keys;let i=index" class="badge badge-primary f-s-16 m-r-5">{{key}} <span
+          <span *ngFor="let key of keys;let i=index" class="badge badge-primary f-s-16 m-r-5">{{key}} <span
               (click)="removeKey(i)">x</span>
           </span>
         </div>
@@ -61,8 +62,8 @@
       </div>
     </div>
 
-    <div *ngIf="Responses.length">
-      <div class="row m-b-15" *ngFor="let res of Responses;let i=index">
+    <div *ngIf="responses.length">
+      <div class="row m-b-15" *ngFor="let res of responses;let i=index">
         <div class="col-md-12">
           <div style="float:right;">
             <span class="badge badge-danger f-s-16 m-r-5">{{res}}</span>
