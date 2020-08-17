@@ -18,7 +18,7 @@ export class QuizListComponent implements OnInit {
   public quizList: IQuizList;// = { list: IQuiz[] };
 
   //Limit the results 
-  public pageNumber: number = 0;
+  public pageNumber: number = 1;
   public limit: number = 6;
   public total: number;
   public hidePagination: boolean = true;
@@ -61,7 +61,7 @@ export class QuizListComponent implements OnInit {
       distinctUntilChanged(),  
       switchMap(searchInput => {
         this.loading = true;
-        return this._quizService.listQuizzes(this.SEARCH_PAGE_NUMBER, this.limit, searchInput);
+        return this._quizService.listQuizzes(1, this.limit, searchInput);
       })
     ).subscribe((searchResults : IQuizList) => {
       this.loading = false;
@@ -85,9 +85,9 @@ export class QuizListComponent implements OnInit {
 
   //Update the page number.
   getQuizzes(p: number){
-    let page = (p - 1);
+    
     this.loading = true;
-    this._quizService.listQuizzes(page, this.limit).subscribe(
+    this._quizService.listQuizzes(p, this.limit).subscribe(
       (data : IQuizList) => {
         this.loading = false;
         this.total = data.totalCount;
