@@ -23,7 +23,7 @@ export class QuizListComponent implements OnInit {
   public total: number;
   public hidePagination: boolean = true;
   private LIMIT_FOR_HIDE_PAGINATION = 6;
-  private SEARCH_PAGE_NUMBER = 0;
+  private SEARCH_PAGE_NUMBER = 1;
   //Search bar
   public loading: boolean;
   public searchTerm = new Subject<string>();
@@ -36,12 +36,7 @@ export class QuizListComponent implements OnInit {
 
   ngOnInit() {
     this.search();
-    this.loading = true;
-    this._quizService.listQuizzes(this.pageNumber, this.limit).subscribe((data : IQuizList) => {
-      this.loading = false;
-      this.quizList = data;
-      this.total = data.totalCount;
-    });
+    this.getQuizzes(this.pageNumber, this.limit);
   }
 
   
@@ -50,7 +45,7 @@ export class QuizListComponent implements OnInit {
     search: new FormControl("", Validators.required),
   });
 
-  //Search quizzes
+  //Search stream
   public search(){
     this.searchTerm.pipe(
       map((e: any) => {
@@ -59,39 +54,33 @@ export class QuizListComponent implements OnInit {
       }), 
       debounceTime(400),
       distinctUntilChanged(),  
-      switchMap(searchInput => {
-        this.loading = true;
-        return this._quizService.listQuizzes(1, this.limit, searchInput);
-      })
-    ).subscribe((searchResults : IQuizList) => {
-      this.loading = false;
-      this.quizList = searchResults;
-      this.total = searchResults.totalCount;
-      if(this.total < this.LIMIT_FOR_HIDE_PAGINATION){
-        this.hidePagination = false;
-      }
-      else {
-        this.hidePagination = true;
-      }
-     })
+    ).subscribe(searchInput => {
+      this.getQuizzes(this.SEARCH_PAGE_NUMBER, this.limit, searchInput);
+    })
   }
 
 
   //Page change event from pagination div.
   pageChange(pageNo: number){
     this.pageNumber = pageNo;
-    this.getQuizzes(this.pageNumber);
+    this.getQuizzes(this.pageNumber, this.limit);
   }
 
-  //Update the page number.
-  getQuizzes(p: number){
+  //Subscribe to Quizzes
+  getQuizzes(page: number, limit: number, searchInput?: string){
     
     this.loading = true;
-    this._quizService.listQuizzes(p, this.limit).subscribe(
+    this._quizService.listQuizzes(page, limit, searchInput).subscribe(
       (data : IQuizList) => {
         this.loading = false;
         this.total = data.totalCount;
         this.quizList = data;
+        if(this.total < this.LIMIT_FOR_HIDE_PAGINATION){
+          this.hidePagination = false;
+        }
+        else {
+          this.hidePagination = true;
+        }
       }
     )
   }
