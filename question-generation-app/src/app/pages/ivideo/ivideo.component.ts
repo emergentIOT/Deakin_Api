@@ -4,6 +4,7 @@ import { IVideoService } from './ivideo.service';
 import { IVideo } from 'src/app/interfaces/IVideo';
 import { ChipList, ChipModel } from '@syncfusion/ej2-angular-buttons';
 import { AppConfigService } from '../../services/app-config/app-config.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: ' ivideo',
@@ -24,41 +25,51 @@ export class  IVideoComponent implements OnInit {
   searchContent: string;
   questionAnswerList: any[] = [];
   questionAnswerChipList: string[] = [];
+  iVideoId : string;
 
-  constructor(private http: HttpClient, private iVideoService : IVideoService, private appConfigService: AppConfigService) {
+  constructor(private http: HttpClient, 
+    private iVideoService : IVideoService, 
+    private appConfigService: AppConfigService,
+    private route: ActivatedRoute) {
 
   }
 
   ngOnInit() {
-
-    this.iVideoService.getIVideo("001").subscribe(iVideo => {
+    this.route.paramMap.subscribe(params => {
+      this.iVideoId = params.get('iVideoId');
       
-      this.iVideo = iVideo;
+      if(this.iVideoId){
+        this.iVideoService.getIVideo(this.iVideoId).subscribe(iVideo => {
       
-      this.iVideoService.getTranscription(iVideo).subscribe(transcription => {
-        this.transcriptionBlocks = transcription;
-        this.transcriptionBlocks.forEach((b) => {
-          this.transcriptionText += " " + b.w;
-        });
-        this.loadVideo(this.appConfigService.apiUrl + this.iVideo.videoUrl, () => {
-          this.isLoaded = true;
-        });
-      });
-
-    })    
+          this.iVideo = iVideo;
+          
+          this.iVideoService.getTranscription(iVideo).subscribe(transcription => {
+            this.transcriptionBlocks = transcription;
+            this.transcriptionBlocks.forEach((b) => {
+              this.transcriptionText += " " + b.w;
+            });
+            this.loadVideo(this.appConfigService.apiUrl + this.iVideo.videoUrl, () => {
+              this.isLoaded = true;
+            });
+          });
     
-    setInterval(() => {
-      if (this.videoElement) {
-        var time = this.videoElement.currentTime * 1000;
-        for (var i = 0; i < this.transcriptionBlocks.length; i++) {
-          if (this.transcriptionBlocks[i].s <= time && this.transcriptionBlocks[i].e >= time) {
-            this.transcriptionBlocks[i].isSelected = true;
-          } else {
-            this.transcriptionBlocks[i].isSelected = false;
+        })    
+        
+        setInterval(() => {
+          if (this.videoElement) {
+            var time = this.videoElement.currentTime * 1000;
+            for (var i = 0; i < this.transcriptionBlocks.length; i++) {
+              if (this.transcriptionBlocks[i].s <= time && this.transcriptionBlocks[i].e >= time) {
+                this.transcriptionBlocks[i].isSelected = true;
+              } else {
+                this.transcriptionBlocks[i].isSelected = false;
+              }
+            }
           }
-        }
+        }, 200);
       }
-    }, 200);
+    });
+   
 
   }
 
