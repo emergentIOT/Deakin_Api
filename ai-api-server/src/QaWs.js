@@ -57,7 +57,7 @@ const saveQuiz = async function(req, res) {
  */
 const quizzes = async function(req, res){
     //If No parameter comes in , keep it default skip=0 & limit=10  
-    let page = utils.notNull(Number(req.query.page), 0);
+    let page = utils.notNull(Number(req.query.page), 1);
     let limit = utils.notNull(Number(req.query.limit), 6);
     
     //Search Query
@@ -74,7 +74,7 @@ const quizzes = async function(req, res){
           
     Quiz.find(query)
         .limit(limit)
-        .skip(page * limit)
+        .skip((page - 1) * limit)
         .sort({ _id : LATEST_ID })
         .exec(function(err, result) {
     Quiz.count(query).exec(function(err, count) {
