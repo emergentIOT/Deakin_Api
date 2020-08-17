@@ -18,10 +18,36 @@
 
     <div class="row">
       <div class="col-md-8">
-        <video id="myvideo" width="100%" height="500" controls autoplay>
+        <video id="myvideo" width="100%" controls>
           <source [src]="videoDataUrl" type="video/mp4">
         </video>
-        <button *ngIf="pauseTime" (click)="playOnPhrase()">play the answer</button>
+
+        <!-- <button *ngIf="pauseTime" (click)="playOnPhrase()">play the answer</button> -->
+
+        <form (ngSubmit)="onSearch()">
+          <div class="des-form-group">
+            <!-- <label for="video">Search</label> -->
+            <!-- <textarea [(ngModel)]="searchContent" class="form-control"> -->
+            <!-- </textarea> -->
+            <!-- <des-button-group spacing="none"> -->
+
+              <input placeholder="Ask a question..." type="text" 
+                [(ngModel)]="searchContent" name="searchContent" id="searchContent" 
+                required class="des-form-item-field" />   
+                <des-button style="position: absolute; right: 0;" shape="round-right" size="small">Ask Question</des-button>
+            
+            <!-- </des-button-group> -->
+                
+          </div>
+        </form>
+
+        <div class="row align-items-end">
+          <ejs-chiplist cssClass="e-success" [chips]="questionAnswerChipList" #chipsList enableDelete="true" 
+              (click)="playAnswer($event)" (delete)="deleteQuestionAnswer($event)">
+          </ejs-chiplist>
+        </div>
+
+
       </div>
       <div class="col-md-4">
         <div (click)="onTextClick($event)" id="textToDisplay">
@@ -37,16 +63,11 @@
     </div> -->
     <div class="row">
       <div class="col-md-8">
-        <div class="form-group">
-          <label for="video">Search</label>
-          <textarea [(ngModel)]="searchContent" class="form-control">
-
-        </textarea>
-        </div>
+        
       </div>
     </div>
 
-    <button type="button" class="btn btn-primary" (click)="onSearch()">Search</button>&nbsp;
+    <!-- <button type="button" class="btn btn-primary" (click)="onSearch()">Search</button>&nbsp;
     <button type="button" class="btn btn-info" (click)="getKeys()">Get Answer Tokens</button>&nbsp;
     <button type="button" class="btn btn-danger" (click)="getResponse()" [disabled]="!keys.length">Get
       Questions</button>
@@ -60,17 +81,7 @@
         </div>
 
       </div>
-    </div>
-
-    <div *ngIf="responses.length">
-      <div class="row m-b-15" *ngFor="let res of responses;let i=index">
-        <div class="col-md-12">
-          <div style="float:right;">
-            <span class="badge badge-danger f-s-16 m-r-5">{{res}}</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    </div> -->
 
 
   </ng-container>

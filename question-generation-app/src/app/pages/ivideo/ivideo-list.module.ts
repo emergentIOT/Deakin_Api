@@ -9,6 +9,7 @@ import { DesAlertPanelModule } from '@des-ds-dev-kit/components-browser-ng';
 import { DesCardModule, DesButtonModule } from '@des-ds-dev-kit/components-global-ng';
 import { ChipListModule } from '@syncfusion/ej2-angular-buttons';
 import { WelcomePanelModule } from '../home/welcome-panel/welcome-panel.module';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -22,7 +23,7 @@ const routes: Routes = [
   declarations: [IVideoComponent, IVideoListComponent],
   imports: [
     CommonModule, DesCardModule, DesButtonModule, DesAlertPanelModule, ChipListModule,
-    WelcomePanelModule,
+    WelcomePanelModule, FormsModule,
     RouterModule.forChild(routes)
   ],
   exports: [
