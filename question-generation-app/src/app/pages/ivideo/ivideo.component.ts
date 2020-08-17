@@ -16,7 +16,7 @@ export class  IVideoComponent implements OnInit {
   // Video: any;
   // JSON: any;
   videoDataUrl: any;
-  videoElement: any;
+  $videoElement: any;
   title = 'VideoNavigation';
   transcriptionBlocks = [];
   transcriptionText: string = '';
@@ -41,9 +41,6 @@ export class  IVideoComponent implements OnInit {
           this.transcriptionText += " " + b.w;
         });
         this.loadVideo(this.appConfigService.apiUrl + this.iVideo.videoUrl, () => {
-
-          this.videoElement = document.getElementById('myvideo') as any;
-
           this.isLoaded = true;
         });
       });
@@ -56,14 +53,20 @@ export class  IVideoComponent implements OnInit {
         for (var i = 0; i < this.transcriptionBlocks.length; i++) {
           if (this.transcriptionBlocks[i].s <= time && this.transcriptionBlocks[i].e >= time) {
             this.transcriptionBlocks[i].isSelected = true;
-          }
-          else {
+          } else {
             this.transcriptionBlocks[i].isSelected = false;
           }
         }
       }
-    }, 1000);
+    }, 200);
 
+  }
+
+  get videoElement() {
+    if (!this.$videoElement) {
+      this.$videoElement = document.getElementById('myvideo');
+    }
+    return this.$videoElement;
   }
 
   loadVideo(videoDataUrl : string, cb) {
@@ -75,10 +78,8 @@ export class  IVideoComponent implements OnInit {
         var reader = new FileReader();
         reader.readAsDataURL(request.response);
         reader.onload =  (e) => {
-            console.log('DataURL:', e.target.result);
             this.videoDataUrl = reader.result;
             cb();
-
         };
     };
     request.send();
@@ -104,15 +105,11 @@ export class  IVideoComponent implements OnInit {
   }
 
   playVideoOnText(selection) {
-    this.videoElement = document.getElementById('myvideo') as any;
     for (var i = 0; i < this.transcriptionBlocks.length; i++) {
       if (this.transcriptionBlocks[i].i == selection.value) {
         var time = this.transcriptionBlocks[i].s;
         if (time) {
-          this.videoElement.play();
-          this.videoElement.pause();
-          this.videoElement.currentTime = time / 1000;
-          this.videoElement.play();
+          this.playVideo(time);
         }
         break;
       }
@@ -127,18 +124,13 @@ export class  IVideoComponent implements OnInit {
       // no phrase
       return;
     }
-
     var words = phrase.split(' ');
-    this.videoElement = document.getElementById('myvideo') as any;
     for (var i = 0; i < this.transcriptionBlocks.length; i++) {
 
       if (this.transcriptionBlocks[i].w.includes(words[0])) {
         var time = this.transcriptionBlocks[i].s;
         if (time) {
-          this.videoElement.play();
-          this.videoElement.pause();
-          this.videoElement.currentTime = time / 1000;
-          this.videoElement.play();
+          this.playVideo(time);
         }
 
         break;
@@ -248,27 +240,33 @@ export class  IVideoComponent implements OnInit {
     });
   }
 
+  playVideo(time) {
+    console.log('playVideo', time);
+    this.videoElement.play();
+    this.videoElement.pause();      
+    this.videoElement.currentTime = time / 1000;
+    this.videoElement.play();
+  }
+
+  pauseVideo(time) {
+    this.videoElement.play();
+    this.videoElement.pause();      
+    this.videoElement.currentTime = time / 1000;
+    this.videoElement.pause();
+  }
+  
 
   pauseVideoOnPhrase(i) {
     var time = this.transcriptionBlocks[i].s;
     if (time) {
-
-      this.videoElement.play();
-      this.videoElement.pause();      
-      this.videoElement.currentTime = ((time - 2000) / 1000);
-      this.videoElement.pause();
-
+      this.pauseVideo(time - 2000);
       this.pauseTime = time;
     }
   }
 
   playOnPhrase() {
 
-    this.videoElement.play();
-    this.videoElement.pause();
-    this.videoElement.currentTime = ((this.pauseTime - 2000) / 1000);
-    this.videoElement.play();
-
+    this.playVideo(this.pauseTime - 2000);
     this.pauseTime = null;
 
     this.transcriptionBlocks.map(c => {
