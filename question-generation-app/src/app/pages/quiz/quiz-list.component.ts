@@ -55,7 +55,7 @@ export class QuizListComponent implements OnInit {
       debounceTime(400),
       distinctUntilChanged(),  
     ).subscribe(searchInput => {
-      this.getQuizzes(this.SEARCH_PAGE_NUMBER, this.limit, searchInput);
+      this.getQuizzes(this.pageNumber, this.limit, searchInput);
     })
   }
 
