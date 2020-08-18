@@ -56,8 +56,8 @@ export class  IVideoComponent implements OnInit {
             });
 
             // TEST
-            this.searchPhrase = "core body";
-            this.onSearch();
+            // this.searchPhrase = "core body";
+            // this.onSearch();
           });
     
         })    
