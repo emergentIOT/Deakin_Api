@@ -16,7 +16,7 @@ export class IVideoService {
 
   private CHECK_FOR_QUIZ_INTERVAL_SECONDS = 3;
 
-  private apiUrlIVideos = this.appConfigService.apiUrl + '/mock-data/ivideo/ivideo-list.json';
+  private apiUrlIVideos = this.appConfigService.apiUrl + '/mock-data/ivideo/ivideo-list';
 
   constructor(
     private http: HttpClient,
@@ -34,7 +34,6 @@ export class IVideoService {
   }
 
   listIVideos() : Observable<IVideoList> {
-    // return this.http.get<IVideoList>('assets/mock-data/ivideo/ivideo-list.json');
     return this.http.get<IVideoList>(this.apiUrlIVideos).pipe(publishReplay(1), refCount());
   }
 
