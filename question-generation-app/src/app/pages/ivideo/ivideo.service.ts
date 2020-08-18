@@ -16,7 +16,7 @@ export class IVideoService {
 
   private CHECK_FOR_QUIZ_INTERVAL_SECONDS = 3;
 
-  private apiUrlIVideos = this.appConfigService.apiUrl + '/mock-data/ivideo/ivideo-list';
+  private apiUrlIVideos = this.appConfigService.apiUrl + '/mock-data/ivideo/ivideo-list.json';
 
   constructor(
     private http: HttpClient,
