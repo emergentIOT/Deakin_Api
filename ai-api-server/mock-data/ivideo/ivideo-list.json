@@ -2,15 +2,6 @@
     "success": true,
     "data": [
         {
-            "_id": "001",
-            "name": "Test 1",
-            "description": "Interactive web component",
-            "transcriptionUrl": "/mock-data/ivideo/sample001.json",
-            "videoUrl": "/mock-data/ivideo/sample001.mp4",
-            "dateCreated": "2020-08-12T00:42:07.330Z",
-            "dateModified": "2020-08-12T00:42:07.330Z"
-        },
-        {
             "_id": "002",
             "name": "Body of Knowledge",
             "description": "Interactive web component",

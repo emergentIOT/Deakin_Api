@@ -4,7 +4,8 @@ import { IVideoService } from './ivideo.service';
 import { IVideo } from 'src/app/interfaces/IVideo';
 import { ChipList, ChipModel } from '@syncfusion/ej2-angular-buttons';
 import { AppConfigService } from '../../services/app-config/app-config.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { isEmpty } from 'npm-stringutils';
 
 @Component({
   selector: ' ivideo',
@@ -22,15 +23,17 @@ export class  IVideoComponent implements OnInit {
   title = 'VideoNavigation';
   transcriptionBlocks = [];
   transcriptionText: string = '';
-  searchContent: string;
+  searchPhrase: string;
   questionAnswerList: any[] = [];
   questionAnswerChipList: string[] = [];
   iVideoId : string;
+  isSearching : boolean = false;
 
   constructor(private http: HttpClient, 
     private iVideoService : IVideoService, 
     private appConfigService: AppConfigService,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute, 
+    private router: Router) {
 
   }
 
@@ -51,6 +54,10 @@ export class  IVideoComponent implements OnInit {
             this.loadVideo(this.appConfigService.apiUrl + this.iVideo.videoUrl, () => {
               this.isLoaded = true;
             });
+
+            // TEST
+            this.searchPhrase = "core body";
+            this.onSearch();
           });
     
         })    
@@ -60,13 +67,14 @@ export class  IVideoComponent implements OnInit {
             var time = this.videoElement.currentTime * 1000;
             for (var i = 0; i < this.transcriptionBlocks.length; i++) {
               if (this.transcriptionBlocks[i].s <= time && this.transcriptionBlocks[i].e >= time) {
-                this.transcriptionBlocks[i].isSelected = true;
+                this.transcriptionBlocks[i].isPlaying = true;
               } else {
-                this.transcriptionBlocks[i].isSelected = false;
+                this.transcriptionBlocks[i].isPlaying = false;
               }
             }
           }
         }, 200);
+
       }
     });
    
@@ -97,74 +105,32 @@ export class  IVideoComponent implements OnInit {
 
   }
 
-  getSelectText(e) {
-    var range = document.createRange();
-    range.selectNode(e.target);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-
-    return { text: e.target.innerText, value: e.target.getAttribute("data-sectionvalue") };
+  onTranscriptionBlockClick(block) {
+    this.playVideo(block.s, false);
   }
 
-  getSeconds(time) {
-    var hms = time;
-    var a = hms.split(':');
-
-    var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
-
-    return seconds;
-  }
-
-  playVideoOnText(selection) {
-    for (var i = 0; i < this.transcriptionBlocks.length; i++) {
-      if (this.transcriptionBlocks[i].i == selection.value) {
-        this.playVideo(this.transcriptionBlocks[i].s, false);
-        break;
-      }
-    }
-  }
-
-
-
-  // playVideoOnPhrase(phrase) {
-
-  //   if (!phrase.trim()) {
-  //     // no phrase
-  //     return;
-  //   }
-  //   var words = phrase.split(' ');
-  //   for (var i = 0; i < this.transcriptionBlocks.length; i++) {
-
-  //     if (this.transcriptionBlocks[i].w.includes(words[0])) {
-  //       var time = this.transcriptionBlocks[i].s;
-  //       if (time) {
-  //         this.playVideo(time, false);
-  //       }
-
-  //       break;
-
-  //     }
-  //   }
-  // }
-
-  onTextClick(e) {
-    var selectedText = this.getSelectText(e);
-    this.playVideoOnText(selectedText);
+  onGenerateQuiz() {
+    this.router.navigate(['edit-quiz', {
+        quizName: this.iVideo.name, 
+        quizText: this.transcriptionText 
+      }]);
   }
 
   onSearch() {
-    console.log('onSearch')
+    if (isEmpty(this.searchPhrase)) {
+      return;
+    }
+    this.isSearching = true;
     var text = this.transcriptionText;
-    var searchContent = this.searchContent;
     let questionAnswer = {
-      question: searchContent,
-      matchedBlocks: null,
+      question: this.searchPhrase,
+      matchedTranscriptionBlockIndexes: null,
       answerText: null
     }
 
     const headers = {'Content-Type': 'application/x-www-form-urlencoded'}
     const data = "context=" + encodeURIComponent(this.transcriptionText)
-      + "&question_to=" + this.searchContent
+      + "&question_to=" + this.searchPhrase
       + "&mode=qna";
 
     this.http.post("https://des-inno-qnabot.its.deakin.edu.au/", data, {
@@ -179,8 +145,6 @@ export class  IVideoComponent implements OnInit {
       var matchedBlockIndexes = [];
 
       this.transcriptionBlocks.forEach((item: any, index) => {
-
-        item.isGray = false;
 
         if (!matchedBlockIndexes.length) {
           matchedBlockIndexes = [];
@@ -205,43 +169,56 @@ export class  IVideoComponent implements OnInit {
   
       });
 
-      matchedBlockIndexes.forEach((item) => {
-        this.transcriptionBlocks[item].isGray = true;
-      });
-
 
       if (matchedBlockIndexes.length > 0) {
-        questionAnswer.matchedBlocks = matchedBlockIndexes;
-        this.addQuestionAnswer(questionAnswer)
-        this.pauseVideo(matchedBlockIndexes[0].s);
+        questionAnswer.matchedTranscriptionBlockIndexes = matchedBlockIndexes;
+        this.addQuestionAnswer(questionAnswer);
+        this.hightlightSearchResult(matchedBlockIndexes);
+        // TOOK out, doesn't seem to be user friendly
+        // let transcriptionBlock = this.transcriptionBlocks[questionAnswer.matchedTranscriptionBlockIndexes[0]];
+        // this.pauseVideo(transcriptionBlock.s);
       }
-    }, error => {
 
+      this.isSearching = false;
+    }, error => {
+      this.isSearching = false;
+      console.error(error);
     });
   }
 
-  // get questionAnswerList() : string[] {
-  //   console.log("questionAnswerList")
-  //   let answerList = [];
-  //   this.$questionAnswerList.forEach(item => {
-  //     answerList.push(item.answerText);
-  //   })
-  //   return answerList;
-  // }
+  hightlightSearchResult(matchedBlockIndexes : number[]) {
+    this.transcriptionBlocks.forEach((item: any, index) => {
+      item.isSearchResult = false;
+    });
+    matchedBlockIndexes.forEach((blockIndex) => {
+      this.transcriptionBlocks[blockIndex].isSearchResult = true;
+    });
+  }
 
   playAnswer({text, index}) {
-    console.log("click", text, index);
-    let questionAnswer = this.questionAnswerList[index];
-    if (questionAnswer && questionAnswer.matchedBlocks) {
-      this.playVideo(questionAnswer.matchedBlocks[0], true);
+    if (index >= 0) {
+      let questionAnswer = this.questionAnswerList[index];
+      if (questionAnswer && questionAnswer.matchedTranscriptionBlockIndexes) {
+        // take the first word / block in the matched blocks and play
+        let transcriptionBlock = this.transcriptionBlocks[questionAnswer.matchedTranscriptionBlockIndexes[0]];
+        this.playVideo(transcriptionBlock.s, true);
+        this.hightlightSearchResult(questionAnswer.matchedTranscriptionBlockIndexes);
+      }
     }
   }
 
   addQuestionAnswer(questionAnswer) {
-    console.log("addQuestionAns")
     this.questionAnswerList.push(questionAnswer);
-    this.questionAnswerChipList.push(questionAnswer.answerText);
+    this.questionAnswerChipList.push(
+      this.upperCaseFirst(questionAnswer.question) + "? " + questionAnswer.answerText);
     this.chipsList.refresh();
+  }
+
+  upperCaseFirst(str) {
+    if (isEmpty(str)) {
+      return str;
+    }
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
   deleteQuestionAnswer({text, index}) {
@@ -250,6 +227,10 @@ export class  IVideoComponent implements OnInit {
   }
 
   playVideo(time, beginningOfSentence) {
+    console.log('playVideo', time, beginningOfSentence);
+    if (beginningOfSentence) {
+      time = Math.max(0, time - 1000);
+    }
     if (time >= 0) {
       this.videoElement.play();
       this.videoElement.pause();      
@@ -259,6 +240,7 @@ export class  IVideoComponent implements OnInit {
   }
 
   pauseVideo(time) {
+    console.log('pauseVideo', time);
     if (time >= 0) {
       this.videoElement.play();
       this.videoElement.pause();      
@@ -267,22 +249,5 @@ export class  IVideoComponent implements OnInit {
     }
   }
   
-
-  // pauseVideoOnPhrase(i) {
-  //   var time = this.transcriptionBlocks[i].s;
-  //   if (time) {
-  //     this.pauseVideo(time - 2000);
-  //   }
-  // }
-
-  // playOnPhrase(time) {
-
-  //   this.playVideo(time - 2000);
-
-  //   this.transcriptionBlocks.map(c => {
-  //     c.isGray = false;
-  //   });
-
-  // }
 
 }

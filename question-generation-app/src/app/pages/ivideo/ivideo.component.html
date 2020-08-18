@@ -1,88 +1,52 @@
 <div class="container des-margin-top-large des-margin-bottom-large">
-  <!-- <div class="row">
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="video">Video</label>
-        <input type="file" (change)="onVideoUpload($event)" class="form-control" id="video" placeholder="Email">
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="video">JSON</label>
-        <input type="file" (change)="onFileUpload($event)" class="form-control" id="video" placeholder="Email">
-      </div>
-    </div>
-  </div> -->
     
   <ng-container *ngIf="isLoaded">
 
+    <div class="row des-margin-bottom-medium">
+      <div class="col-md-7">
+        <h3>{{iVideo?.name}}</h3>
+      </div>
+      <div class="col-md-5">
+        <des-button style="position: absolute; right: 0;" 
+            (click)="onGenerateQuiz()" shape="round-both" size="small">Generate Quiz</des-button>
+
+      </div>
+    </div>
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-7">
         <video id="myvideo" width="100%" controls>
           <source [src]="videoDataUrl" type="video/mp4">
         </video>
 
-        <!-- <button *ngIf="pauseTime" (click)="playOnPhrase()">play the answer</button> -->
-
         <form (ngSubmit)="onSearch()">
           <div class="des-form-group">
-            <!-- <label for="video">Search</label> -->
-            <!-- <textarea [(ngModel)]="searchContent" class="form-control"> -->
-            <!-- </textarea> -->
-            <!-- <des-button-group spacing="none"> -->
 
-              <input placeholder="Ask a question..." type="text" 
-                [(ngModel)]="searchContent" name="searchContent" id="searchContent" 
-                required class="des-form-item-field" />   
-                <des-button style="position: absolute; right: 0;" shape="round-right" size="small">Ask Question</des-button>
-            
-            <!-- </des-button-group> -->
-                
+            <input placeholder="Ask a question..." type="text"
+                [disabled]="isSearching" [(ngModel)]="searchPhrase" name="searchPhrase" id="searchPhrase" 
+                required class="des-form-item-field" /> 
+
+            <des-button style="position: absolute; right: 0;" 
+                  [disabled]="isSearching ? 'disabled' : null" shape="round-right" size="small">Ask Question</des-button>
+    
           </div>
         </form>
 
         <div class="row align-items-end">
-          <ejs-chiplist cssClass="e-success" [chips]="questionAnswerChipList" #chipsList enableDelete="true" 
+           <!--  -->
+          <ejs-chiplist cssClass="e-success" avatarIconCss="far fa-play" [chips]="questionAnswerChipList" #chipsList enableDelete="true" 
               (click)="playAnswer($event)" (delete)="deleteQuestionAnswer($event)">
           </ejs-chiplist>
         </div>
 
 
       </div>
-      <div class="col-md-4">
-        <div (click)="onTextClick($event)" id="textToDisplay">
-          <span *ngFor="let txt of transcriptionBlocks" [ngClass]="{'highlight':txt.isSelected,'gray':txt.isGray}"
-            [attr.data-sectionvalue]="txt.i">
-            &nbsp;{{txt.w}}
-          </span>
+      <div class="col-md-5">
+        <div class="transcription-blocks-container">
+          <span (click)="onTranscriptionBlockClick(block)" class="transcription-block" *ngFor="let block of transcriptionBlocks" [ngClass]="{'highlight-playing':block.isPlaying, 'highlight-search-result':block.isSearchResult}"
+            [attr.data-sectionvalue]="block.i">{{block.w}} </span>
         </div>
       </div>
     </div>
-    <!-- <div class="row">
-     
-    </div> -->
-    <div class="row">
-      <div class="col-md-8">
-        
-      </div>
-    </div>
-
-    <!-- <button type="button" class="btn btn-primary" (click)="onSearch()">Search</button>&nbsp;
-    <button type="button" class="btn btn-info" (click)="getKeys()">Get Answer Tokens</button>&nbsp;
-    <button type="button" class="btn btn-danger" (click)="getResponse()" [disabled]="!keys.length">Get
-      Questions</button>
-
-    <div class="row m-b-15" *ngIf="keys.length">
-      <div class="col-md-12">
-        <div style="float:right;">
-          <span *ngFor="let key of keys;let i=index" class="badge badge-primary f-s-16 m-r-5">{{key}} <span
-              (click)="removeKey(i)">x</span>
-          </span>
-        </div>
-
-      </div>
-    </div> -->
-
 
   </ng-container>
 </div>
