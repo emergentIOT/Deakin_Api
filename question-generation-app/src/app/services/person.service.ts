@@ -4,6 +4,7 @@ import { IPerson } from '../interfaces/iPerson';
 import { AppConfigService } from './app-config/app-config.service';
 import { publishReplay, refCount } from 'rxjs/operators';
 import { StateService } from './state.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class PersonService {
     private stateObject: StateService
   ) {}
 
-  getPerson() {
+  getPerson() : Observable<IPerson> {
 
     return this.http.get<IPerson>('assets/mock-data/person.mock.json')
               .pipe(publishReplay(1), refCount());

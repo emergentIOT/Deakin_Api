@@ -20,6 +20,7 @@
 
 .nav-item {
   a {
+    color: white;
     display: block;
     text-decoration: none;
     &:visited {
@@ -29,6 +30,15 @@
     &:focus {
       color: var(--theme-primary, $fallback-primary);
     }
+  }
+}
+
+.nav-item-login {
+  position: absolute;
+  right: 5px;
+
+  a {
+    color: $fallback-primary;
   }
 }
 

@@ -1,0 +1,52 @@
+<div class="container des-margin-top-large des-margin-bottom-large">
+    
+  <ng-container *ngIf="isLoaded">
+
+    <div class="row des-margin-bottom-medium">
+      <div class="col-md-7">
+        <h3>{{iVideo?.name}}</h3>
+      </div>
+      <div class="col-md-5">
+        <des-button style="position: absolute; right: 0;" 
+            (click)="onGenerateQuiz()" shape="round-both" size="small">Generate Quiz</des-button>
+
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-7">
+        <video id="myvideo" width="100%" controls>
+          <source [src]="videoDataUrl" type="video/mp4">
+        </video>
+
+        <form (ngSubmit)="onSearch()">
+          <div class="des-form-group">
+
+            <input placeholder="Ask a question..." type="text"
+                [disabled]="isSearching" [(ngModel)]="searchPhrase" name="searchPhrase" id="searchPhrase" 
+                required class="des-form-item-field" /> 
+
+            <des-button style="position: absolute; right: 0;" 
+                  [disabled]="isSearching ? 'disabled' : null" shape="round-right" size="small">Ask Question</des-button>
+    
+          </div>
+        </form>
+
+        <div class="row align-items-end">
+           <!--  -->
+          <ejs-chiplist cssClass="e-success" avatarIconCss="far fa-play" [chips]="questionAnswerChipList" #chipsList enableDelete="true" 
+              (click)="playAnswer($event)" (delete)="deleteQuestionAnswer($event)">
+          </ejs-chiplist>
+        </div>
+
+
+      </div>
+      <div class="col-md-5">
+        <div class="transcription-blocks-container">
+          <span (click)="onTranscriptionBlockClick(block)" class="transcription-block" *ngFor="let block of transcriptionBlocks" [ngClass]="{'highlight-playing':block.isPlaying, 'highlight-search-result':block.isSearchResult}"
+            [attr.data-sectionvalue]="block.i">{{block.w}} </span>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+</div>

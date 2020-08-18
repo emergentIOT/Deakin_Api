@@ -1,0 +1,77 @@
+{
+    "success": true,
+    "data": [
+        {
+            "_id": "002",
+            "name": "Body of Knowledge",
+            "description": "Interactive web component",
+            "transcriptionUrl": "/mock-data/ivideo/sample002.json",
+            "videoUrl": "/mock-data/ivideo/sample002.mp4",
+            "dateCreated": "2020-08-12T00:42:07.330Z",
+            "dateModified": "2020-08-12T00:42:07.330Z"
+        },
+        {
+            "_id": "003",
+            "name": "ICT Knowledge",
+            "description": "Interactive web component",
+            "transcriptionUrl": "/mock-data/ivideo/sample003.json",
+            "videoUrl": "/mock-data/ivideo/sample003.mp4",
+            "dateCreated": "2020-08-12T00:42:07.330Z",
+            "dateModified": "2020-08-12T00:42:07.330Z"
+        },
+        {
+            "_id": "004",
+            "name": "Categories of Skills",
+            "description": "Interactive web component",
+            "transcriptionUrl": "/mock-data/ivideo/sample004.json",
+            "videoUrl": "/mock-data/ivideo/sample004.mp4",
+            "dateCreated": "2020-08-12T00:42:07.330Z",
+            "dateModified": "2020-08-12T00:42:07.330Z"
+        },
+        {
+            "_id": "005",
+            "name": "Assessment Review",
+            "description": "Interactive web component",
+            "transcriptionUrl": "/mock-data/ivideo/sample005.json",
+            "videoUrl": "/mock-data/ivideo/sample005.mp4",
+            "dateCreated": "2020-08-12T00:42:07.330Z",
+            "dateModified": "2020-08-12T00:42:07.330Z"
+        },
+        {
+            "_id": "006",
+            "name": "Server Side Scripting",
+            "description": "Interactive web component",
+            "transcriptionUrl": "/mock-data/ivideo/sample006.json",
+            "videoUrl": "/mock-data/ivideo/sample006.mp4",
+            "dateCreated": "2020-08-12T00:42:07.330Z",
+            "dateModified": "2020-08-12T00:42:07.330Z"
+        },
+        {
+            "_id": "007",
+            "name": "Javascript programming",
+            "description": "Interactive web component",
+            "transcriptionUrl": "/mock-data/ivideo/sample007.json",
+            "videoUrl": "/mock-data/ivideo/sample007.mp4",
+            "dateCreated": "2020-08-12T00:42:07.330Z",
+            "dateModified": "2020-08-12T00:42:07.330Z"
+        },
+        {
+            "_id": "008",
+            "name": "Study Plan",
+            "description": "Interactive web component",
+            "transcriptionUrl": "/mock-data/ivideo/sample008.json",
+            "videoUrl": "/mock-data/ivideo/sample008.mp4",
+            "dateCreated": "2020-08-12T00:42:07.330Z",
+            "dateModified": "2020-08-12T00:42:07.330Z"
+        },
+        {
+            "_id": "009",
+            "name": "Exam Information",
+            "description": "Interactive web component",
+            "transcriptionUrl": "/mock-data/ivideo/sample009.json",
+            "videoUrl": "/mock-data/ivideo/sample009.mp4",
+            "dateCreated": "2020-08-12T00:42:07.330Z",
+            "dateModified": "2020-08-12T00:42:07.330Z"
+        }
+    ]
+}   

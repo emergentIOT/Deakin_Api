@@ -6,6 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeModule } from './pages/home/home.module';
 import { OtherModule } from './pages/other/other.module';
 import { QuizModule } from './pages/quiz/quiz.module';
+import { IVideoListModule } from './pages/ivideo/ivideo-list.module';
 import { LoginModule } from './pages/login/login.module';
 import { PageNotFoundComponent } from './shared/ui-components/page-not-found/page-not-found.component';
 
@@ -19,6 +20,7 @@ const appRoutes: Routes = [{ path: '**', component: PageNotFoundComponent }];
     HomeModule,
     OtherModule,
     QuizModule,
+    IVideoListModule,
     LoginModule,
     RouterModule.forRoot(appRoutes)
   ],

@@ -1,0 +1,49 @@
+<div class="home-banner">
+  <div class="container">
+    <app-welcome-panel></app-welcome-panel>
+  </div>
+</div>
+
+<!-- <hr /> -->
+<div class="container">
+
+  <!-- <div class="row justify-content-end">
+    <div class="xcol-sm-12 xcol-lg-6 vertical-grid-spacing">
+      <des-button-group>
+        <des-button [routerLink]="'edit-ivideo'" >New Video</des-button>
+      </des-button-group>
+    </div>
+  </div> -->
+
+  <div class="row">
+    <div *ngIf="(ivideoList | async)?.data.length == 0" class="col-12 vertical-grid-spacing">
+      <des-card>
+        <h2 class="des-card-title no-items-found">No items found...</h2>
+        <!-- <p class="block-with-text xmr-1">No items found...</p> -->
+      </des-card>
+    </div>
+    <div
+      *ngFor="let item of (ivideoList | async)?.data"
+      class="col-sm-12 col-lg-6 vertical-grid-spacing"
+    >
+      <des-card layout="horizontal" [desShadow]="2"
+        [routerLink]="['/edit-ivideo', item._id]">
+        <img src="/assets/ivideo-icon.png">
+        <h2 class="des-card-title"><a [routerLink]="['/edit-ivideo', item._id]">{{item.name}}</a></h2>
+        <p class="block-with-text mr-1">{{item.description}}</p>
+        <div class="des-card-footer">
+          <des-card-metadata [subtitle]="'Posted by'"
+                        [title]="'Joe Bloggs'"
+                        [date]="item.dateModified | date"
+                        [avatarUrl]="'https://www.deakin.edu.au/__data/assets/image/0004/1488730/student-examines-model-spine_2195_600x475_hero2.jpg'"
+                        [actionUrl]="'#'"></des-card-metadata>
+          <!-- <p>This is footer content</p> -->
+          <!-- <des-button-group>
+            <des-button>Action 1</des-button> <des-button format="inverse">Action 2</des-button>
+          </des-button-group>  -->
+        </div>
+      </des-card>
+    </div>
+  </div>
+
+</div>

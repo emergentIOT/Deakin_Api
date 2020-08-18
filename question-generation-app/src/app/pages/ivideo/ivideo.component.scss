@@ -1,0 +1,37 @@
+@import "../../shared/scss/design-system-variables.scss";
+@import "../../../../node_modules/@syncfusion/ej2-buttons/styles/material.css";
+
+
+.highlight-playing {
+    background-color: var(--theme-primary, $fallback-primary) !important;
+    color: #ffffff !important;
+    // font-weight: bold;
+}
+
+.highlight-search-result {
+    background-color: #4d841d;
+    color: #ffffff !important;
+    // font-weight: bold;
+}
+
+.transcription-blocks-container {
+    text-align: justify;
+    line-height: 25px;
+}
+
+.transcription-block {
+    padding-left: 2px;
+}
+
+.transcription-block:hover {
+    cursor: pointer;
+    color: var(--theme-primary, $fallback-primary);
+}
+
+.container {
+    max-width: 90% !important;
+}
+
+.e-chip-text {
+    max-width: 700px;
+}
