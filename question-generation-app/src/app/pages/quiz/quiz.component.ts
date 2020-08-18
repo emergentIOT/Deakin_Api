@@ -56,6 +56,8 @@ export class QuizComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.quizId = params.get('quizId');
       console.log('ngOnInit', this.quizId);
+      this.textValue = params.get('quizText');
+      this.name = params.get('quizName');
       if (this.quizId) {
         this.quizService.getQuiz(this.quizId).subscribe(
           quiz => {

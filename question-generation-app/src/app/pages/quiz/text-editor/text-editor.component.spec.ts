@@ -25,8 +25,8 @@ describe('TextEditorComponent', () => {
 
 
   it('select text multi words', () => {
-    let str = component.selectText("two three four", "one two three four five six");
-    console.log("@@@@@@@@@", str);
-    console.log(component.selectText("two three four", str));
+    let str = component.selectTokenInText("two three four", "one two three four five six");
+    console.log("selectTokenInText", str);
+    console.log(component.selectTokenInText("two three four", str));
   });
 });

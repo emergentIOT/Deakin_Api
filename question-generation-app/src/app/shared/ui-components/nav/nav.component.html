@@ -4,15 +4,17 @@
     <li class="nav-item">
       <a routerLink="">Quiz Generator</a>
     </li>
+
+    <li class="nav-item">
+      <a routerLink="ivideos">Interactive Video</a>
+    </li>
     <!-- <li class="nav-item">
       <a routerLink="other">Other</a>
     </li> -->
-    <li class="nav-item">
+    <li class="nav-item nav-item-login">
       <div *ngIf="isLoggedIn; then thenBlock; else elseBlock"></div>
       <ng-template #thenBlock><a (click)="logout()">Logout</a></ng-template>
-      <ng-template #elseBlock
-        ><a (click)="login()">Login</a></ng-template
-      >
+      <ng-template #elseBlock><a (click)="login()">Login</a></ng-template>
     </li>
   </ul>
 </nav>

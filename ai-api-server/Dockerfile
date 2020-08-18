@@ -8,6 +8,7 @@ WORKDIR ./ai-api-server
 # Install app dependencies
 COPY raml ./raml
 COPY src ./src
+COPY mock-data ./mock-data
 COPY *.js ./
 
 # Wildcard is used to ensure both package.json AND package-lock.json are copied
