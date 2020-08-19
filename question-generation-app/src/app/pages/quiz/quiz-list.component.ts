@@ -23,7 +23,7 @@ export class QuizListComponent implements OnInit {
   public total: number;
   public hidePagination: boolean = true;
   private LIMIT_FOR_HIDE_PAGINATION = 6;
-  private SEARCH_PAGE_NUMBER = 1;
+  private SEARCH_PAGE_NUMBER : number = 1;
   //Search bar
   public loading: boolean;
   public searchTerm = new Subject<string>();
@@ -55,7 +55,7 @@ export class QuizListComponent implements OnInit {
       debounceTime(400),
       distinctUntilChanged(),  
     ).subscribe(searchInput => {
-      this.getQuizzes(this.pageNumber, this.limit, searchInput);
+      this.getQuizzes(this.SEARCH_PAGE_NUMBER, this.limit, searchInput);
     })
   }
 
@@ -73,8 +73,9 @@ export class QuizListComponent implements OnInit {
     this._quizService.listQuizzes(page, limit, searchInput).subscribe(
       (data : IQuizList) => {
         this.loading = false;
-        this.total = data.totalCount;
         this.quizList = data;
+        this.total = data.totalCount;
+        this.pageNumber = data.page;
         if(this.total < this.LIMIT_FOR_HIDE_PAGINATION){
           this.hidePagination = false;
         }
