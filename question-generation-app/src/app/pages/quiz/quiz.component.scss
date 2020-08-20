@@ -1,6 +1,7 @@
 @import "../../shared/scss/design-system-variables.scss";
 @import "../../../../node_modules/@syncfusion/ej2-buttons/styles/material.css";
 @import "../../../../node_modules/@syncfusion/ej2-base/styles/material.css";
+@import '../../../../node_modules/@syncfusion/ej2-angular-popups/styles/material.css';
 
 .vertical-grid-spacing {
   margin-bottom: $des-layout-spacing-base;
