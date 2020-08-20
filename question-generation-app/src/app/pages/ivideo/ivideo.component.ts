@@ -20,7 +20,6 @@ export class  IVideoComponent implements OnInit {
   iVideo: IVideo;
   videoDataUrl: any;
   $videoElement: any;
-  title = 'VideoNavigation';
   transcriptionBlocks = [];
   transcriptionText: string = '';
   searchPhrase: string;
@@ -121,7 +120,6 @@ export class  IVideoComponent implements OnInit {
       return;
     }
     this.isSearching = true;
-    var text = this.transcriptionText;
     let questionAnswer = {
       question: this.searchPhrase,
       matchedTranscriptionBlockIndexes: null,
@@ -174,6 +172,7 @@ export class  IVideoComponent implements OnInit {
         questionAnswer.matchedTranscriptionBlockIndexes = matchedBlockIndexes;
         this.addQuestionAnswer(questionAnswer);
         this.hightlightSearchResult(matchedBlockIndexes);
+        this.searchPhrase = "";
         // TOOK out, doesn't seem to be user friendly
         // let transcriptionBlock = this.transcriptionBlocks[questionAnswer.matchedTranscriptionBlockIndexes[0]];
         // this.pauseVideo(transcriptionBlock.s);
