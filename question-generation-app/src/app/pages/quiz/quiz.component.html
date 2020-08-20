@@ -126,5 +126,10 @@
   <ejs-dialog id='dialog' #ejDialog header=''  [visible]='visible' [content]='dialogHeader' [target]='targetElement' width='250px' [buttons]='buttons'>
   </ejs-dialog>
 
+  <!--Loading spinner-->
+  <div class="loadingSpinner"  *ngIf="loading" >
+    <i class="fa fa-spinner fa-spin fa-3x"></i>
+  </div>
+
 </div>
 

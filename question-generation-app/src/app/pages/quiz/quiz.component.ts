@@ -40,6 +40,7 @@ export class QuizComponent implements OnInit {
   public confirmDelete = false;
   public visible: boolean = false;
   public dialogHeader: string = "Are you sure you want to delete this Quiz?";
+  public loading: boolean;
 
   //Dialog confirmation
   @ViewChild('ejDialog') ejDialog: DialogComponent ;
@@ -349,7 +350,9 @@ export class QuizComponent implements OnInit {
 
   // Hide the Dialog when click the footer button.
   public confirmDeleteQuiz: EmitType<object> = () => {
+    this.loading = true;
     this.quizService.deleteQuiz(this.quizId).subscribe(() => {
+      this.loading = false;
       this.router.navigate(['/']);   
    });
   }
