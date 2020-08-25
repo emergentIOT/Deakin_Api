@@ -1,5 +1,7 @@
 <div class="container">
- 
+  <!--Delete quiz icon-->
+  <button  class="des-float-right" [disabled]="canDeleteQuiz ? null : 'disabled'" id="targetButton" (click)="onOpenDialog($event)" style="position: absolute; right: 30px; margin: 4px; height: 30px;" ><i class="fa fa-trash"></i></button>
+
   <!-- <des-button-group>
     <label><des-button>1</des-button> Upload content</label>
     <label><des-button format="outline">2</des-button> Review content</label>
@@ -8,7 +10,10 @@
 
   <app-tab-container (tabChanged)="tabChanged($event)" class="des-margin-top-large des-margin-bottom-large">
     <!-- <app-tab-panel title="1. Upload Content"> -->
+    
     <app-tab-panel [active]="activeTab === 0"  title="Content & Key Phrases">
+
+    
       <div class="container">
         <des-alert-panel *ngIf="userError" purpose="warning">{{userError}}</des-alert-panel>
         <div class="row">
@@ -42,6 +47,7 @@
                 <des-button size="small" type="text" [disabled]="canClearTokens ? null : 'disabled'" (click)="clearTokens()">Clear</des-button>
                 <des-button shape="round-both" size="small" type="inverse-outline" [disabled]="canSuggestKeyPhrases ? null : 'disabled'" (click)="generateSuggestedAnswerTokens({})">Suggest Key Phrases</des-button>
               </des-button-group>
+
             </div>
           </div>
                     
@@ -63,6 +69,7 @@
     </app-tab-panel> -->
     <app-tab-panel [active]="activeTab === 1" title="Question Suggestions">
       <div class="container">
+       
         <div class="row">
           <app-progress-bar
             min="0"
@@ -111,7 +118,18 @@
         </div>
       </div>
     </app-tab-panel>
+  
   </app-tab-container>
+  
+  <!-- Delete confirmation dialog-->
+  <div #container class='root-container'></div>
+  <ejs-dialog id='dialog' #ejDialog header=''  [visible]='visible' [content]='dialogHeader' [target]='targetElement' width='250px' [buttons]='buttons'>
+  </ejs-dialog>
+
+  <!--Loading spinner-->
+  <div class="loadingSpinner"  *ngIf="loading" >
+    <i class="fa fa-spinner fa-spin fa-3x"></i>
+  </div>
 
 </div>
 
