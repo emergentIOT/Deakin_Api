@@ -17,8 +17,7 @@ export class IVideoService {
   private CHECK_FOR_QUIZ_INTERVAL_SECONDS = 3;
 
   private apiUrlIVideos = this.appConfigService.apiUrl + '/mock-data/ivideo/ivideo-list.json';
-  private apiUrl = 'https://des-inno-qnabot.its.deakin.edu.au';
-  
+  private qnaBotUrl = 'https://des-inno-qnabot.its.deakin.edu.au';
   
   constructor(
     private http: HttpClient,
@@ -30,7 +29,7 @@ export class IVideoService {
     const responseType = 'text' as 'json';
     const options = {headers, responseType};
     
-    return  this.http.post<any>(this.apiUrl, data, options);
+    return  this.http.post<any>(this.qnaBotUrl, data, options);
   }
 
 
