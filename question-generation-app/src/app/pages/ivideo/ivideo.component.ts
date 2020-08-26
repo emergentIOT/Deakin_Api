@@ -126,18 +126,11 @@ export class  IVideoComponent implements OnInit {
       answerText: null
     }
 
-    const headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-    const data = "context=" + encodeURIComponent(this.transcriptionText)
+     const data = "context=" + encodeURIComponent(this.transcriptionText)
       + "&question_to=" + this.searchPhrase
       + "&mode=qna";
-      const responseType = "text";
-    this.iVideoService.getSearchAnswer(headers, data, responseType).subscribe((answerText: any) => {
-console.log("called", answerText);
-      
-  //this.http.post("https://des-inno-qnabot.its.deakin.edu.au/", data, {
-  //    headers: headers,
-  //    responseType: responseType
-   // }).subscribe((answerText: any) => {
+     this.iVideoService.getSearchAnswer(data).subscribe((answerText: any) => {
+     
       questionAnswer.answerText = answerText;
 
       var answerTextSplit = answerText.split(' ');

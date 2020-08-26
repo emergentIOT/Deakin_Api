@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { IVideoList } from "../../interfaces/IVideoList";
 import { AppConfigService } from '../../services/app-config/app-config.service';
 import { publishReplay, refCount, catchError, concatMap, map } from 'rxjs/operators';
@@ -18,16 +18,19 @@ export class IVideoService {
 
   private apiUrlIVideos = this.appConfigService.apiUrl + '/mock-data/ivideo/ivideo-list.json';
   private apiUrl = 'https://des-inno-qnabot.its.deakin.edu.au';
-    
+  
+  
   constructor(
     private http: HttpClient,
     private appConfigService: AppConfigService
   ) {}
 
-  getSearchAnswer(headers: any, data: string, responseType: string ) : Observable<any>{
-    let body = { data, responseType};
-    console.log("body service called", body, headers);
-    return this.http.post<any>(this.apiUrl, body);
+  getSearchAnswer( data: string) : Observable<any>{
+    const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+    const responseType = 'text' as 'json';
+    const options = {headers, responseType};
+    
+    return  this.http.post<any>(this.apiUrl, data, options);
   }
 
 
