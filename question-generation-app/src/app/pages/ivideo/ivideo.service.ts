@@ -17,11 +17,19 @@ export class IVideoService {
   private CHECK_FOR_QUIZ_INTERVAL_SECONDS = 3;
 
   private apiUrlIVideos = this.appConfigService.apiUrl + '/mock-data/ivideo/ivideo-list.json';
-
+  private apiUrl = 'https://des-inno-qnabot.its.deakin.edu.au';
+    
   constructor(
     private http: HttpClient,
     private appConfigService: AppConfigService
   ) {}
+
+  getSearchAnswer(headers: any, data: string, responseType: string ) : Observable<any>{
+    let body = { data, responseType};
+    console.log("body service called", body, headers);
+    return this.http.post<any>(this.apiUrl, body);
+  }
+
 
   getIVideo(videoId : string) : Observable<IVideo> {
     return this.listIVideos().pipe(map<IVideoList, IVideo>( iVideoList => {

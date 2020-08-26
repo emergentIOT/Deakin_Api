@@ -130,12 +130,14 @@ export class  IVideoComponent implements OnInit {
     const data = "context=" + encodeURIComponent(this.transcriptionText)
       + "&question_to=" + this.searchPhrase
       + "&mode=qna";
-
-    this.http.post("https://des-inno-qnabot.its.deakin.edu.au/", data, {
-      headers: headers,
-      responseType: "text"
-    }).subscribe((answerText: any) => {
-
+      const responseType = "text";
+    this.iVideoService.getSearchAnswer(headers, data, responseType).subscribe((answerText: any) => {
+console.log("called", answerText);
+      
+  //this.http.post("https://des-inno-qnabot.its.deakin.edu.au/", data, {
+  //    headers: headers,
+  //    responseType: responseType
+   // }).subscribe((answerText: any) => {
       questionAnswer.answerText = answerText;
 
       var answerTextSplit = answerText.split(' ');
