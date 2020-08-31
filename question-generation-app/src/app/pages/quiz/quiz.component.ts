@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild , ElementRef} from '@angular/core';
 import { Location } from '@angular/common';
 import { ChipList, ChipModel } from '@syncfusion/ej2-angular-buttons';
 import { TextEditorComponent } from './text-editor/text-editor.component';
@@ -10,6 +10,8 @@ import { Subscription } from 'rxjs';
 import { IQuizToken } from 'src/app/interfaces/iQuizToken';
 import { isEmpty } from 'npm-stringutils';
 import { escapeRegExp } from './quiz-utils';
+import { DialogComponent } from '@syncfusion/ej2-angular-popups';
+import { EmitType } from '@syncfusion/ej2-base';
 
 @Component({
   selector: 'app-quiz',
@@ -31,9 +33,21 @@ export class QuizComponent implements OnInit {
   public tokens: string[] = [];
   public textValue: string;
   public activeTab = 0;
+  public quizId: string;
   public userError;
-  private quizId: string;
   private watchQuizStatusSubscription : Subscription;
+
+  public confirmDelete = false;
+  public visible: boolean = false;
+  public dialogHeader: string = "Are you sure you want to delete this Quiz?";
+  public loading: boolean;
+
+  //Dialog confirmation
+  @ViewChild('ejDialog') ejDialog: DialogComponent ;
+  // Create element reference for dialog target element.
+  @ViewChild('container', { read: ElementRef }) container: ElementRef;
+  // The Dialog shows within the target element.
+  public targetElement: HTMLElement;
 
   constructor(private quizService : QuizService,
               private route: ActivatedRoute, private router : Router, 
@@ -162,6 +176,13 @@ export class QuizComponent implements OnInit {
       return false;
     }
     return this.quizService.calcUnprocessedCount(this.quiz) === 0; 
+  }
+
+  get canDeleteQuiz() : boolean{
+    if(!isEmpty(this.quizId)){
+      return true;
+    }
+    return false;
   }
 
   // get chipTokens() : ChipModel[] {
@@ -326,4 +347,44 @@ export class QuizComponent implements OnInit {
   isError(token : IQuizToken) {
     return (isEmpty(token.questionToken) && token.status === 'processed') || token.status === 'error';
   }
+
+  // Hide the Dialog when click the footer button.
+  public confirmDeleteQuiz: EmitType<object> = () => {
+    this.loading = true;
+    this.quizService.deleteQuiz(this.quizId).subscribe(() => {
+      this.loading = false;
+      this.router.navigate(['/']);   
+   });
+  }
+
+  public cancel: EmitType<object> = () => {
+    
+    this.ejDialog.hide();
+  }
+
+  // Enables the footer buttons
+  public buttons: Object = [
+  {
+    'click': this.confirmDeleteQuiz.bind(this),
+      // Accessing button component properties by buttonModel property
+      buttonModel:{
+      content: 'Yes',
+      // Enables the primary button
+      isPrimary: true
+    }
+  },
+  {
+    'click': this.cancel.bind(this),
+    buttonModel: {
+      content: 'No'
+    }
+  }
+];
+
+  // Sample level code to handle the button click action
+  public onOpenDialog(event){
+    this.ejDialog.show();
+    this.ejDialog.buttons
+  }
+
 }

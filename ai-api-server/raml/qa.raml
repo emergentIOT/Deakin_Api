@@ -4,6 +4,20 @@ description: Question generation and question answering AI service.
 /quizzes:
   get:
     description: Get list of quizzes
+    queryParameters:
+      search:
+        description: Get list of search quizzes
+        type: string
+        required: false
+      page:
+        description: Skip the quizzes
+        type: string
+        required: false
+      limit:
+        description: limit the number of quizzes
+        type: string
+        required: false
+    
     responses:
       200:
         description: Retrieve quizzes tokens and status
