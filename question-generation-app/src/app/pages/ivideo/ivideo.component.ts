@@ -257,8 +257,7 @@ export class  IVideoComponent implements OnInit {
 
   addQuestionAnswer(questionAnswer : IQuestionAnswer, refresh?) {
     this.questionAnswerList.push(questionAnswer);
-    this.questionAnswerChipList.push(
-      this.upperCaseFirst(questionAnswer.questionText) + "? " + questionAnswer.answerText);
+    this.questionAnswerChipList.push(`Question: ${this.upperCaseFirst(questionAnswer.questionText)}? Answer: ${questionAnswer.answerText}`);
     if (refresh) {
       this.chipsList.refresh();
     }
