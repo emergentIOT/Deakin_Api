@@ -1,4 +1,4 @@
-import { Component, OnInit, ɵConsole, ViewChild } from '@angular/core';
+import { Component, OnInit, ɵConsole, ViewChild, ɵpublishDefaultGlobalUtils } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { IVideoService } from './ivideo.service';
 import { IVideo } from 'src/app/interfaces/IVideo';
@@ -53,6 +53,18 @@ export class  IVideoComponent implements OnInit {
             this.loadVideo(this.appConfigService.apiUrl + this.iVideo.videoUrl, () => {
               this.isLoaded = true;
             });
+
+            if (this.iVideo.questions) {
+              this.iVideo.questions.forEach((questionAnswer : any) => {
+                var matchedBlockIndexes = this.calcMatchedBlockIndexes(questionAnswer.answerText, 
+                                                                       this.transcriptionBlocks);
+                if (matchedBlockIndexes.length > 0) {
+                  questionAnswer.matchedTranscriptionBlockIndexes = matchedBlockIndexes;
+                  this.addQuestionAnswer(questionAnswer);
+                }
+  
+              });
+            }
 
             // TEST
             // this.searchPhrase = "core body";
@@ -121,7 +133,7 @@ export class  IVideoComponent implements OnInit {
     }
     this.isSearching = true;
     let questionAnswer = {
-      question: this.searchPhrase,
+      questionText: this.searchPhrase,
       matchedTranscriptionBlockIndexes: null,
       answerText: null
     }
@@ -138,39 +150,12 @@ export class  IVideoComponent implements OnInit {
 
       questionAnswer.answerText = answerText;
 
-      var answerTextSplit = answerText.split(' ');
-
-      var matchedBlockIndexes = [];
-
-      this.transcriptionBlocks.forEach((item: any, index) => {
-
-        if (!matchedBlockIndexes.length) {
-          matchedBlockIndexes = [];
-          if (item.w == answerTextSplit[0]) {
-            var tillRun = (index + answerTextSplit.length) - 1;
-            matchedBlockIndexes.push(index);
-
-            var answerTextSplitIndex = 1;
-            for (var i = index + 1; i <= tillRun; i++) {
-              if (answerTextSplit[answerTextSplitIndex] == this.transcriptionBlocks[i].w) {
-                matchedBlockIndexes.push(i);
-              }
-              else {
-                matchedBlockIndexes = [];
-                break;
-              }
-
-              answerTextSplitIndex++;
-            }
-          }
-        }
-  
-      });
-
-
+      var matchedBlockIndexes = this.calcMatchedBlockIndexes(answerText, 
+                                                    this.transcriptionBlocks);
+      
       if (matchedBlockIndexes.length > 0) {
         questionAnswer.matchedTranscriptionBlockIndexes = matchedBlockIndexes;
-        this.addQuestionAnswer(questionAnswer);
+        this.addQuestionAnswer(questionAnswer, true);
         this.hightlightSearchResult(matchedBlockIndexes);
         this.searchPhrase = "";
         // TOOK out, doesn't seem to be user friendly
@@ -194,6 +179,42 @@ export class  IVideoComponent implements OnInit {
     });
   }
 
+  calcMatchedBlockIndexes(answerText : string, transcriptionBlocks : any[]) : number[] {
+
+    var answerTextSplit = answerText.split(' ');
+
+    var matchedBlockIndexes = [];
+
+    transcriptionBlocks.forEach((item: any, index) => {
+
+      if (matchedBlockIndexes.length == 0) {
+        matchedBlockIndexes = [];
+        if (item.w == answerTextSplit[0]) {
+          var tillRun = (index + answerTextSplit.length) - 1;
+          matchedBlockIndexes.push(index);
+
+          var answerTextSplitIndex = 1;
+          for (var i = index + 1; i <= tillRun; i++) {
+            if (answerTextSplit[answerTextSplitIndex] == transcriptionBlocks[i].w) {
+              matchedBlockIndexes.push(i);
+            }
+            else {
+              console.log('Did not match', answerTextSplit[answerTextSplitIndex] , transcriptionBlocks[i].w);
+              matchedBlockIndexes = [];
+              break;
+            }
+
+            answerTextSplitIndex++;
+          }
+        }
+      }
+
+    });
+
+    return matchedBlockIndexes;
+
+  }
+
   playAnswer({text, index}) {
     if (index >= 0) {
       let questionAnswer = this.questionAnswerList[index];
@@ -206,11 +227,13 @@ export class  IVideoComponent implements OnInit {
     }
   }
 
-  addQuestionAnswer(questionAnswer) {
+  addQuestionAnswer(questionAnswer, refresh?) {
     this.questionAnswerList.push(questionAnswer);
     this.questionAnswerChipList.push(
-      this.upperCaseFirst(questionAnswer.question) + "? " + questionAnswer.answerText);
-    this.chipsList.refresh();
+      this.upperCaseFirst(questionAnswer.questionText) + "? " + questionAnswer.answerText);
+    if (refresh) {
+      this.chipsList.refresh();
+    }
   }
 
   upperCaseFirst(str) {

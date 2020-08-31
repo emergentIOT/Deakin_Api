@@ -5,6 +5,7 @@ const utils = require('du-utils').UtilGeneral();
 const logger = require('du-logger').LoggingService('api-server');
 const async = require('async');
 const qaWs = require('./src/QaWs');
+const iVideoWs = require('./src/IVideoWs')
 
 // Make sure server is ran on a known and supported NodeJS Version.
 utils.assertNodeRuntime();
@@ -44,7 +45,8 @@ const installWebServices = function(server, done) {
 
         server.installAPIDocsWs('raml/api-combined.raml');
 
-        qaWs.installQaWs(server);
+        qaWs.installWs(server);
+        iVideoWs.installWs(server);
 
         server.addStatic('/mock-data', 'mock-data');
        
