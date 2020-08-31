@@ -6,6 +6,9 @@ import { ChipList, ChipModel } from '@syncfusion/ej2-angular-buttons';
 import { AppConfigService } from '../../services/app-config/app-config.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { isEmpty } from 'npm-stringutils';
+import { IQuestionAnswer } from 'src/app/interfaces/IQuestionAnswer';
+import { IQuizUpdate } from 'src/app/interfaces/iQuizUpdate';
+import { QuizService } from 'src/app/services/quiz.service';
 
 @Component({
   selector: ' ivideo',
@@ -30,6 +33,7 @@ export class  IVideoComponent implements OnInit {
 
   constructor(private http: HttpClient, 
     private iVideoService : IVideoService, 
+    private quizService : QuizService,
     private appConfigService: AppConfigService,
     private route: ActivatedRoute, 
     private router: Router) {
@@ -121,10 +125,25 @@ export class  IVideoComponent implements OnInit {
   }
 
   onGenerateQuiz() {
-    this.router.navigate(['edit-quiz', {
-        quizName: this.iVideo.name, 
-        quizText: this.transcriptionText 
-      }]);
+    if (!this.iVideo.quizId) {
+      // If no quiz created yet, create one and update ivideo with quizId
+      let answerTokens = [];
+      this.iVideo.questions.forEach(questionAnswer => { answerTokens.push(questionAnswer.answerText)});
+      let quiz : IQuizUpdate = {
+        name: this.iVideo.name,
+        plainText: this.transcriptionText,
+        richText: this.transcriptionText,
+        answerTokens
+      };
+      this.quizService.save(quiz).subscribe(quizId => {
+        this.iVideo.quizId = quizId;
+        this.iVideoService.save(this.iVideo).subscribe();
+        this.router.navigate(['edit-quiz', this.iVideo.quizId]);
+      });
+
+    } else {
+      this.router.navigate(['edit-quiz', this.iVideo.quizId]);
+    }
   }
 
   onSearch() {
@@ -132,10 +151,10 @@ export class  IVideoComponent implements OnInit {
       return;
     }
     this.isSearching = true;
-    let questionAnswer = {
+    let questionAnswer : IQuestionAnswer = {
       questionText: this.searchPhrase,
-      matchedTranscriptionBlockIndexes: null,
-      answerText: null
+      answerText: null,
+      matchedTranscriptionBlockIndexes: null
     }
 
     const headers = {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -149,6 +168,7 @@ export class  IVideoComponent implements OnInit {
     }).subscribe((answerText: any) => {
 
       questionAnswer.answerText = answerText;
+      this.saveQuestionAnswer(questionAnswer);
 
       var matchedBlockIndexes = this.calcMatchedBlockIndexes(answerText, 
                                                     this.transcriptionBlocks);
@@ -227,7 +247,15 @@ export class  IVideoComponent implements OnInit {
     }
   }
 
-  addQuestionAnswer(questionAnswer, refresh?) {
+  saveQuestionAnswer(questionAnswer : IQuestionAnswer) {
+    if(!this.iVideo.questions) {
+      this.iVideo.questions = [];
+    }
+    this.iVideo.questions.push(questionAnswer);
+    this.iVideoService.save(this.iVideo).subscribe();
+  }
+
+  addQuestionAnswer(questionAnswer : IQuestionAnswer, refresh?) {
     this.questionAnswerList.push(questionAnswer);
     this.questionAnswerChipList.push(
       this.upperCaseFirst(questionAnswer.questionText) + "? " + questionAnswer.answerText);

@@ -69,6 +69,12 @@ export class QuizService {
     );
   }
 
+  save(quiz : IQuizUpdate) : Observable<string> {
+    return this.http.put<IResponse<string>>(this.apiUrlQuiz, quiz).pipe(
+      map<IResponse<string>, string>(res => res.data)
+    );
+  }
+
   getAnswerTokens(quiz : IQuiz) : string[] {
     let tokens : string[] = [];
     if (quiz && quiz.tokens) {
