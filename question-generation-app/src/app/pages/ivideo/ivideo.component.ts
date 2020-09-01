@@ -26,7 +26,6 @@ export class  IVideoComponent implements OnInit {
   transcriptionBlocks = [];
   transcriptionText: string = '';
   searchPhrase: string;
-  questionAnswerList: any[] = [];
   questionAnswerChipList: string[] = [];
   iVideoId : string;
   isSearching : boolean = false;
@@ -64,7 +63,7 @@ export class  IVideoComponent implements OnInit {
                                                                        this.transcriptionBlocks);
                 if (matchedBlockIndexes.length > 0) {
                   questionAnswer.matchedTranscriptionBlockIndexes = matchedBlockIndexes;
-                  this.addQuestionAnswer(questionAnswer);
+                  this.addQuestionAnswerToChipList(questionAnswer);
                 }
   
               });
@@ -175,7 +174,7 @@ export class  IVideoComponent implements OnInit {
       
       if (matchedBlockIndexes.length > 0) {
         questionAnswer.matchedTranscriptionBlockIndexes = matchedBlockIndexes;
-        this.addQuestionAnswer(questionAnswer, true);
+        this.addQuestionAnswerToChipList(questionAnswer, true);
         this.hightlightSearchResult(matchedBlockIndexes);
         this.searchPhrase = "";
         // TOOK out, doesn't seem to be user friendly
@@ -235,9 +234,12 @@ export class  IVideoComponent implements OnInit {
 
   }
 
+  /**
+   * Note questions array is in reverse order to chip list array
+   */
   playAnswer({text, index}) {
     if (index >= 0) {
-      let questionAnswer = this.questionAnswerList[index];
+      let questionAnswer : IQuestionAnswer = this.iVideo.questions[this.iVideo.questions.length - 1 - index];
       if (questionAnswer && questionAnswer.matchedTranscriptionBlockIndexes) {
         // take the first word / block in the matched blocks and play
         let transcriptionBlock = this.transcriptionBlocks[questionAnswer.matchedTranscriptionBlockIndexes[0]];
@@ -255,9 +257,9 @@ export class  IVideoComponent implements OnInit {
     this.iVideoService.save(this.iVideo).subscribe();
   }
 
-  addQuestionAnswer(questionAnswer : IQuestionAnswer, refresh?) {
-    this.questionAnswerList.push(questionAnswer);
-    this.questionAnswerChipList.push(`Question: ${this.upperCaseFirst(questionAnswer.questionText)}? Answer: ${questionAnswer.answerText}`);
+  addQuestionAnswerToChipList(questionAnswer : IQuestionAnswer, refresh?) {
+    let text = `Question: ${this.upperCaseFirst(questionAnswer.questionText)}? Answer: ${questionAnswer.answerText}`;
+    this.questionAnswerChipList.unshift(text);
     if (refresh) {
       this.chipsList.refresh();
     }
@@ -270,9 +272,13 @@ export class  IVideoComponent implements OnInit {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
+  /**
+   * Note questions array is in reverse order to chip list array.
+   */
   deleteQuestionAnswer({text, index}) {
-    this.questionAnswerList = this.questionAnswerList.filter((obj, i) => i !== index);
     this.questionAnswerChipList = this.questionAnswerChipList.filter((obj, i) => i !== index);
+    this.iVideo.questions = this.iVideo.questions.filter((obj, i) => i !== (this.iVideo.questions.length - 1 - index));
+    this.iVideoService.save(this.iVideo).subscribe();
   }
 
   playVideo(time, beginningOfSentence) {
