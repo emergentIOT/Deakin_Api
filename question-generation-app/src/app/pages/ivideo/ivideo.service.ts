@@ -16,9 +16,9 @@ export class IVideoService {
 
   private CHECK_FOR_QUIZ_INTERVAL_SECONDS = 3;
 
-  private apiUrlIVideos = this.appConfigService.apiUrl + '/mock-data/ivideo/ivideo-list.json';
-  private qnaBotUrl = 'https://des-inno-qnabot.its.deakin.edu.au';
-  
+  private apiUrlIVideos = this.appConfigService.apiUrl + '/api/v1/iv/ivideos';
+  private apiUrlIVideo = this.appConfigService.apiUrl + '/api/v1/iv/ivideo';
+
   constructor(
     private http: HttpClient,
     private appConfigService: AppConfigService
@@ -29,14 +29,13 @@ export class IVideoService {
     const responseType = 'text' as 'json';
     const options = {headers, responseType};
     
-    return  this.http.post<any>(this.qnaBotUrl, data, options);
+    return  this.http.post<any>(this.apiUrlIVideo, data, options);
   }
 
 
-  getIVideo(videoId : string) : Observable<IVideo> {
-    return this.listIVideos().pipe(map<IVideoList, IVideo>( iVideoList => {
-      return iVideoList.data.find(iVideo => iVideo._id === videoId);
-    }));
+  getIVideo(ivideoId : string) : Observable<IVideo> {
+    return this.http.get<IResponse<IVideo>>(`${this.apiUrlIVideo}/${ivideoId}`).pipe(
+      map<IResponse<IVideo>, IVideo>(res => res.data));
   }
 
   getTranscription(iVideo : IVideo) : Observable<any> {
@@ -48,20 +47,24 @@ export class IVideoService {
   }
 
 
-  // saveAndGenerate(ivideo : IVideoUpdate) : Observable<IVideo> {
-  //   return this.http.put<IResponse<string>>(this.apiUrlIVideo, ivideo).pipe(
-  //     concatMap((result : IResponse<string>) => {
-  //       if (isEmpty(result.data)) {
-  //         throw new Error("Bad result.");
-  //       }
-  //       return this.http.put<IResponse<string>>(`${this.apiUrlQG}/${result.data}`, {});
-  //     }), 
-  //     concatMap((result : IResponse<string>) => {
-  //       return this.http.get<IResponse<IVideo>>(`${this.apiUrlIVideo}/${result.data}`).pipe(
-  //         map<IResponse<IVideo>, IVideo>( result => result.data)
-  //       );
-  //     })
-  //   );
-  // }
+  save(ivideo : IVideo) : Observable<string> {
+    return this.http.put<IResponse<string>>(this.apiUrlIVideo, ivideo).pipe(
+      map<IResponse<string>, string>(result => result.data)  
+    );
+    
+    /*.pipe(
+      concatMap((result : IResponse<string>) => {
+        if (isEmpty(result.data)) {
+          throw new Error("Bad result.");
+        }
+        return this.http.put<IResponse<string>>(`${this.apiUrlIVideo}/${result.data}`, {});
+      }), 
+      concatMap((result : IResponse<string>) => {
+        return this.http.get<IResponse<IVideo>>(`${this.apiUrlIVideo}/${result.data}`).pipe(
+          map<IResponse<IVideo>, IVideo>( result => result.data)
+        );
+      })
+    );*/
+  }
 
 }

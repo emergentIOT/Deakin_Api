@@ -1,4 +1,4 @@
-import { Component, OnInit, ɵConsole, ViewChild } from '@angular/core';
+import { Component, OnInit, ɵConsole, ViewChild, ɵpublishDefaultGlobalUtils } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { IVideoService } from './ivideo.service';
 import { IVideo } from 'src/app/interfaces/IVideo';
@@ -6,6 +6,9 @@ import { ChipList, ChipModel } from '@syncfusion/ej2-angular-buttons';
 import { AppConfigService } from '../../services/app-config/app-config.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { isEmpty } from 'npm-stringutils';
+import { IQuestionAnswer } from 'src/app/interfaces/IQuestionAnswer';
+import { IQuizUpdate } from 'src/app/interfaces/iQuizUpdate';
+import { QuizService } from 'src/app/services/quiz.service';
 
 @Component({
   selector: ' ivideo',
@@ -23,13 +26,13 @@ export class  IVideoComponent implements OnInit {
   transcriptionBlocks = [];
   transcriptionText: string = '';
   searchPhrase: string;
-  questionAnswerList: any[] = [];
   questionAnswerChipList: string[] = [];
   iVideoId : string;
   isSearching : boolean = false;
 
   constructor(private http: HttpClient, 
     private iVideoService : IVideoService, 
+    private quizService : QuizService,
     private appConfigService: AppConfigService,
     private route: ActivatedRoute, 
     private router: Router) {
@@ -53,6 +56,18 @@ export class  IVideoComponent implements OnInit {
             this.loadVideo(this.appConfigService.apiUrl + this.iVideo.videoUrl, () => {
               this.isLoaded = true;
             });
+
+            if (this.iVideo.questions) {
+              this.iVideo.questions.forEach((questionAnswer : any) => {
+                var matchedBlockIndexes = this.calcMatchedBlockIndexes(questionAnswer.answerText, 
+                                                                       this.transcriptionBlocks);
+                if (matchedBlockIndexes.length > 0) {
+                  questionAnswer.matchedTranscriptionBlockIndexes = matchedBlockIndexes;
+                  this.addQuestionAnswerToChipList(questionAnswer);
+                }
+  
+              });
+            }
 
             // TEST
             // this.searchPhrase = "core body";
@@ -109,10 +124,25 @@ export class  IVideoComponent implements OnInit {
   }
 
   onGenerateQuiz() {
-    this.router.navigate(['edit-quiz', {
-        quizName: this.iVideo.name, 
-        quizText: this.transcriptionText 
-      }]);
+    if (!this.iVideo.quizId) {
+      // If no quiz created yet, create one and update ivideo with quizId
+      let answerTokens = [];
+      this.iVideo.questions.forEach(questionAnswer => { answerTokens.push(questionAnswer.answerText)});
+      let quiz : IQuizUpdate = {
+        name: this.iVideo.name,
+        plainText: this.transcriptionText,
+        richText: this.transcriptionText,
+        answerTokens
+      };
+      this.quizService.save(quiz).subscribe(quizId => {
+        this.iVideo.quizId = quizId;
+        this.iVideoService.save(this.iVideo).subscribe();
+        this.router.navigate(['edit-quiz', this.iVideo.quizId]);
+      });
+
+    } else {
+      this.router.navigate(['edit-quiz', this.iVideo.quizId]);
+    }
   }
 
   onSearch() {
@@ -120,10 +150,10 @@ export class  IVideoComponent implements OnInit {
       return;
     }
     this.isSearching = true;
-    let questionAnswer = {
-      question: this.searchPhrase,
-      matchedTranscriptionBlockIndexes: null,
-      answerText: null
+    let questionAnswer : IQuestionAnswer = {
+      questionText: this.searchPhrase,
+      answerText: null,
+      matchedTranscriptionBlockIndexes: null
     }
 
      const data = "context=" + encodeURIComponent(this.transcriptionText)
@@ -132,40 +162,14 @@ export class  IVideoComponent implements OnInit {
      this.iVideoService.getSearchAnswer(data).subscribe((answerText: any) => {
      
       questionAnswer.answerText = answerText;
+      this.saveQuestionAnswer(questionAnswer);
 
-      var answerTextSplit = answerText.split(' ');
-
-      var matchedBlockIndexes = [];
-
-      this.transcriptionBlocks.forEach((item: any, index) => {
-
-        if (!matchedBlockIndexes.length) {
-          matchedBlockIndexes = [];
-          if (item.w == answerTextSplit[0]) {
-            var tillRun = (index + answerTextSplit.length) - 1;
-            matchedBlockIndexes.push(index);
-
-            var answerTextSplitIndex = 1;
-            for (var i = index + 1; i <= tillRun; i++) {
-              if (answerTextSplit[answerTextSplitIndex] == this.transcriptionBlocks[i].w) {
-                matchedBlockIndexes.push(i);
-              }
-              else {
-                matchedBlockIndexes = [];
-                break;
-              }
-
-              answerTextSplitIndex++;
-            }
-          }
-        }
-  
-      });
-
-
+      var matchedBlockIndexes = this.calcMatchedBlockIndexes(answerText, 
+                                                    this.transcriptionBlocks);
+      
       if (matchedBlockIndexes.length > 0) {
         questionAnswer.matchedTranscriptionBlockIndexes = matchedBlockIndexes;
-        this.addQuestionAnswer(questionAnswer);
+        this.addQuestionAnswerToChipList(questionAnswer, true);
         this.hightlightSearchResult(matchedBlockIndexes);
         this.searchPhrase = "";
         // TOOK out, doesn't seem to be user friendly
@@ -189,9 +193,48 @@ export class  IVideoComponent implements OnInit {
     });
   }
 
+  calcMatchedBlockIndexes(answerText : string, transcriptionBlocks : any[]) : number[] {
+
+    var answerTextSplit = answerText.split(' ');
+
+    var matchedBlockIndexes = [];
+
+    transcriptionBlocks.forEach((item: any, index) => {
+
+      if (matchedBlockIndexes.length == 0) {
+        matchedBlockIndexes = [];
+        if (item.w == answerTextSplit[0]) {
+          var tillRun = (index + answerTextSplit.length) - 1;
+          matchedBlockIndexes.push(index);
+
+          var answerTextSplitIndex = 1;
+          for (var i = index + 1; i <= tillRun; i++) {
+            if (answerTextSplit[answerTextSplitIndex] == transcriptionBlocks[i].w) {
+              matchedBlockIndexes.push(i);
+            }
+            else {
+              console.log('Did not match', answerTextSplit[answerTextSplitIndex] , transcriptionBlocks[i].w);
+              matchedBlockIndexes = [];
+              break;
+            }
+
+            answerTextSplitIndex++;
+          }
+        }
+      }
+
+    });
+
+    return matchedBlockIndexes;
+
+  }
+
+  /**
+   * Note questions array is in reverse order to chip list array
+   */
   playAnswer({text, index}) {
     if (index >= 0) {
-      let questionAnswer = this.questionAnswerList[index];
+      let questionAnswer : IQuestionAnswer = this.iVideo.questions[this.iVideo.questions.length - 1 - index];
       if (questionAnswer && questionAnswer.matchedTranscriptionBlockIndexes) {
         // take the first word / block in the matched blocks and play
         let transcriptionBlock = this.transcriptionBlocks[questionAnswer.matchedTranscriptionBlockIndexes[0]];
@@ -201,11 +244,20 @@ export class  IVideoComponent implements OnInit {
     }
   }
 
-  addQuestionAnswer(questionAnswer) {
-    this.questionAnswerList.push(questionAnswer);
-    this.questionAnswerChipList.push(
-      this.upperCaseFirst(questionAnswer.question) + "? " + questionAnswer.answerText);
-    this.chipsList.refresh();
+  saveQuestionAnswer(questionAnswer : IQuestionAnswer) {
+    if(!this.iVideo.questions) {
+      this.iVideo.questions = [];
+    }
+    this.iVideo.questions.push(questionAnswer);
+    this.iVideoService.save(this.iVideo).subscribe();
+  }
+
+  addQuestionAnswerToChipList(questionAnswer : IQuestionAnswer, refresh?) {
+    let text = `Question: ${this.upperCaseFirst(questionAnswer.questionText)}? Answer: ${questionAnswer.answerText}`;
+    this.questionAnswerChipList.unshift(text);
+    if (refresh) {
+      this.chipsList.refresh();
+    }
   }
 
   upperCaseFirst(str) {
@@ -215,9 +267,13 @@ export class  IVideoComponent implements OnInit {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
+  /**
+   * Note questions array is in reverse order to chip list array.
+   */
   deleteQuestionAnswer({text, index}) {
-    this.questionAnswerList = this.questionAnswerList.filter((obj, i) => i !== index);
     this.questionAnswerChipList = this.questionAnswerChipList.filter((obj, i) => i !== index);
+    this.iVideo.questions = this.iVideo.questions.filter((obj, i) => i !== (this.iVideo.questions.length - 1 - index));
+    this.iVideoService.save(this.iVideo).subscribe();
   }
 
   playVideo(time, beginningOfSentence) {

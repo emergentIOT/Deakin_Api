@@ -8,7 +8,7 @@
       </div>
       <div class="col-md-5">
         <des-button style="position: absolute; right: 0;" 
-            (click)="onGenerateQuiz()" shape="round-both" size="small">Generate Quiz</des-button>
+            (click)="onGenerateQuiz()" shape="round-both" size="small">{{iVideo?.quizId ? 'Quiz' : 'Create Quiz'}}</des-button>
 
       </div>
     </div>

@@ -11,7 +11,7 @@ const Quiz = qaService.Quiz;
 /**
  * Install User Permission Web Service API
  */
-exports.installQaWs = async function(server) {
+exports.installWs = async function(server) {
 
     // var jwtExpressOptions = {
     //     secret: secret,

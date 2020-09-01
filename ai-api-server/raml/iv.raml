@@ -1,0 +1,80 @@
+#%RAML 1.0
+description: Interactive video and question answering AI service.
+
+/ivideos:
+  get:
+    description: Get list of interactive videos
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+                {
+                  "success": true,
+                  "data": {}
+                }
+      500:
+        description: Unexpected Error or bad parameters
+
+/ivideo/{iVideoId}:
+  uriParameters:
+    iVideoId:
+      type: string
+  get:
+    responses:
+      200:
+        description: Retrieve the interactive video for the given ivideo id
+        body:
+          application/json:
+            example: |
+                {
+                  success: true,
+                  data: {
+                    "name": "String",
+                    "description": "String",
+                    "questions": [{
+                      "questionText": "String",
+                      "answerText": "String"
+                    }]
+                  }
+                }
+      500:
+        description: Unexpected Error or bad parameters
+  delete:
+    responses:
+      200:
+        description: Removes ivideo
+      500:
+        description: Unexpected Error or bad parameter
+
+/ivideo:
+  put:
+    body:
+      application/json:
+        properties:
+          _id:
+            type: string
+            required: false 
+          name:
+            type: string
+            required: true
+            description: The title / name of the interactive    
+          description:
+            type: string
+            required: true    
+          questions:    
+            type: array
+            required: false
+    responses:
+      200:
+        description: Store document ivideo for further queries
+        body:
+          application/json:
+            example: |
+              {
+                "success": true
+                "data": "<ivideo id>"
+              }
+      500:
+        description: Unexpected Error or bad parameter
+
