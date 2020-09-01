@@ -1,0 +1,532 @@
+{
+	"info": {
+		"_postman_id": "1539be29-c52c-45d6-8911-97f8d0548353",
+		"name": "Deakin AI - Client Question Generation API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Save",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "08ec41ac-ca93-4fd3-998a-e956130419a7",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Quiz ID created\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.data).to.be.a('string');",
+							"    pm.environment.set(\"quizId\", jsonData.data);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8e51936c-3693-4e20-9246-196910613c5e",
+						"exec": [
+							"let input = {",
+							"    name: \"French History\",",
+							"    plainText: \"The Normans (Norman: Nourmands; French: Normands; Latin: Normanni) were the people who in the 10th and 11th centuries gave their name to Normandy, a region in France. They were descended from Norse (Norman comes from Norseman) raiders and pirates from Denmark, Iceland and Norway who, under their leader Rollo, agreed to swear fealty to King Charles III of West Francia. Through generations of assimilation and mixing with the native Frankish and Roman-Gaulish populations, their descendants would gradually merge with the Carolingian-based cultures of West Francia. The distinct cultural and ethnic identity of the Normans emerged initially in the first half of the 10th century, and it continued to evolve over the succeeding centuries.\",",
+							"    answerTokens: [\"Normans\", \"West Francia\"]",
+							"};",
+							"",
+							"pm.environment.set(\"input\", input);",
+							"pm.environment.set(\"inputJSON\", JSON.stringify(input));",
+							"",
+							"",
+							"",
+							"    "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{inputJSON}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/qa/quiz",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"qa",
+						"quiz"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4251afd1-bae5-4b55-b53d-b60bb5081a47",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Update quiz\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.data).to.be.a('string');",
+							"    pm.expect(jsonData.data).to.be.eql(pm.environment.get('quizId'));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "cafe1eb6-1c94-40d5-937d-5bb457af3a48",
+						"exec": [
+							"// pm.environment.set(\"text\", \"The Normans (Norman: Nourmands; French: Normands; Latin: Normanni) were the people who in the 10th and 11th centuries gave their name to Normandy, a region in France. They were descended from Norse (Norman comes from Norseman) raiders and pirates from Denmark, Iceland and Norway who, under their leader Rollo, agreed to swear fealty to King Charles III of West Francia. Through generations of assimilation and mixing with the native Frankish and Roman-Gaulish populations, their descendants would gradually merge with the Carolingian-based cultures of West Francia. The distinct cultural and ethnic identity of the Normans emerged initially in the first half of the 10th century, and it continued to evolve over the succeeding centuries.\");",
+							"// pm.environment.set(\"text-answer-token1\", \"Normans\");",
+							"// pm.environment.set(\"text-answer-token2\", \"West Francia\");",
+							"// pm.environment.set(\"text-expected-question-token\", \"What people gave their name to Normandy ?\");",
+							"",
+							"let input = pm.environment.get(\"input\");",
+							"input._id = pm.environment.get(\"quizId\");",
+							"input.plainText = input.plainText + \" update\";",
+							"",
+							"pm.environment.set(\"input\", input);",
+							"pm.environment.set(\"inputJSON\", JSON.stringify(input));",
+							"",
+							"// {",
+							"// \t\"_id\" : \"{{quizId}}\",",
+							"// \t\"name\" : \"{{name}}\",",
+							"// \t\"plainText\" : \"{{text}}\",",
+							"// \t\"richText\" : \"<div><b>update</b>{{text}}</div>\",",
+							"// \t\"answerTokens\": [\"{{text-answer-token1}}\", \"{{text-answer-token2}}\"]",
+							"// }",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{inputJSON}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/iv/ivideo",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"iv",
+						"ivideo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c51e2020-6040-49c7-93df-4873d9e0be7d",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"List Quizzes\", function () {",
+							"pm.environment.get(\"variable_key\");",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.data.length).to.be.gte(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/qa/quizzes",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"qa",
+						"quizzes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "41acec18-45d3-409d-80c3-a8ba6ba1f4b1",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Quiz Fetched\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.data.plainText).to.be.a('string');",
+							"    pm.expect(jsonData.data.plainText).to.be.eql(pm.environment.get('input').plainText);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/qa/quiz/{{quizId}}",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"qa",
+						"quiz",
+						"{{quizId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate Answer Tokens with quizId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "744cf431-d849-4c35-b6f8-ac09e5142905",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Question generated\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.data.length).to.be.gt(5);",
+							"    pm.environment.set(\"text-answer-tokens-suggested\", jsonData.data);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"quizId\": \"{{quizId}}\"\n}"
+				},
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/qa/generate-answer-tokens?isDryRun={{isDryRun}}",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"qa",
+						"generate-answer-tokens"
+					],
+					"query": [
+						{
+							"key": "isDryRun",
+							"value": "{{isDryRun}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate Answer Tokens without quizId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "744cf431-d849-4c35-b6f8-ac09e5142905",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Question generated\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.data.length).to.be.gt(5);",
+							"    pm.environment.set(\"text-answer-tokens-suggested\", jsonData.data);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b07f2bf5-326d-4045-984e-005eb3fa75e0",
+						"exec": [
+							"pm.environment.set(\"plainText\", pm.environment.get(\"input\").plainText);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"plainText\" : \"{{plainText}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/qa/generate-answer-tokens?isDryRun={{isDryRun}}",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"qa",
+						"generate-answer-tokens"
+					],
+					"query": [
+						{
+							"key": "isDryRun",
+							"value": "{{isDryRun}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate Questions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f4e1f903-3808-43b3-91d8-d2fde7ace7cf",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Questions generated\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/qa/generate-questions/{{quizId}}?isDryRun={{isDryRun}}",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"qa",
+						"generate-questions",
+						"{{quizId}}"
+					],
+					"query": [
+						{
+							"key": "isDryRun",
+							"value": "{{isDryRun}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Quiz Status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b5a5efee-35f2-43d7-83a5-db4bda0a9538",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Quiz Status Fetch\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.data.tokens.length).to.be.eql(2);",
+							"    pm.expect(jsonData.data.tokens[0].status).to.be.oneOf([\"processing\", \"processed\"]);",
+							"    pm.expect(jsonData.data.tokens[1].status).to.be.oneOf([\"processing\", \"processed\"]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/qa/quiz-tokens/{{quizId}}",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"qa",
+						"quiz-tokens",
+						"{{quizId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Del",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9151bcdb-3637-40de-8704-de3d83c83006",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Resource Fetched\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/qa/quiz/{{quizId}}",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"qa",
+						"quiz",
+						"{{quizId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "8ac0630f-7e5f-4cc1-83a7-491560356232",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "9d01ea85-88bf-4ebd-9bf4-0cfb1dfbcca3",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

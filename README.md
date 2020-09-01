@@ -3,5 +3,3 @@
 AI API Server and demo apps
  - quiz generation
  - interactive video and quiz generation.
-
- dummy change

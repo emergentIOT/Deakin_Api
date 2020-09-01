@@ -24,6 +24,12 @@ Run server (Ensure DCM is open)
 npm run start-nodemon
 ```
 
+Load test data - gitlab dev enviroment
+```
+cd test-postman
+newman run --iteration-data ivideo-list-init-sample-data.json --environment [client-api-gitlab-dev|client-api-local].postman_environment.json Deakin\ AI\ -\ Client\ Interactive\ Video\ API\ Populate.postman_collection.json
+```
+
 ## Run Tests
 
 Install postman for desktop

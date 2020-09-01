@@ -1,0 +1,302 @@
+{
+	"info": {
+		"_postman_id": "f27fae25-85c0-45d5-8d0b-e951cc569878",
+		"name": "Deakin AI - Client Interactive Video API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Save",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "08ec41ac-ca93-4fd3-998a-e956130419a7",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"IVideo ID created\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.data).to.be.a('string');",
+							"    pm.environment.set(\"iVideoId\", jsonData.data);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8e51936c-3693-4e20-9246-196910613c5e",
+						"exec": [
+							"let input = {",
+							"    name: \"Body of Knowledge\",",
+							"    description: \"The cold body of knowledge. So the ICS does provide a core body of knowledge. So I've been, I guess, originally developed this\",",
+							"    transcriptionUrl: \"/mock-data/ivideo/sample002.json\",",
+							"    videoUrl: \"/mock-data/ivideo/sample002.mp4\",",
+							"    questions: [{questionText: \"What is ICS\", answerText: \"ICS provides a core body of knowledge.\"}]",
+							"};",
+							"",
+							"pm.environment.set(\"input\", input);",
+							"pm.environment.set(\"inputJSON\", JSON.stringify(input));",
+							"",
+							"",
+							"",
+							"    "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{inputJSON}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/iv/ivideo",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"iv",
+						"ivideo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4251afd1-bae5-4b55-b53d-b60bb5081a47",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Update IVideo\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.data).to.be.a('string');",
+							"    pm.expect(jsonData.data).to.be.eql(pm.environment.get('iVideoId'));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "cafe1eb6-1c94-40d5-937d-5bb457af3a48",
+						"exec": [
+							"",
+							"let input = pm.environment.get(\"input\");",
+							"input._id = pm.environment.get(\"iVideoId\");",
+							"input.name = input.name + \" update\";",
+							"",
+							"pm.environment.set(\"input\", input);",
+							"pm.environment.set(\"inputJSON\", JSON.stringify(input));",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{inputJSON}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/iv/ivideo",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"iv",
+						"ivideo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c51e2020-6040-49c7-93df-4873d9e0be7d",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"List IVideos\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.data.length).to.be.gte(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/iv/ivideos",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"iv",
+						"ivideos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "41acec18-45d3-409d-80c3-a8ba6ba1f4b1",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"IVideo Fetched\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.data.name).to.be.a('string');",
+							"    pm.expect(jsonData.data.name).to.be.eql(pm.environment.get('input').name);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/iv/ivideo/{{iVideoId}}",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"iv",
+						"ivideo",
+						"{{iVideoId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Del",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9151bcdb-3637-40de-8704-de3d83c83006",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Resource Fetched\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/iv/ivideo/{{iVideoId}}",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"iv",
+						"ivideo",
+						"{{iVideoId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "8ac0630f-7e5f-4cc1-83a7-491560356232",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "9d01ea85-88bf-4ebd-9bf4-0cfb1dfbcca3",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
