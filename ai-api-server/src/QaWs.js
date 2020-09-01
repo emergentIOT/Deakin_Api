@@ -312,8 +312,9 @@ const generateQuestion = async function(req, res) {
  * Answer a question from quiz id and a question token.
  */
 const answerQuestion = async function(req, res) {
- 
-    qaService.getQuizById(req.params.quizId, function(err, quiz) {
+    console.log("******RECEIVED DATA***********", req.query.transcriptionText);
+    console.log("********reeived question**********", req.query.questionToken);
+    /*qaService.getQuizById(req.params.quizId, function(err, quiz) {
         if (utilWs.handleError('qg.answerQuestion', res, err)) {
             return;
         }
@@ -321,9 +322,9 @@ const answerQuestion = async function(req, res) {
         if (utils.isNull(quiz)) {
             utilWs.sendUserError('qg.generateQuestion', "Quiz not found.", res);
             return;
-        }
+        }*/
 
-        qaService.answerQuestions(quiz.plainText, req.query.questionToken, function(err, result) {
+        qaService.answerQuestions(req.query.transcriptionText, req.query.questionToken, function(err, result) {
 
             if (utilWs.handleError('qg.answerQuestion', res, err)) {
                 return;
@@ -332,7 +333,7 @@ const answerQuestion = async function(req, res) {
             utilWs.sendSuccess('qg.answerQuestion', {success: true, data: result.answerText}, res, true);                      
         })
         
-    });
+   // });
 
 }
 

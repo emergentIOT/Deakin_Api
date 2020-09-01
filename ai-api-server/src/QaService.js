@@ -9,6 +9,7 @@ const querystring = require('querystring');
 const questionGenerationAiUrl = utils.getConfig('QUESTION_GENERATION_AI_URL', utils.CONFIG_REQUIRED);
 const answerTokenGenerationAiUrl = utils.getConfig('ANSWER_TOKEN_GENERATION_AI_URL', utils.CONFIG_REQUIRED);
 const questionAnswerAiUrl = utils.getConfig('QUESTION_ANSWER_AI_URL', utils.CONFIG_REQUIRED);
+const questionAnswerQnaBot = utils.getConfig('QNA_BOT_AI_URL', utils.CONFIG_REQUIRED);
 
 const QG_AI_CACHE_NAME = "QG_AI";
 const TG_AI_CACHE_NAME = "TG_AI";
@@ -313,23 +314,27 @@ const generateAnswerTokensFetch = function(plainText, cb) {
 
 exports.answerQuestions = function(plainText, questionToken, cb) {
 
-    let formData = {
+    const data = "context=" + encodeURIComponent(plainText)
+     + "&question_to=" + questionToken
+     + "&mode=qna";
+    /*let formData = {
         context: plainText,
         question_tok: questionToken
-    };
+    };*/
 
-    logger.info(formData);
+    //logger.info(formData);
     
-    fetch(questionAnswerAiUrl, {
+    fetch(questionAnswerQnaBot, {
         headers: {
             "content-type": "application/x-www-form-urlencoded",
         },
-        body: querystring.stringify(formData),
+        responseType: "text",
+        body: data,
         method: "POST"
     }).then(res => res.text())
       .then(body => {
-
-        try {
+        console.log("********RESULTS RECEIVED**********", body);
+        /*try {
             let match = GET_RESULT_REGEXP.exec(body);
             let result = '';
             if (utils.isNotNull(match) && match.length > 1) {
@@ -344,7 +349,8 @@ exports.answerQuestions = function(plainText, questionToken, cb) {
             cb(null, {answerText: result});
         } catch(err) {
             cb(err);
-        }
+        }*/
+        cb(null, {answerText: body})
 
     }).catch(err => {
         if (err) {
