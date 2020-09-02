@@ -1,0 +1,106 @@
+{
+	"info": {
+		"_postman_id": "6dd1dfca-9dfe-45be-84cf-e41b12e28b5a",
+		"name": "Deakin AI - Client Interactive Video API Populate",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Save",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "08ec41ac-ca93-4fd3-998a-e956130419a7",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"IVideo ID created\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.data).to.be.a('string');",
+							"    pm.environment.set(\"iVideoId\", jsonData.data);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8e51936c-3693-4e20-9246-196910613c5e",
+						"exec": [
+							"let input = pm.iterationData.get(\"input\");",
+							"",
+							"pm.environment.set(\"input\", input);",
+							"pm.environment.set(\"inputJSON\", JSON.stringify(input));",
+							"",
+							"",
+							"",
+							"    "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{inputJSON}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/iv/ivideo",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"iv",
+						"ivideo"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "8ac0630f-7e5f-4cc1-83a7-491560356232",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "9d01ea85-88bf-4ebd-9bf4-0cfb1dfbcca3",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

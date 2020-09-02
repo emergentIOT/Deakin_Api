@@ -24,6 +24,11 @@ Run server (Ensure DCM is open)
 npm run start-nodemon
 ```
 
+Load test data
+```
+npm run load-test-data-[local|dev]
+```
+
 ## Run Tests
 
 Install postman for desktop
