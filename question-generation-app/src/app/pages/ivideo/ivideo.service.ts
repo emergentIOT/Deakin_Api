@@ -24,8 +24,10 @@ export class IVideoService {
     private appConfigService: AppConfigService
   ) {}
 
-  getSearchAnswer( quizId: string, questionToken: string) : Observable<any>{
-    return  this.http.get<any>(`${this.apiUrlIVideoQnaBotQuestionAnswer}/${quizId}?questionToken=${questionToken}`);
+  getQuestionAnswer( quizId: string, question: string) : Observable<any>{
+    return  this.http.get<any>(`${this.apiUrlIVideoQnaBotQuestionAnswer}/${quizId}?q=${question}`).pipe(
+      map<IResponse<string>, string>(res => res.data)
+    );
   }
 
 
