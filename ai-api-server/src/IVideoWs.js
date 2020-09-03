@@ -130,7 +130,7 @@ const delIVideo = async function(req, res) {
  */
 const answerQuestion = async function(req, res) {
      
-    IVideo.findById(req.params.iVideoId, function(err, ivideo) {
+    /*IVideo.findById(req.params.iVideoId, function(err, ivideo) {
         console.log("IVideo found", ivideo);
         if (utilWs.handleError('iv.IVideo', res, err)) {
              return;
@@ -139,9 +139,9 @@ const answerQuestion = async function(req, res) {
          if (utils.isNull(ivideo)) {
              utilWs.sendUserError('iv.getIVideo', "iVideo not found.", res);
              return;
-         }
- 
-         qaService.answerQuestions(ivideo.description, req.query.q, function(err, result) {
+         }*/
+         
+         qaService.answerQuestions(req.query.transcription, req.query.question, function(err, result) {
  
              if (utilWs.handleError('iv.answerQuestion', res, err)) {
                  return;
@@ -150,6 +150,6 @@ const answerQuestion = async function(req, res) {
              utilWs.sendSuccess('iv.answerQuestion', {success: true, data: result.answerText}, res, true);                      
          })
          
-     });
+    //});
  
  }

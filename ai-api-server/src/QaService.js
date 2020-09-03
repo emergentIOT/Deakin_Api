@@ -9,8 +9,7 @@ const querystring = require('querystring');
 const questionGenerationAiUrl = utils.getConfig('QUESTION_GENERATION_AI_URL', utils.CONFIG_REQUIRED);
 const answerTokenGenerationAiUrl = utils.getConfig('ANSWER_TOKEN_GENERATION_AI_URL', utils.CONFIG_REQUIRED);
 const questionAnswerAiUrl = utils.getConfig('QUESTION_ANSWER_AI_URL', utils.CONFIG_REQUIRED);
-const questionAnswerQnaBot = utils.getConfig('QNA_BOT_AI_URL', utils.CONFIG_REQUIRED);
-
+const qnaBotUrl = utils.getConfig('QNA_BOT_AI_URL', utils.CONFIG_REQUIRED);
 const QG_AI_CACHE_NAME = "QG_AI";
 const TG_AI_CACHE_NAME = "TG_AI";
 const QA_AI_CACHE_NAME = "QA_AI";
@@ -333,7 +332,7 @@ exports.answerQuestions = function(plainText, questionToken, cb) {
         } 
     
 
-    fetch(questionAnswerQnaBot, {
+    fetch(qnaBotUrl, {
         headers: {
             "content-type": "application/x-www-form-urlencoded",
         },
@@ -343,6 +342,7 @@ exports.answerQuestions = function(plainText, questionToken, cb) {
     }).then(res => res.text())
       .then(body => {
         try {
+            //console.log("Received answer", body);
             /*let match = GET_RESULT_REGEXP.exec(body);
             let result = '';
             if (utils.isNotNull(match) && match.length > 1) {

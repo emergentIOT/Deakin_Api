@@ -23,7 +23,7 @@ RUN npm config set ai-api-server:MONGO_DATABASE aiDb
 RUN npm config set ai-api-server:QUESTION_GENERATION_AI_URL http://research-gpu-poc-fs1.its.deakin.edu.au:8888/
 RUN npm config set ai-api-server:ANSWER_TOKEN_GENERATION_AI_URL http://research-gpu-poc-fs1.its.deakin.edu.au:8891/
 RUN npm config set ai-api-server:QUESTION_ANSWER_AI_URL http://research-gpu-poc-fs1.its.deakin.edu.au:8889/
-
+RUN npm config set ai-api-server:QNA_BOT_AI_URL=https://des-inno-qnabot.its.deakin.edu.au
 
 RUN npm install
 # RUN npm ci --only=production

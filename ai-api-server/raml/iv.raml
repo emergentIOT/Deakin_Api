@@ -85,8 +85,12 @@ description: Interactive video and question answering AI service.
       type: string
   get:
     queryParameters:
-      q:
+      question:
         description: The question token
+        type: string
+        required: true
+      transcription:
+        description: Ivideo Transcription
         type: string
         required: true
 
