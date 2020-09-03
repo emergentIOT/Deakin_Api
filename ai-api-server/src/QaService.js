@@ -313,16 +313,10 @@ const generateAnswerTokensFetch = function(plainText, cb) {
 }
 
 exports.answerQuestions = function(plainText, questionToken, cb) {
-    console.log("*********Received description**********", plainText)
+    
     const data = "context=" + encodeURIComponent(plainText)
      + "&question_to=" + questionToken
      + "&mode=qna";
-    /*let formData = {
-        context: plainText,
-        question_tok: questionToken
-    };*/
-
-    //logger.info(formData);
     
     fetch(questionAnswerQnaBot, {
         headers: {
@@ -333,7 +327,6 @@ exports.answerQuestions = function(plainText, questionToken, cb) {
         method: "POST"
     }).then(res => res.text())
       .then(body => {
-        console.log("********RESULTS RECEIVED**********", body);
         /*try {
             let match = GET_RESULT_REGEXP.exec(body);
             let result = '';

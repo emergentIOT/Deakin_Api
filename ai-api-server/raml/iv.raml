@@ -79,13 +79,13 @@ description: Interactive video and question answering AI service.
         description: Unexpected Error or bad parameter
 
 /answer-question/{iVideoId}:
-  description: Answer questions from quiz and question token
+  description: Answer question from IVideo and question token
   uriParameters:
     iVideoId:
       type: string
   get:
     queryParameters:
-      questionToken:
+      q:
         description: The question token
         type: string
         required: true
