@@ -156,7 +156,7 @@ export class  IVideoComponent implements OnInit {
       matchedTranscriptionBlockIndexes: null
     }
 
-     this.iVideoService.getQuestionAnswer(this.iVideoId ,this.searchPhrase).subscribe((answerText: any) => {
+     this.iVideoService.askQuestion(this.transcriptionText ,this.searchPhrase).subscribe((answerText: any) => {
        
       questionAnswer.answerText = answerText;
       this.saveQuestionAnswer(questionAnswer);
