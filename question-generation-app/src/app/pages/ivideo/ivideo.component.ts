@@ -156,16 +156,8 @@ export class  IVideoComponent implements OnInit {
       matchedTranscriptionBlockIndexes: null
     }
 
-    const headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-    const data = "context=" + encodeURIComponent(this.transcriptionText)
-      + "&question_to=" + this.searchPhrase
-      + "&mode=qna";
-
-    this.http.post("https://des-inno-qnabot.its.deakin.edu.au/", data, {
-      headers: headers,
-      responseType: "text"
-    }).subscribe((answerText: any) => {
-
+     this.iVideoService.getQuestionAnswer(this.iVideoId ,this.searchPhrase).subscribe((answerText: any) => {
+       
       questionAnswer.answerText = answerText;
       this.saveQuestionAnswer(questionAnswer);
 

@@ -78,3 +78,15 @@ description: Interactive video and question answering AI service.
       500:
         description: Unexpected Error or bad parameter
 
+/answer-question/{iVideoId}:
+  description: Answer question from IVideo and question token
+  uriParameters:
+    iVideoId:
+      type: string
+  get:
+    queryParameters:
+      q:
+        description: The question token
+        type: string
+        required: true
+

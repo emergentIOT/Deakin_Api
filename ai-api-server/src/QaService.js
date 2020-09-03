@@ -9,9 +9,11 @@ const querystring = require('querystring');
 const questionGenerationAiUrl = utils.getConfig('QUESTION_GENERATION_AI_URL', utils.CONFIG_REQUIRED);
 const answerTokenGenerationAiUrl = utils.getConfig('ANSWER_TOKEN_GENERATION_AI_URL', utils.CONFIG_REQUIRED);
 const questionAnswerAiUrl = utils.getConfig('QUESTION_ANSWER_AI_URL', utils.CONFIG_REQUIRED);
+const questionAnswerQnaBot = utils.getConfig('QNA_BOT_AI_URL', utils.CONFIG_REQUIRED);
 
 const QG_AI_CACHE_NAME = "QG_AI";
 const TG_AI_CACHE_NAME = "TG_AI";
+const QA_AI_CACHE_NAME = "QA_AI";
 
 const GET_RESULT_REGEXP = /<label id="ans1">((.|\n|\r|\f|\t)*?)<\/label>/mi;
 const NEW_LINES_REGEXP = /(?:\r\n|\r|\n)/g;
@@ -312,46 +314,59 @@ const generateAnswerTokensFetch = function(plainText, cb) {
 }
 
 exports.answerQuestions = function(plainText, questionToken, cb) {
-
-    let formData = {
-        context: plainText,
-        question_tok: questionToken
-    };
-
-    logger.info(formData);
+    questionToken = cleanUpText(questionToken);
+    let questionHash = utils.hash(questionToken);
     
-    fetch(questionAnswerAiUrl, {
+    const data = "context=" + encodeURIComponent(plainText)
+     + "&question_to=" + questionToken
+     + "&mode=qna";
+    
+     checkCache(QA_AI_CACHE_NAME, questionHash, null, (err, result) => {
+        
+        
+        if (result) {
+            cb(null, result);
+            return;
+        } else if (err) {
+            cb(err);
+            return;
+        } 
+    
+
+    fetch(questionAnswerQnaBot, {
         headers: {
             "content-type": "application/x-www-form-urlencoded",
         },
-        body: querystring.stringify(formData),
+        responseType: "text",
+        body: data,
         method: "POST"
     }).then(res => res.text())
       .then(body => {
-
         try {
-            let match = GET_RESULT_REGEXP.exec(body);
+            /*let match = GET_RESULT_REGEXP.exec(body);
             let result = '';
             if (utils.isNotNull(match) && match.length > 1) {
                 result = match[1].trim();
             }
             logger.info(match); 
-
-            if (utils.isEmpty(result)) {
+            */
+            if (utils.isEmpty(body)) {
                 logger.warn('Empty result: ', body);
             }
     
-            cb(null, {answerText: result});
+            cb(null, {answerText: body})
+            saveCache(QA_AI_CACHE_NAME, questionHash, null, {answerText: body});
         } catch(err) {
             cb(err);
         }
-
+       
     }).catch(err => {
         if (err) {
             cb(err);
             return;
         }
     });
+});
 
 }
 

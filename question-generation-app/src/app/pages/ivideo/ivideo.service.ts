@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { IVideoList } from "../../interfaces/IVideoList";
 import { AppConfigService } from '../../services/app-config/app-config.service';
 import { publishReplay, refCount, catchError, concatMap, map } from 'rxjs/operators';
@@ -18,11 +18,18 @@ export class IVideoService {
 
   private apiUrlIVideos = this.appConfigService.apiUrl + '/api/v1/iv/ivideos';
   private apiUrlIVideo = this.appConfigService.apiUrl + '/api/v1/iv/ivideo';
-
+  private apiUrlIVideoQnaBotQuestionAnswer = this.appConfigService.apiUrl + '/api/v1/iv/answer-question'
   constructor(
     private http: HttpClient,
     private appConfigService: AppConfigService
   ) {}
+
+  getQuestionAnswer( quizId: string, question: string) : Observable<any>{
+    return  this.http.get<any>(`${this.apiUrlIVideoQnaBotQuestionAnswer}/${quizId}?q=${question}`).pipe(
+      map<IResponse<string>, string>(res => res.data)
+    );
+  }
+
 
   getIVideo(ivideoId : string) : Observable<IVideo> {
     return this.http.get<IResponse<IVideo>>(`${this.apiUrlIVideo}/${ivideoId}`).pipe(
