@@ -18,18 +18,14 @@ export class IVideoService {
 
   private apiUrlIVideos = this.appConfigService.apiUrl + '/api/v1/iv/ivideos';
   private apiUrlIVideo = this.appConfigService.apiUrl + '/api/v1/iv/ivideo';
-
+  private apiUrlIVideoQnaBotQuestionAnswer = this.appConfigService.apiUrl + '/api/v1/iv/answer-question'
   constructor(
     private http: HttpClient,
     private appConfigService: AppConfigService
   ) {}
 
-  getSearchAnswer( data: string) : Observable<any>{
-    const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
-    const responseType = 'text' as 'json';
-    const options = {headers, responseType};
-    
-    return  this.http.post<any>(this.apiUrlIVideo, data, options);
+  getSearchAnswer( quizId: string, questionToken: string) : Observable<any>{
+    return  this.http.get<any>(`${this.apiUrlIVideoQnaBotQuestionAnswer}/${quizId}?questionToken=${questionToken}`);
   }
 
 

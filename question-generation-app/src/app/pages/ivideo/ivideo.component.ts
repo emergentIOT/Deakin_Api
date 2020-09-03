@@ -159,12 +159,12 @@ export class  IVideoComponent implements OnInit {
      const data = "context=" + encodeURIComponent(this.transcriptionText)
       + "&question_to=" + this.searchPhrase
       + "&mode=qna";
-     this.iVideoService.getSearchAnswer(data).subscribe((answerText: any) => {
-     
-      questionAnswer.answerText = answerText;
+     this.iVideoService.getSearchAnswer(this.iVideoId ,this.searchPhrase).subscribe((answerText: any) => {
+     console.log("Received results ****", answerText.data);
+      questionAnswer.answerText = answerText.data;
       this.saveQuestionAnswer(questionAnswer);
 
-      var matchedBlockIndexes = this.calcMatchedBlockIndexes(answerText, 
+      var matchedBlockIndexes = this.calcMatchedBlockIndexes(answerText.data, 
                                                     this.transcriptionBlocks);
       
       if (matchedBlockIndexes.length > 0) {
