@@ -313,7 +313,7 @@ const generateAnswerTokensFetch = function(plainText, cb) {
 }
 
 exports.answerQuestions = function(plainText, questionToken, cb) {
-
+    console.log("*********Received description**********", plainText)
     const data = "context=" + encodeURIComponent(plainText)
      + "&question_to=" + questionToken
      + "&mode=qna";

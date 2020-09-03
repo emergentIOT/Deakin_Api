@@ -5,7 +5,6 @@ const utils = require('du-utils').UtilGeneral();
 const logger = require('du-logger').LoggingService('qg-ws');
 const async = require('async');
 const qaService = require('./QaService');
-
 const Quiz = qaService.Quiz;
 
 /**
@@ -312,8 +311,9 @@ const generateQuestion = async function(req, res) {
  * Answer a question from quiz id and a question token.
  */
 const answerQuestion = async function(req, res) {
-    console.log("******RECEIVED DATA***********", req.query.transcriptionText);
-    console.log("********reeived question**********", req.query.questionToken);
+   // console.log("******RECEIVED DATA***********", req.query.transcriptionText);
+    console.log("********reeived question**********", req.params);
+
     /*qaService.getQuizById(req.params.quizId, function(err, quiz) {
         if (utilWs.handleError('qg.answerQuestion', res, err)) {
             return;
@@ -324,14 +324,14 @@ const answerQuestion = async function(req, res) {
             return;
         }*/
 
-        qaService.answerQuestions(req.query.transcriptionText, req.query.questionToken, function(err, result) {
+        /*qaService.answerQuestions(req.query.transcriptionText, req.query.questionToken, function(err, result) {
 
             if (utilWs.handleError('qg.answerQuestion', res, err)) {
                 return;
             }
             
             utilWs.sendSuccess('qg.answerQuestion', {success: true, data: result.answerText}, res, true);                      
-        })
+        })*/
         
    // });
 

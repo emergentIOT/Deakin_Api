@@ -4,6 +4,7 @@ const utilWs = require('du-utils').UtilWs();
 const utils = require('du-utils').UtilGeneral();
 const logger = require('du-logger').LoggingService('interactive-video-ws');
 const async = require('async');
+const qaService = require('./QaService');
 
 /*
  * The MongooseJS collection schema definition.
@@ -36,6 +37,7 @@ exports.installWs = async function(server) {
     server.put(server.getPath('/iv/ivideo'), saveIVideo);
     server.get(server.getPath('/iv/ivideo/:iVideoId'), getIVideo);
     server.delete(server.getPath('/iv/ivideo/:iVideoId'), delIVideo);
+    server.get(server.getPath('/iv/answer-question/:iVideoId'), answerQuestion);
     
     logger.info('Interactive video web services installed at /iv');
 
@@ -119,3 +121,37 @@ const delIVideo = async function(req, res) {
         utilWs.sendSuccess('iv.delIVideo', {success: true, data: result}, res, true);                      
     });
 }
+
+
+/**
+ * GET
+ * /answer-question
+ * Answer a question from quiz id and a question token.
+ */
+const answerQuestion = async function(req, res) {
+    // console.log("******RECEIVED DATA***********", req.query.transcriptionText);
+     console.log("********reeived question**********", req.params.iVideoId);
+ 
+     IVideo.findById(req.params.iVideoId, function(err, ivideo) {
+        console.log("Quiz found", ivideo);
+        if (utilWs.handleError('qg.answerQuestion', res, err)) {
+             return;
+         }
+ 
+         if (utils.isNull(ivideo)) {
+             utilWs.sendUserError('qg.generateQuestion', "Quiz not found.", res);
+             return;
+         }
+ 
+         qaService.answerQuestions(ivideo.description, req.query.questionToken, function(err, result) {
+ 
+             if (utilWs.handleError('qg.answerQuestion', res, err)) {
+                 return;
+             }
+             
+             utilWs.sendSuccess('qg.answerQuestion', {success: true, data: result.answerText}, res, true);                      
+         })
+         
+     });
+ 
+ }
