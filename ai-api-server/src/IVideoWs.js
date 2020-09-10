@@ -52,7 +52,7 @@ const saveIVideo = async function(req, res) {
 
     let { name, description, transcriptionUrl, videoUrl, questions, quizId, _id } = req.body;
 
-    console.log("saveIVideo", _id, questions);
+    logger.debug("saveIVideo", _id, questions);
     let entity = {name, description, transcriptionUrl, videoUrl, questions};
     if (utils.isNotEmpty(_id)) {
         entity._id = _id;

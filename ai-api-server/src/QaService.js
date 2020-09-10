@@ -9,7 +9,6 @@ const querystring = require('querystring');
 const questionGenerationAiUrl = utils.getConfig('QUESTION_GENERATION_AI_URL', utils.CONFIG_REQUIRED);
 const answerTokenGenerationAiUrl = utils.getConfig('ANSWER_TOKEN_GENERATION_AI_URL', utils.CONFIG_REQUIRED);
 const questionAnswerAiUrl = utils.getConfig('QUESTION_ANSWER_AI_URL', utils.CONFIG_REQUIRED);
-const qnaBotUrl = utils.getConfig('QNA_BOT_AI_URL', utils.CONFIG_REQUIRED);
 const QG_AI_CACHE_NAME = "QG_AI";
 const TG_AI_CACHE_NAME = "TG_AI";
 const QA_AI_CACHE_NAME = "QA_AI";
@@ -313,14 +312,17 @@ const generateAnswerTokensFetch = function(plainText, cb) {
 }
 
 exports.answerQuestions = function(plainText, questionToken, cb) {
+    plainText  = cleanUpText(plainText);
+    let plainTextHash = utils.hash(plainText);
     questionToken = cleanUpText(questionToken);
     let questionHash = utils.hash(questionToken);
     
-    const data = "context=" + encodeURIComponent(plainText)
-     + "&question_to=" + questionToken
-     + "&mode=qna";
+    const payload = {
+        context: plainText,
+        question: questionToken
+    }
     
-     checkCache(QA_AI_CACHE_NAME, questionHash, null, (err, result) => {
+    checkCache(QA_AI_CACHE_NAME, plainTextHash, questionHash, (err, result) => {
         
         
         if (result) {
@@ -332,41 +334,34 @@ exports.answerQuestions = function(plainText, questionToken, cb) {
         } 
     
 
-    fetch(qnaBotUrl, {
-        headers: {
-            "content-type": "application/x-www-form-urlencoded",
-        },
-        responseType: "text",
-        body: data,
-        method: "POST"
-    }).then(res => res.text())
-      .then(body => {
-        try {
-            //console.log("Received answer", body);
-            /*let match = GET_RESULT_REGEXP.exec(body);
-            let result = '';
-            if (utils.isNotNull(match) && match.length > 1) {
-                result = match[1].trim();
+        fetch(questionAnswerAiUrl, {
+            headers: {
+                "content-type": "application/json",
+            },
+            body: JSON.stringify(payload),
+            method: "POST"
+        })
+        .then(res => res.json())
+        .then(json => {
+            try {
+                logger.info("QA AI service result: ", json);
+
+                if (utils.isEmpty(json.answer)) {
+                    logger.warn('Empty result: ', json);
+                }
+                cb(null, {answerText: json.answer})
+                saveCache(QA_AI_CACHE_NAME, plainTextHash, questionHash, {answerText: json.answer});
+            } catch(err) {
+                cb(err);
             }
-            logger.info(match); 
-            */
-            if (utils.isEmpty(body)) {
-                logger.warn('Empty result: ', body);
+        
+        }).catch(err => {
+            if (err) {
+                cb(err);
+                return;
             }
-    
-            cb(null, {answerText: body})
-            saveCache(QA_AI_CACHE_NAME, questionHash, null, {answerText: body});
-        } catch(err) {
-            cb(err);
-        }
-       
-    }).catch(err => {
-        if (err) {
-            cb(err);
-            return;
-        }
+        });
     });
-});
 
 }
 
