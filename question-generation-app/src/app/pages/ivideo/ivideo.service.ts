@@ -18,15 +18,16 @@ export class IVideoService {
 
   private apiUrlIVideos = this.appConfigService.apiUrl + '/api/v1/iv/ivideos';
   private apiUrlIVideo = this.appConfigService.apiUrl + '/api/v1/iv/ivideo';
-  private apiUrlIVideoQnaBotQuestionAnswer = this.appConfigService.apiUrl + '/api/v1/iv/answer-question'
+  private apiUrlIVideoQuestionAnswer = this.appConfigService.apiUrl + '/api/v1/iv/answer-question'
   constructor(
     private http: HttpClient,
     private appConfigService: AppConfigService
   ) {}
 
-  askQuestion( transcriptionText: string, question: string) : Observable<any>{
+  askQuestion( transcription: string, question: string) : Observable<string>{
     let IVideoId = "22";
-    return  this.http.get<any>(`${this.apiUrlIVideoQnaBotQuestionAnswer}/${IVideoId}?transcription=${transcriptionText}&question=${question}`).pipe(
+    let body = {transcription, question};
+    return  this.http.put<IResponse<string>>(`${this.apiUrlIVideoQuestionAnswer}/${IVideoId}`, body).pipe(
       map<IResponse<string>, string>(res => res.data)
     );
   }
