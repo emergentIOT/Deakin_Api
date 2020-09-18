@@ -15,18 +15,12 @@
 						"exec": [
 							"let input = {",
 							"    context: \"The Normans (Norman: Nourmands; French: Normands; Latin: Normanni) were the people who in the 10th and 11th centuries gave their name to Normandy, a region in France. They were descended from Norse (Norman comes from Norseman) raiders and pirates from Denmark, Iceland and Norway who, under their leader Rollo, agreed to swear fealty to King Charles III of West Francia. Through generations of assimilation and mixing with the native Frankish and Roman-Gaulish populations, their descendants would gradually merge with the Carolingian-based cultures of West Francia. The distinct cultural and ethnic identity of the Normans emerged initially in the first half of the 10th century, and it continued to evolve over the succeeding centuries.\",",
-							"    question_tok: [\"What people gave their name to Normandy ?\", \"What region did the Normans come from ?\"]",
+							"    question: \"What people gave their name to Normandy ?\"",
 							"};",
 							"",
-							"pm.environment.set(\"input\", input);",
 							"pm.environment.set(\"inputJSON\", JSON.stringify(input));",
 							"",
-							"pm.environment.set(\"expected-question-answers\", ",
-							"    [",
-							"        \"Normans\", ",
-							"        \"West Francia\"",
-							"    ]",
-							");"
+							"pm.environment.set(\"expected-question-answer\", \"The Normans\");"
 						],
 						"type": "text/javascript"
 					}
@@ -40,13 +34,10 @@
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
-							"pm.test(\"Question Generation\", function () {",
+							"pm.test(\"Answer Question\", function () {",
 							"    var jsonData = pm.response.json();",
-							"    let expected = pm.environment.get(\"expected-question-answers\");",
-							"    pm.expect(jsonData.answers.length).to.be.eql(expected.length);",
-							"    for (let i = 0; i < expected.length; i++) {",
-							"        pm.expect(jsonData.questions[i]).to.be.eql(expected[i]);",
-							"    }",
+							"    let expected = pm.environment.get(\"expected-question-answer\");",
+							"    pm.expect(jsonData.answer).to.be.eql(expected);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -55,14 +46,7 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "{{inputJSON}}",
