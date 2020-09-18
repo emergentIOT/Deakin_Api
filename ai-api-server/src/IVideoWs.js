@@ -37,7 +37,7 @@ exports.installWs = async function(server) {
     server.put(server.getPath('/iv/ivideo'), saveIVideo);
     server.get(server.getPath('/iv/ivideo/:iVideoId'), getIVideo);
     server.delete(server.getPath('/iv/ivideo/:iVideoId'), delIVideo);
-    server.get(server.getPath('/iv/answer-question/:iVideoId'), answerQuestion);
+    server.put(server.getPath('/iv/answer-question/:iVideoId'), answerQuestion);
     
     logger.info('Interactive video web services installed at /iv');
 
@@ -150,7 +150,7 @@ const answerQuestion = async function(req, res) {
              return;
          }*/
          
-         qaService.answerQuestions(req.query.transcription, req.query.question, function(err, result) {
+         qaService.answerQuestions(req.body.transcription, req.body.question, function(err, result) {
  
              if (utilWs.handleError('iv.answerQuestion', res, err)) {
                  return;

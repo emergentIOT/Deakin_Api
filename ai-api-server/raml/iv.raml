@@ -83,14 +83,28 @@ description: Interactive video and question answering AI service.
   uriParameters:
     iVideoId:
       type: string
-  get:
-    queryParameters:
-      question:
-        description: The question token
-        type: string
-        required: true
-      transcription:
-        description: Ivideo Transcription
-        type: string
-        required: true
+  put:
+    body:
+      application/json:
+        properties:
+          transcription:
+            description: Ivideo transcription
+            type: string
+            required: true
+          question:
+            description: Question asked from the Ivideo
+            type: string
+            required: true
+    responses:
+      200:
+        description: Returns an answer for question asked
+        body:
+          application/json:
+            example: |
+              {
+                "success": true
+                "data": "<answer suggestion>"
+              }
+      500:
+        description: Unexpected Error or bad parameter
 
