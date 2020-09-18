@@ -109,7 +109,7 @@ exports.saveQuiz = function(quiz, cb) {
  * @param {String} quizId the quiz quiz id
  */
 exports.getQuizById = function(quizId, cb) {
-    dbService.get(Quiz, quizId, cb);
+    Quiz.findById(quizId).lean().exec(cb);
 }
 
 /**
