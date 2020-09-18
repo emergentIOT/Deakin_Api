@@ -33,7 +33,7 @@ exports.installWs = async function(server) {
  */
 const generateQuiz = async function(req, res) {
 
-    loadIVideoAndQuiz(req.params.resourceId, (err, data) => {
+    loadIVideoAndQuiz(req.params.resourceId, req.params.resourceType, (err, data) => {
         if (utilWs.handleError('h5p.loadIVideoAndQuiz', res, err)) {
             return;
         }
@@ -71,16 +71,17 @@ const generateQuiz = async function(req, res) {
    
 }
 
-const loadIVideoAndQuiz = function(iVideoId, cb) {
+const loadIVideoAndQuiz = function(resourceId, resourceType, cb) {
     let data = {};
     
-    iVideoService.getIVideoById(iVideoId, (err1, result1) => {
+    let getIVideo = resourceType == "quiz" ? iVideoService.getIVideoByQuizId : iVideoService.getIVideoByQuizId;
+    getIVideo(resourceId, (err1, result1) => {
     
         if (err1) {
             return cb(err1);
         }
         if (utils.isNull(result1)) {
-            return cb(`IVideo with id '${iVideoId}' not found.`);
+            return cb(`IVideo with id '${resourceId}' not found.`);
         }
         data.ivideo = result1;
         
@@ -109,6 +110,7 @@ const createH5pPackage = function(templatePath, contentJson, h5pJson) {
     var zip = new AdmZip();
     zip.addLocalFolder(templatePath);
     zip.deleteFile('content/content.json.template');
+    zip.deleteFile('content/');
     zip.deleteFile('h5p.json.template')
     zip.addFile('content/content.json', Buffer.from(JSON.stringify(contentJson, null, 4)));
     zip.addFile('h5p.json', Buffer.from(JSON.stringify(h5pJson, null, 4)));
@@ -207,8 +209,8 @@ const wordEquals = function(w1, w2) {
 
 const toSaveFileName = function(str) {
     str = str.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-    str = str.replace(' ', '-');
-    str = str.replace('--', '-');
+    str = str.replace(/ /g, '-');
+    str = str.replace(/\-\-/, '-');
     return str;
 }
 

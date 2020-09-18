@@ -18,6 +18,7 @@ export class QuizService {
 
   private CHECK_FOR_QUIZ_INTERVAL_SECONDS = 3;
 
+  private exportH5pUrl = this.appConfigService.apiUrl + '/api/v1/h5p/generate-quiz';
   private apiUrlQuizzes = this.appConfigService.apiUrl + '/api/v1/qa/quizzes';
   private apiUrlQuiz = this.appConfigService.apiUrl + '/api/v1/qa/quiz';
   private apiUrlQuizTokens = this.appConfigService.apiUrl + '/api/v1/qa/quiz-tokens';
@@ -53,6 +54,10 @@ export class QuizService {
 
   deleteQuiz(quizId : string) : Observable<void>{
     return this.http.delete<void>(`${this.apiUrlQuiz}/${quizId}`);
+  }
+
+  getExportH5pUrl(quizId : string) : string {
+    return `${this.exportH5pUrl}/${quizId}?resourceType=quiz`;
   }
 
   generateAnswerTokens(quizId : string, plainText : string) : Observable<string[]> {

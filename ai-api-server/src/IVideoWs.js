@@ -118,6 +118,15 @@ exports.getIVideoById = function(iVideoId, cb) {
 }
 
 /**
+ * Load ivideo from DB
+ * @param {*} iVideoId 
+ * @param {*} cb 
+ */
+exports.getIVideoByQuizId = function(quizId, cb) {
+    IVideo.findOne({quizId}).lean().exec(cb);
+}
+
+/**
  * DEL
  * /ivideo/:iVideoId
  * Delete interactive video.
