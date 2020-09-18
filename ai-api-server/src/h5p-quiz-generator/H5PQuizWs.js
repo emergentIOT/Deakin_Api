@@ -144,7 +144,7 @@ const loadTranscriptionData = function(iVideo, quiz, cb) {
 }
 
 const getTranscription = function(iVideo, cb) {
-    fetch(HOST_URL + iVideo.transcriptionUrl, {
+    fetch("http://127.0.0.1:7040" + iVideo.transcriptionUrl, {
         headers: {
             "content-type": "application/json",
         },
