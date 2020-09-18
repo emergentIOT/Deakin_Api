@@ -1,6 +1,6 @@
 <div class="container">
 
-  <a class="des-button des-format-text" [disabled]="canGenerateQuiz ? null : 'disabled'" [href]="exportH5pUrl" 
+  <a class="des-button des-format-text" [href]="exportH5pUrl" 
     style="position: absolute; right: 80px; margin: 8px;" >Export to H5P</a>
   <!--Delete quiz icon-->
   <button  class="des-float-right" [disabled]="canDeleteQuiz ? null : 'disabled'" (click)="onOpenDialog($event)" 
