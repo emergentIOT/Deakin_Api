@@ -46,7 +46,7 @@ newman run --iteration-data test-data-question-generation.json --environment ai-
 
 With livereload
 ```
-nodemon -x 'newman run --environment test-postman/client-api-local.postman_environment.json test-postman/Deakin\ AI\ -\ Client\ H5P\ API.postman_collection.json'
+nodemon -d 4 -x 'newman run --environment st-postman/client-api-local.postman_environment.json test-postman/Deakin\ AI\ -\ Client\ H5P\ API.postman_collection.json' 
 ```
 
 ## API Documenation

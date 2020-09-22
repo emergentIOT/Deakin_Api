@@ -35,7 +35,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{ai-api-server}}/api/v1/h5p/generate-quiz/5f4dfb741f629e945a40197f?isTest=true",
+					"raw": "{{ai-api-server}}/api/v1/h5p/generate-quiz/5f62e4831eb0572f3160126f?isTest=true",
 					"host": [
 						"{{ai-api-server}}"
 					],
@@ -44,7 +44,58 @@
 						"v1",
 						"h5p",
 						"generate-quiz",
-						"5f4dfb741f629e945a40197f"
+						"5f62e4831eb0572f3160126f"
+					],
+					"query": [
+						{
+							"key": "isTest",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "H5P Quiz Generator",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e1832e3d-6068-4013-b179-705036e9465f",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b8c31372-a0e3-4fcb-bba0-aa9d73bbca2b",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/h5p/generate-quiz/5f4d976aecbb613e9763520d?isTest=true",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"h5p",
+						"generate-quiz",
+						"5f4d976aecbb613e9763520d"
 					],
 					"query": [
 						{

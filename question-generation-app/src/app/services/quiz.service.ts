@@ -57,7 +57,7 @@ export class QuizService {
   }
 
   getExportH5pUrl(quizId : string) : string {
-    return `${this.exportH5pUrl}/${quizId}?resourceType=quiz`;
+    return `${this.exportH5pUrl}/${quizId}`;
   }
 
   generateAnswerTokens(quizId : string, plainText : string) : Observable<string[]> {

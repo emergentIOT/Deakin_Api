@@ -11,6 +11,7 @@ const path = require('path');
 const ejs = require('ejs');
 const iVideoService = require('../IVideoWs');
 const quizService = require('../QaService');
+const { error } = require('console');
 
 const HOST_URL = utils.getConfig('HOST_URL', utils.CONFIG_REQUIRED);
 
@@ -19,7 +20,7 @@ const HOST_URL = utils.getConfig('HOST_URL', utils.CONFIG_REQUIRED);
  */
 exports.installWs = async function(server) {
 
-    server.get(server.getPath('/h5p/generate-quiz/:resourceId'), generateQuiz);
+    server.get(server.getPath('/h5p/generate-quiz/:quizId'), generateQuiz);
     
     
     logger.info('H5P quiz generator installed at /iv');
@@ -29,26 +30,46 @@ exports.installWs = async function(server) {
 
 /**
  * GET
- * /h5p/generate-quiz/:resourceId
+ * /h5p/generate-quiz/:quizId
  */
 const generateQuiz = async function(req, res) {
 
-    loadIVideoAndQuiz(req.params.resourceId, req.params.resourceType, (err, data) => {
-        if (utilWs.handleError('h5p.loadIVideoAndQuiz', res, err)) {
+    loadQuiz(req.params.quizId, (err, data) => {
+        if (utilWs.handleError('h5p.loadQuiz', res, err)) {
             return;
         }
         
-        data.ivideo.videoUrl = HOST_URL + data.ivideo.videoUrl;
+        let template = '';
+        if (utils.isNotNull(data.ivideo)) { // if has ivideo use iv-multiple-choice template
+            template = 'iv-multiple-choice';
+            data.ivideo.videoUrl = HOST_URL + data.ivideo.videoUrl;
+        } else { // otherwse use plain multiple choice.
+            template = 'question-set-multiple-choice';
+        }
 
-        let contentJson = fs.readFileSync(path.join(__dirname, 'templates/iv-multiple-choice/content/content.json.template'), 'utf8');
-        let contentJsonRendered = JSON.parse(ejs.render(contentJson, data));
+        let templatePath = path.join(__dirname, `templates/${template}/content/content.json.template`);
+        logger.info(`Load template: ${templatePath}`);
+        let contentJson = fs.readFileSync(templatePath, 'utf8');
+        let contentJsonString = ejs.render(contentJson, data);
+        let contentJsonRendered;
+        try {
+            contentJsonRendered = JSON.parse(contentJsonString);
+        } catch(e) {
+            let errorJson = path.join(__dirname, 'error.json');
+            fs.writeFileSync(errorJson, contentJsonString);
+            logger.error(`Problem parsing JSON from rendered content, see file '${errorJson}'`, e);
+            utilWs.handleError('h5p.loadQuiz - Problem parsing JSON from rendered content', res, e);
+            return;
+        }
 
-        let h5pJson = fs.readFileSync(path.join(__dirname, 'templates/iv-multiple-choice/h5p.json.template'), 'utf8');
+        let h5pJson = fs.readFileSync(path.join(__dirname, `templates/${template}/h5p.json.template`), 'utf8');
         let h5pJsonRendered = JSON.parse(ejs.render(h5pJson, data));
     
-        console.log("content", contentJsonRendered.interactiveVideo.assets.interactions.length);
+        // console.log("content", contentJsonRendered.interactiveVideo.assets.interactions.length);
         // contentJsonRendered.interactiveVideo.assets.interactions.forEach(interaction => console.log("interaction", interaction.action.params.answers) );
     
+        logger.info(`Succeffully rendered template: ${template}`);
+        
         if (req.query.isTest) {
             // if in test mode just return the content json.
             utilWs.sendSuccess('h5p.generateQuiz', {success: true, data: contentJsonRendered}, res, true);
@@ -56,7 +77,7 @@ const generateQuiz = async function(req, res) {
             // return zip / h5p file
             let returnType = req.query.isReturnTypeZip ? 'zip' : 'h5p';
             let zipFileName = toSaveFileName(data.quiz.name);
-            let mcqTemplatePath = "./src/h5p-quiz-generator/templates/iv-multiple-choice";
+            let mcqTemplatePath = `./src/h5p-quiz-generator/templates/${template}`;
             let zip = createH5pPackage(mcqTemplatePath, contentJsonRendered, h5pJsonRendered);
             res.set('Content-Type', 'application/zip');
             res.set('Content-Disposition', `attachment; filename=${zipFileName}.${returnType}`);
@@ -65,43 +86,53 @@ const generateQuiz = async function(req, res) {
         
 
     });
-
-
-
    
 }
 
-const loadIVideoAndQuiz = function(resourceId, resourceType, cb) {
+/**
+ * Load the quiz and the video if associated
+ * @param {*} quizId 
+ * @param {*} cb 
+ */
+const loadQuiz = function(quizId, cb) {
     let data = {};
-    
-    let getIVideo = resourceType == "quiz" ? iVideoService.getIVideoByQuizId : iVideoService.getIVideoByQuizId;
-    getIVideo(resourceId, (err1, result1) => {
-    
+
+    quizService.getQuizById(quizId, (err1, result1) => {
         if (err1) {
             return cb(err1);
         }
         if (utils.isNull(result1)) {
-            return cb(`IVideo with id '${resourceId}' not found.`);
+            return cb(`Quiz with id '${quizId}' not found.`);
         }
-        data.ivideo = result1;
-        
-        quizService.getQuizById(data.ivideo.quizId, (err2, result2) => {
+        data.quiz = result1;
+
+
+        iVideoService.getIVideoByQuizId(quizId, (err2, result2) => {
+    
             if (err2) {
                 return cb(err2);
             }
-            if (utils.isNull(result2)) {
-                return cb(`Quiz with id '${data.ivideo.quizId}' not found.`);
-            }
-            data.quiz = result2;
-            loadTranscriptionData(data.ivideo, data.quiz, (err) => {
-                if (err) {
-                    return cb(err);
-                }
+            if (utils.isNotNull(result2)) {
+                
+                data.ivideo = result2;
+                
+                // if there is an ivideo load transcription data
+                loadTranscriptionData(data.ivideo, data.quiz, (err) => {
+                    if (err) {
+                        return cb(err);
+                    }
+                    cb(null, data);
+                });
+                
+            } else {
                 cb(null, data);
-            })
+            }
+    
         });
 
     });
+    
+    
 
 }
 
@@ -138,7 +169,6 @@ const loadTranscriptionData = function(iVideo, quiz, cb) {
         });
         quiz.startTime = msToSeconds(transciptionBlocks[0].s);
         quiz.endTime = msToSeconds(transciptionBlocks[transciptionBlocks.length - 1].e);
-        console.log('quiz', quiz);
         cb();
     })
 }
