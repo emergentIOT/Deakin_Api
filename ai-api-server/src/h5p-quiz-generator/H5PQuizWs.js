@@ -208,7 +208,7 @@ const calcMatchedBlockIndexes = function(answerText, transcriptionBlocks) {
 
       if (matchedBlockIndexes.length == 0) {
         matchedBlockIndexes = [];
-        if (item.w == answerTextSplit[0]) {
+        if (wordEquals(item.w, answerTextSplit[0])) {
           var tillRun = (index + answerTextSplit.length) - 1;
           matchedBlockIndexes.push(index);
 
