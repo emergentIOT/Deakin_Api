@@ -237,7 +237,7 @@ const calcMatchedBlockIndexes = function(answerText, transcriptionBlocks) {
 const wordEquals = function(w1, w2) {
     w1 = w1.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
     w2 = w2.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-    return w1 == w2;
+    return w1.toUpperCase() == w2.toUpperCase();
 }
 
 const toSaveFileName = function(str) {
