@@ -106,6 +106,10 @@ const loadQuiz = function(quizId, cb) {
         }
         data.quiz = result1;
 
+        data.quiz.tokens.forEach(token => {
+            token.answerToken = toFirstCharacterUpperCase(token.answerToken);
+        });
+
 
         iVideoService.getIVideoByQuizId(quizId, (err2, result2) => {
     
@@ -165,7 +169,6 @@ const loadTranscriptionData = function(iVideo, quiz, cb) {
                 token.startTime = msToSeconds(transciptionBlocks[transciptionBlocks.length - 1].e);
                 token.endTime = msToSeconds(transciptionBlocks[transciptionBlocks.length - 1].e);
             }
-            token.answerToken = toFirstCharacterUpperCase(token.answerToken);
         });
         quiz.startTime = msToSeconds(transciptionBlocks[0].s);
         quiz.endTime = msToSeconds(transciptionBlocks[transciptionBlocks.length - 1].e);
