@@ -132,7 +132,7 @@ export class  IVideoComponent implements OnInit {
         name: this.iVideo.name,
         plainText: this.transcriptionText,
         richText: this.transcriptionText,
-        answerTokens
+       // answerTokens
       };
       this.quizService.save(quiz).subscribe(quizId => {
         this.iVideo.quizId = quizId;
@@ -245,7 +245,7 @@ export class  IVideoComponent implements OnInit {
     if(!this.iVideo.questions) {
       this.iVideo.questions = [];
     }
-    this.iVideo.questions.push(questionAnswer);
+      this.iVideo.questions.push(questionAnswer);
     this.iVideoService.save(this.iVideo).subscribe();
   }
 

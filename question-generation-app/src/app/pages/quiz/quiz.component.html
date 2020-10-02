@@ -30,14 +30,14 @@
         </div>
 
         <div class="row">
-            <app-text-editor #textEditor [tokens]="tokens" [textValue]="textValue" (newToken)='newToken($event)' 
+            <app-text-editor #textEditor [tokens]="answerTokens" [textValue]="textValue" (newToken)='newToken($event)' 
                             (generateSuggestedAnswerTokens)='generateSuggestedAnswerTokens($event)'
               class="col-sm-8 order-2 order-sm-1 vertical-grid-spacing">
             </app-text-editor>
   
             <div class="col-sm-4 order-1 order-sm-2 vertical-grid-spacing align-items-end" id="chip-default-wrapper">
               <div class="row align-items-end" style="margin-top: 50px;">
-                <ejs-chiplist cssClass="e-success" [chips]="tokens" #chipsList enableDelete="true" (delete)="deleteToken($event)">
+                <ejs-chiplist cssClass="e-success" [chips]="answerTokens" #chipsList enableDelete="true" (delete)="deleteToken($event)">
                 </ejs-chiplist>
               </div>
               <des-button-group spacing="none" style="position: absolute; top: -55px; right: 0; text-align: right;">
@@ -102,9 +102,22 @@
                   <img *ngIf="isError(token)" class="loading-img" src="/assets/error.png"/> 
                   <span [ngClass]="{'loading-answer-text': isProcessing(token) || isError(token)}">{{getQuestionText(token)}}</span>
                 </a>
+                <a class="des-float-right" [routerLink]="['/edit-question', quizId]" ><i class="fas fa-edit"></i></a>
+                
               </h2>
-              <p>{{getAnswerText(token)}}</p>
-              
+              <div class="container">
+              <div class="row">
+                <div class="child">
+                  <p class="answerToken">{{getAnswerText(token)}} |</p> 
+                </div>
+               
+              <div *ngFor="let option of token.options;">
+                <div class="child">
+                  <p>{{option.name}} |</p>
+                </div>
+              </div>
+            </div>
+          </div>
             </des-card>
 
             <!-- <h2 class="xh2">
@@ -121,6 +134,7 @@
   
   </app-tab-container>
   
+
   <!-- Delete confirmation dialog-->
   <div #container class='root-container'></div>
   <ejs-dialog id='dialog' #ejDialog header=''  [visible]='visible' [content]='dialogHeader' [target]='targetElement' width='250px' [buttons]='buttons'>
