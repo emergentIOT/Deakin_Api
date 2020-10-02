@@ -13,7 +13,7 @@
 					"script": {
 						"id": "e1832e3d-6068-4013-b179-705036e9465f",
 						"exec": [
-							""
+							"pm.environment.set(\"expected-question-answer\", \"Elicia Lanham; Campus: Melbourne Burwood Campus; Email: elicia.lanham@deakin.edu.au; Phone: +61 3 925 17602\");"
 						],
 						"type": "text/javascript"
 					}
@@ -25,6 +25,12 @@
 						"exec": [
 							"pm.test(\"Status test\", function () {",
 							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Answer Question\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    let expected = pm.environment.get(\"expected-question-answer\");",
+							"    pm.expect(jsonData.data.answer).to.be.eql(expected);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -35,9 +41,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{ai-api-server}}/api/v1/qs/ask-question?question=Who is the unit chair&isDryRun=false&context_ref=1234&context_type=unit_guide",
+					"raw": "https://des-inno-ai-api.its.deakin.edu.au/api/v1/qs/ask-question?question=Who is the unit chair&isDryRun=false&context_ref=1234&context_type=unit_guide",
+					"protocol": "https",
 					"host": [
-						"{{ai-api-server}}"
+						"des-inno-ai-api",
+						"its",
+						"deakin",
+						"edu",
+						"au"
 					],
 					"path": [
 						"api",

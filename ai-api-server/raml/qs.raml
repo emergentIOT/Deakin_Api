@@ -32,8 +32,14 @@ description: Question service, currently support asking questions about a unit g
           application/json:
             example: |
                 {
-                  "success": true,
-                  "data": {}
+                    "success": true,
+                    "data": {
+                        "answer": "Elicia Lanham; Campus: Melbourne Burwood Campus; Email: elicia.lanham@deakin.edu.au; Phone: +61 3 925 17602",
+                        "confidence_score": "0.87775004",
+                        "entities": "[CLS] O O O O O [SEP]",
+                        "faq_class": "unit_chair",
+                        "input": "Who is the unit chair"
+                    }
                 }
       500:
         description: Unexpected Error or bad parameters
