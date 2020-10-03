@@ -1,0 +1,83 @@
+{
+	"info": {
+		"_postman_id": "91658b32-8ddf-46d0-8742-a6fb4f878722",
+		"name": "Deakin AI - Client Question Service API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Ask Question",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e1832e3d-6068-4013-b179-705036e9465f",
+						"exec": [
+							"pm.environment.set(\"expected-question-answer\", \"Elicia Lanham; Campus: Melbourne Burwood Campus; Email: elicia.lanham@deakin.edu.au; Phone: +61 3 925 17602\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b8c31372-a0e3-4fcb-bba0-aa9d73bbca2b",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Answer Question\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    let expected = pm.environment.get(\"expected-question-answer\");",
+							"    pm.expect(jsonData.data.answer).to.be.eql(expected);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://des-inno-ai-api.its.deakin.edu.au/api/v1/qs/ask-question?question=Who is the unit chair&isDryRun=false&context_ref=1234&context_type=unit_guide",
+					"protocol": "https",
+					"host": [
+						"des-inno-ai-api",
+						"its",
+						"deakin",
+						"edu",
+						"au"
+					],
+					"path": [
+						"api",
+						"v1",
+						"qs",
+						"ask-question"
+					],
+					"query": [
+						{
+							"key": "question",
+							"value": "Who is the unit chair"
+						},
+						{
+							"key": "isDryRun",
+							"value": "false"
+						},
+						{
+							"key": "context_ref",
+							"value": "1234"
+						},
+						{
+							"key": "context_type",
+							"value": "unit_guide"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

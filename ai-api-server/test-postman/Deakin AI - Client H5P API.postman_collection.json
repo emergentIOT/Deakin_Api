@@ -1,0 +1,112 @@
+{
+	"info": {
+		"_postman_id": "6f29c5a9-dd7a-4036-8181-c373d79456c6",
+		"name": "Deakin AI - Client H5P API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "H5P Interactive Video Quiz Generator",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e1832e3d-6068-4013-b179-705036e9465f",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b8c31372-a0e3-4fcb-bba0-aa9d73bbca2b",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/h5p/generate-quiz/5f62e4831eb0572f3160126f?isTest=true",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"h5p",
+						"generate-quiz",
+						"5f62e4831eb0572f3160126f"
+					],
+					"query": [
+						{
+							"key": "isTest",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "H5P Quiz Generator",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e1832e3d-6068-4013-b179-705036e9465f",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b8c31372-a0e3-4fcb-bba0-aa9d73bbca2b",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/h5p/generate-quiz/5f4d976aecbb613e9763520d?isTest=true",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"h5p",
+						"generate-quiz",
+						"5f4d976aecbb613e9763520d"
+					],
+					"query": [
+						{
+							"key": "isTest",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

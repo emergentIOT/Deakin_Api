@@ -1,0 +1,28 @@
+#%RAML 1.0
+description: Generates H5P quiz generator packages.
+
+/generate-quiz/{quizId}:
+  description: Generate a H5P quiz content. If a video is associated with quiz an interactive video is created. Returns a zipped H5P package
+  uriParameters:
+    quizId:
+      type: string
+  get:
+    queryParameters:
+      isTest:
+        description: Just return the h5p content.json is response
+        type: boolean
+        required: false
+      isReturnTypeZip:
+        description: If True return file with extension .zip otherwise defaults to .h5p
+        type: boolean
+        required: false
+    responses:
+      200:
+        description: Generate a H5P package.
+        body:
+          application/zip:
+      500:
+        description: Unexpected Error or bad parameter
+
+
+

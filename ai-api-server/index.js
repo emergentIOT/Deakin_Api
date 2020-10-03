@@ -6,6 +6,8 @@ const logger = require('du-logger').LoggingService('api-server');
 const async = require('async');
 const qaWs = require('./src/QaWs');
 const iVideoWs = require('./src/IVideoWs')
+const h5pQuizWs = require('./src/h5p-quiz-generator/H5PQuizWs');
+const questionService = require('./src/QuestionService');
 
 // Make sure server is ran on a known and supported NodeJS Version.
 utils.assertNodeRuntime();
@@ -47,6 +49,8 @@ const installWebServices = function(server, done) {
 
         qaWs.installWs(server);
         iVideoWs.installWs(server);
+        h5pQuizWs.installWs(server);
+        questionService.installWs(server);
 
         server.addStatic('/mock-data', 'mock-data');
        

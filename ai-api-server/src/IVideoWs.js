@@ -95,7 +95,7 @@ const ivideos = async function(req, res) {
  */
 const getIVideo = async function(req, res) {
     
-    IVideo.findById(req.params.iVideoId, (err, ivideo) => {
+    exports.getIVideoById(req.params.iVideoId, (err, ivideo) => {
         if (utilWs.handleError('iv.getIVideo', res, err)) {
             return;
         }
@@ -106,6 +106,24 @@ const getIVideo = async function(req, res) {
         utilWs.sendSuccess('iv.getIVideo', {success: true, data: ivideo}, res, true);                      
     });
 
+}
+
+/**
+ * Load ivideo from DB
+ * @param {*} iVideoId 
+ * @param {*} cb 
+ */
+exports.getIVideoById = function(iVideoId, cb) {
+    IVideo.findById(iVideoId).lean().exec(cb);
+}
+
+/**
+ * Load ivideo from DB
+ * @param {*} iVideoId 
+ * @param {*} cb 
+ */
+exports.getIVideoByQuizId = function(quizId, cb) {
+    IVideo.findOne({quizId}).lean().exec(cb);
 }
 
 /**

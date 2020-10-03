@@ -1,0 +1,248 @@
+{
+    "interactiveVideo": {
+        "video": {
+            "startScreenOptions": {
+                "title": "<%= quiz.name %>",
+                "hideStartTitle": false
+            },
+            "textTracks": {
+                "videoTrack": [
+                    {
+                        "label": "Subtitles",
+                        "kind": "subtitles",
+                        "srcLang": "en"
+                    }
+                ]
+            },
+            "files": [
+                {
+                    "path": "<%= ivideo.videoUrl %>",
+                    "mime": "video\/mp4",
+                    "copyright": {
+                        "license": "U"
+                    }
+                }
+            ]
+        },
+        "assets": {
+            "interactions": [
+                <% quiz.tokens.forEach(function(token){ %>
+                {
+                    "x": 47.81659388646288,
+                    "y": 46.12403100775194,
+                    "width": 10,
+                    "height": 10,
+                    "duration": {
+                        "from": <%= token.endTime %>,
+                        "to": <%= token.endTime %>
+                    },
+                    "libraryTitle": "Multiple Choice",
+                    "action": {
+                        "library": "H5P.MultiChoice 1.14",
+                        "params": {
+                            "media": {
+                                "disableImageZooming": false
+                            },
+                            "answers": [
+                                {
+                                    "correct": true,
+                                    "tipsAndFeedback": {
+                                        "tip": "",
+                                        "chosenFeedback": "",
+                                        "notChosenFeedback": ""
+                                    },
+                                    "text": "<div><%= token.answerToken %><\/div>\n"
+                                },
+                                {
+                                    "correct": false,
+                                    "tipsAndFeedback": {
+                                        "tip": "",
+                                        "chosenFeedback": "",
+                                        "notChosenFeedback": ""
+                                    },
+                                    "text": "<div>Alt Answer 1<\/div>\n"
+                                },
+                                {
+                                    "correct": false,
+                                    "tipsAndFeedback": {
+                                        "tip": "",
+                                        "chosenFeedback": "",
+                                        "notChosenFeedback": ""
+                                    },
+                                    "text": "<div>Alt Answer 2<\/div>\n"
+                                }
+                            ],
+                            "overallFeedback": [
+                                {
+                                    "from": 0,
+                                    "to": <%= quiz.endTime %>
+                                }
+                            ],
+                            "behaviour": {
+                                "enableRetry": true,
+                                "enableSolutionsButton": true,
+                                "enableCheckButton": true,
+                                "type": "auto",
+                                "singlePoint": false,
+                                "randomAnswers": true,
+                                "showSolutionsRequiresInput": true,
+                                "confirmCheckDialog": false,
+                                "confirmRetryDialog": false,
+                                "autoCheck": false,
+                                "passPercentage": 100,
+                                "showScorePoints": true
+                            },
+                            "UI": {
+                                "checkAnswerButton": "Check",
+                                "showSolutionButton": "Show solution",
+                                "tryAgainButton": "Retry",
+                                "tipsLabel": "Show tip",
+                                "scoreBarLabel": "You got :num out of :total points",
+                                "tipAvailable": "Tip available",
+                                "feedbackAvailable": "Feedback available",
+                                "readFeedback": "Read feedback",
+                                "wrongAnswer": "Wrong answer",
+                                "correctAnswer": "Correct answer",
+                                "shouldCheck": "Should have been checked",
+                                "shouldNotCheck": "Should not have been checked",
+                                "noInput": "Please answer before viewing the solution"
+                            },
+                            "confirmCheck": {
+                                "header": "Finish ?",
+                                "body": "Are you sure you wish to finish ?",
+                                "cancelLabel": "Cancel",
+                                "confirmLabel": "Finish"
+                            },
+                            "confirmRetry": {
+                                "header": "Retry ?",
+                                "body": "Are you sure you wish to retry ?",
+                                "cancelLabel": "Cancel",
+                                "confirmLabel": "Confirm"
+                            },
+                            "question": "<p><%= token.questionToken %><\/p>\n"
+                        },
+                        "subContentId": "f39e50fc-d8fa-43a7-96d1-e1f5414c73e8",
+                        "metadata": {
+                            "contentType": "Multiple Choice",
+                            "license": "U",
+                            "title": "<%= token.questionToken %>"
+                        }
+                    },
+                    "pause": true,
+                    "displayType": "button",
+                    "buttonOnMobile": false,
+                    "adaptivity": {
+                        "correct": {
+                            "allowOptOut": false,
+                            "message": ""
+                        },
+                        "wrong": {
+                            "allowOptOut": false,
+                            "message": ""
+                        },
+                        "requireCompletion": false
+                    },
+                    "label": "<p>Multiple choice quiz<\/p>\n"
+                }
+                <%= (quiz.tokens[quiz.tokens.length - 1] === token) ? '' : ',' %>
+                <% }); %>
+
+            ],
+            "endscreens": [
+                {
+                    "time": <%= quiz.endTime %>,
+                    "label": "3:15 Submit screen"
+                }
+            ]
+        },
+        "summary": {
+            "task": {
+                "library": "H5P.Summary 1.10",
+                "params": {
+                    "intro": "Choose the correct statement.",
+                    "summaries": [
+                        {
+                            "subContentId": "e15a56da-9101-4e12-8f13-72dfa24acc27",
+                            "tip": ""
+                        }
+                    ],
+                    "overallFeedback": [
+                        {
+                            "from": 0,
+                            "to": <%= quiz.endTime %>
+                        }
+                    ],
+                    "solvedLabel": "Progress:",
+                    "scoreLabel": "Wrong answers:",
+                    "resultLabel": "Your result",
+                    "labelCorrect": "Correct.",
+                    "labelIncorrect": "Incorrect! Please try again.",
+                    "alternativeIncorrectLabel": "Incorrect",
+                    "labelCorrectAnswers": "Correct answers.",
+                    "tipButtonLabel": "Show tip",
+                    "scoreBarLabel": "You got :num out of :total points",
+                    "progressText": "Progress :num of :total"
+                },
+                "subContentId": "c751f88c-bba2-4c8c-ae5d-626d26c86a51",
+                "metadata": {
+                    "contentType": "Summary",
+                    "license": "U",
+                    "title": "Untitled Summary"
+                }
+            },
+            "displayAt": 3
+        }
+    },
+    "override": {
+        "autoplay": false,
+        "loop": false,
+        "showBookmarksmenuOnLoad": false,
+        "showRewind10": false,
+        "preventSkipping": false,
+        "deactivateSound": false
+    },
+    "l10n": {
+        "interaction": "Interaction",
+        "play": "Play",
+        "pause": "Pause",
+        "mute": "Mute",
+        "unmute": "Unmute",
+        "quality": "Video Quality",
+        "captions": "Captions",
+        "close": "Close",
+        "fullscreen": "Fullscreen",
+        "exitFullscreen": "Exit Fullscreen",
+        "summary": "Open summary dialog",
+        "bookmarks": "Bookmarks",
+        "endscreen": "Submit screen",
+        "defaultAdaptivitySeekLabel": "Continue",
+        "continueWithVideo": "Continue with video",
+        "playbackRate": "Playback Rate",
+        "rewind10": "Rewind 10 Seconds",
+        "navDisabled": "Navigation is disabled",
+        "sndDisabled": "Sound is disabled",
+        "requiresCompletionWarning": "You need to answer all the questions correctly before continuing.",
+        "back": "Back",
+        "hours": "Hours",
+        "minutes": "Minutes",
+        "seconds": "Seconds",
+        "currentTime": "Current time:",
+        "totalTime": "Total time:",
+        "singleInteractionAnnouncement": "Interaction appeared:",
+        "multipleInteractionsAnnouncement": "Multiple interactions appeared.",
+        "videoPausedAnnouncement": "Video is paused",
+        "content": "Content",
+        "answered": "@answered answered",
+        "endcardTitle": "@answered Question(s) answered",
+        "endcardInformation": "You have answered @answered questions, click below to submit your answers.",
+        "endcardInformationNoAnswers": "You have not answered any questions.",
+        "endcardInformationMustHaveAnswer": "You have to answer at least one question before you can submit your answers.",
+        "endcardSubmitButton": "Submit Answers",
+        "endcardSubmitMessage": "Your answers have been submitted!",
+        "endcardTableRowAnswered": "Answered questions",
+        "endcardTableRowScore": "Score",
+        "endcardAnsweredScore": "answered",
+        "endCardTableRowSummaryWithScore": "You got @score out of @total points for the @question that appeared after @minutes minutes and @seconds seconds.",
+        "endCardTableRowSummaryWithoutScore": "You have answered the @question that appeared after @minutes minutes and @seconds seconds."
+    }
+}

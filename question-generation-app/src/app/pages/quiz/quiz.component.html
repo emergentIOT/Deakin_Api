@@ -1,6 +1,10 @@
 <div class="container">
+
+  <a class="des-button des-format-text" [href]="exportH5pUrl" 
+    style="position: absolute; right: 80px; margin: 8px;" >Export to H5P</a>
   <!--Delete quiz icon-->
-  <button  class="des-float-right" [disabled]="canDeleteQuiz ? null : 'disabled'" id="targetButton" (click)="onOpenDialog($event)" style="position: absolute; right: 30px; margin: 4px; height: 30px;" ><i class="fa fa-trash"></i></button>
+  <button  class="des-float-right" [disabled]="canDeleteQuiz ? null : 'disabled'" (click)="onOpenDialog($event)" 
+    style="position: absolute; right: 30px; margin: 4px; height: 30px;" ><i class="fa fa-trash"></i></button>
 
   <!-- <des-button-group>
     <label><des-button>1</des-button> Upload content</label>
@@ -83,14 +87,6 @@
             *ngFor="let token of quiz?.tokens"
             class="col-12 vertical-grid-spacing"
           >
-<!-- 
-            <des-card layout="advertising" [desShadow]="2">
-              <des-card-media>asdfasf</des-card-media>
-              <div class="des-card-main">
-                <div class="des-card-content">afda</div>
-                <div class="des-card-footer">asdfadsfasdf</div>
-              </div>
-            </des-card> -->
 
             <des-card layout="horizontal">
               <!-- <div class="loading-img-container" *ngIf="token.status!== 'processed'">
@@ -120,13 +116,6 @@
           </div>
             </des-card>
 
-            <!-- <h2 class="xh2">
-              {{token.questionToken}}The big red lorry?
-            </h2>
-            <p class="xlead xh3">
-              {{token.answerToken}}
-            </p>
-            <hr class="des-margin-top-medium des-margin-bottom-medium" /> -->
           </div>
         </div>
       </div>

@@ -1,0 +1,69 @@
+{
+	"info": {
+		"_postman_id": "bb695bab-e538-4f0f-9766-b3665f4278af",
+		"name": "Deakin AI - Service API - Question Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Ask Question",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "db3429aa-a6ac-445d-88a8-d2958bc6eeee",
+						"exec": [
+							"let input = {",
+							"    question: \"Who is the unit chair\"",
+							"};",
+							"",
+							"pm.environment.set(\"inputJSON\", JSON.stringify(input));",
+							"",
+							"pm.environment.set(\"expected-question-answer\", \"Elicia Lanham; Campus: Melbourne Burwood Campus; Email: elicia.lanham@deakin.edu.au; Phone: +61 3 925 17602\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "ca427423-d47d-4a9f-8305-e2e01becf2ba",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Ask Question\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    let expected = pm.environment.get(\"expected-answer\");",
+							"    pm.expect(jsonData.answer).to.be.eql(expected);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{inputJSON}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ai-server-question-service}}",
+					"host": [
+						"{{ai-server-question-service}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

@@ -385,27 +385,31 @@ export class QuizComponent implements OnInit {
 
   // Enables the footer buttons
   public buttons: Object = [
-  {
-    'click': this.confirmDeleteQuiz.bind(this),
+    {
+      'click': this.confirmDeleteQuiz.bind(this),
       // Accessing button component properties by buttonModel property
-      buttonModel:{
-      content: 'Yes',
-      // Enables the primary button
-      isPrimary: true
+      buttonModel: {
+        content: 'Yes',
+        // Enables the primary button
+        isPrimary: true
+      }
+    },
+    {
+      'click': this.cancel.bind(this),
+      buttonModel: {
+        content: 'No'
+      }
     }
-  },
-  {
-    'click': this.cancel.bind(this),
-    buttonModel: {
-      content: 'No'
-    }
-  }
-];
+  ];
 
   // Sample level code to handle the button click action
   public onOpenDialog(event){
     this.ejDialog.show();
     this.ejDialog.buttons
+  }
+
+  public get exportH5pUrl() : string {
+    return this.quizService.getExportH5pUrl(this.quizId);
   }
 
 }

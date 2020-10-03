@@ -1,0 +1,45 @@
+#%RAML 1.0
+description: Question service, currently support asking questions about a unit guide.
+
+/ask-question:
+  get:
+    description: Ask question
+    queryParameters:
+      question:
+        description: Get list of search quizzes
+        type: string
+        required: false
+      context_ref:
+        description: The reference of the context the question is being asked about
+        type: string
+        required: true
+      context_type:
+        description: The type of context the context_ref refers to, example unit_guide
+        type: string
+        required: true
+      method:
+        description: AI method used: albert|bert
+        type: string
+        required: false   
+      isDryRun:
+        description: If true return with echo message, without hitting the AI service
+        type: boolean
+        required: false    
+    responses:
+      200:
+        description: Answer to question including confidence factor.
+        body:
+          application/json:
+            example: |
+                {
+                    "success": true,
+                    "data": {
+                        "answer": "Elicia Lanham; Campus: Melbourne Burwood Campus; Email: elicia.lanham@deakin.edu.au; Phone: +61 3 925 17602",
+                        "confidence_score": "0.87775004",
+                        "entities": "[CLS] O O O O O [SEP]",
+                        "faq_class": "unit_chair",
+                        "input": "Who is the unit chair"
+                    }
+                }
+      500:
+        description: Unexpected Error or bad parameters
