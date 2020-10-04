@@ -1,24 +1,12 @@
 <div class="container">
 
-<div *ngIf="mode=='quiz' && quiz">
-<!--Save the Questions with the updated options-->
-</div>
-
-<div *ngIf="mode=='result'">
-  <!--Save the Questions with the updated options-->
-  <des-button (click)="playQuiz()" class="des-float-right" style="margin-top: 20px;">Play Quiz</des-button>
-</div>
-
-
-
-
   <div class="row-options">
-  <!--QUIZ mode to update options-->
+  <!--editQuestion mode to update options-->
     <div *ngIf="mode=='editQuestion'">
       
-      <form #f="ngForm" >
+      <form #editOptions="ngForm" >
       <!--Loop for Tokens-->
-      <div *ngFor="let question of quiz.tokens; let qIndex = index">
+      <div *ngFor="let question of quiz?.tokens; let qIndex = index">
         <fieldset>
         <h3>{{question.questionToken}}</h3>
        
@@ -60,7 +48,7 @@
     
     <!--Save Options to db-->
     <des-button (click)="saveOptions()" class="des-float-right" style="margin-top: 20px;" 
-    [disabled]="!f.invalid ? null : 'true'">Save</des-button>
+    [disabled]="!editOptions.invalid ? null : 'true'">Save</des-button>
 
   </form>
 

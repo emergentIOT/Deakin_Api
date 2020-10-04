@@ -17,7 +17,7 @@ export class MultipleChoiceComponent implements OnInit {
   quiz: IQuiz;
   public activeTab = 0;
   public quizId: string;
-  public tokens: string[] = [];
+  public answerTokens: string[] = [];
   questions: IQuizToken[];
   public loading: Boolean;
 
@@ -34,8 +34,6 @@ export class MultipleChoiceComponent implements OnInit {
         this.quizService.getQuiz(this.quizId).subscribe(quiz => {
           
           this.quiz = quiz;
-          this.tokens = this.quizService.getAnswerTokens(this.quiz);
-         
         })
    
       }
