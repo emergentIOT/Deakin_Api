@@ -295,23 +295,13 @@ export class QuizComponent implements OnInit {
   }
 
   updateTokens(answerTokens) {
-    console.log("tokens", answerTokens);
     let tokens = [];
     answerTokens.forEach(answerToken => {
-    /*let existingToken = this.quiz.tokens.find( token => token.answerToken === answerToken);
-    console.log("existingtokens", existingToken);
-    if (existingToken) {
-    tokens.push(existingToken);
-    } else {*/
-    tokens.push({answerToken});
-    //}
+      tokens.push({answerToken});
     });
     
-    console.log("tokens", tokens);
     return tokens;
-    
-    
-   }
+  }
 
   startWatchQuizStatus() {
     if (!this.ENABLE_QUIZ_STATUS_CHECK) {
