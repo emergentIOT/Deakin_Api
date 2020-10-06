@@ -1,0 +1,29 @@
+#%RAML 1.0
+description: Send Feedback
+
+/send-feedback:
+  get:
+    description: Send Feedback
+    queryParameters:
+      question:
+        description: Asked question
+        type: string
+        required: true
+      feedback:
+        description: Feedback value
+        type: string
+        required: true
+    responses:
+      200:
+        description: Feedback received
+        body:
+          application/json:
+            example: |
+                {
+                    "success": true,
+                    "data": {
+                        "response": "Feedback received"
+                    }
+                }
+      500:
+        description: Unexpected Error or bad parameters
