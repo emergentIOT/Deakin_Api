@@ -6,6 +6,7 @@ import { IQuiz } from 'src/app/interfaces/iQuiz';
 import { IQuizToken } from 'src/app/interfaces/iQuizToken';
 import { isEmpty } from 'npm-stringutils';
 
+// AS_TODO Rename component and folder to 'edit-question'
 @Component({
   selector: 'app-multiple-choice',
   templateUrl: './multiple-choice.component.html',

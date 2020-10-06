@@ -108,6 +108,7 @@ export class QuizComponent implements OnInit {
             }
           }
           let richText = this.textEditor.selectTokens(this.answerTokens);
+          // AS_TODO remove debug logging
           console.log(plainText);
           console.log(richText);
           console.log("chip list",this.chipsList);
@@ -294,6 +295,7 @@ export class QuizComponent implements OnInit {
     });
   }
 
+  // AS_TODO need to preserver existing data!
   updateTokens(answerTokens) {
     let tokens = [];
     answerTokens.forEach(answerToken => {
