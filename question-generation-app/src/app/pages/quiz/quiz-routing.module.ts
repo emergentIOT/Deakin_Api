@@ -2,12 +2,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { QuizComponent } from './quiz.component';
-import { MultipleChoiceComponent } from './multiple-choice/multiple-choice.component';
+import { EditQuestionComponent } from './edit-question/edit-question.component';
 
 const routes: Routes = [
   { path: 'edit-quiz/:quizId', component: QuizComponent }, 
   { path: 'edit-quiz', component: QuizComponent },
-  { path: 'edit-question/:quizId', component: MultipleChoiceComponent}
+  { path: 'edit-question/:quizId', component: EditQuestionComponent}
 ];
 
 @NgModule({
