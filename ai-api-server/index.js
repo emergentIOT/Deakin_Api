@@ -8,11 +8,8 @@ const qaWs = require('./src/QaWs');
 const iVideoWs = require('./src/IVideoWs')
 const h5pQuizWs = require('./src/h5p-quiz-generator/H5PQuizWs');
 const questionService = require('./src/QuestionService');
-<<<<<<< HEAD
 const feedbackService = require('./src/FeedbackService');
-=======
 const msBotService = require('./src/ms-teams-bot/MsBotService');
->>>>>>> ms-teams-bot
 
 // Make sure server is ran on a known and supported NodeJS Version.
 utils.assertNodeRuntime();
