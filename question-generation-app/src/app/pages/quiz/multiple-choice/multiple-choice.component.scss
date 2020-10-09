@@ -1,0 +1,52 @@
+@import "../../../shared/scss/design-system-variables.scss";
+@import "../../../../../node_modules/@syncfusion/ej2-buttons/styles/material.css";
+@import "../../../../../node_modules/@syncfusion/ej2-base/styles/material.css";
+@import '../../../../../node_modules/@syncfusion/ej2-angular-popups/styles/material.css';
+@import '../../../../../node_modules//@des-ds-dev-kit/foundations/scss/index';
+
+.vertical-grid-spacing {
+  margin-bottom: $des-layout-spacing-base;
+}
+
+input[type=text]:focus {
+  border: 3px solid #C76398;
+  outline: none;
+}
+
+input[type=text] {
+  font-weight: lighter;
+}
+
+//if option feild is empty
+.has-error{
+  border: 3px solid red;
+  
+}
+
+//Each row of Options
+.row-options{
+  display: center;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  margin-bottom: 100px;
+}
+
+//Input field for answerToken
+.answerTokenField{
+  border: 2px solid #4DAF50;
+  border-radius: 4px;
+}
+
+//horizontal options
+.inline-block-child {
+  display: inline-block;
+}
+
+
+
+
+
+
+
+

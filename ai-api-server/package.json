@@ -26,6 +26,7 @@
     "dependencies": {
         "adm-zip": "^0.4.16",
         "async": "^2.5.0",
+        "botbuilder": "^4.10.3",
         "du-dbservice": "1.2.x",
         "du-logger": "1.0.x",
         "du-resource": "1.0.x",

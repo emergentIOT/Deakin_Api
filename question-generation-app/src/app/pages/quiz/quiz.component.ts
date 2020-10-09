@@ -30,7 +30,7 @@ export class QuizComponent implements OnInit {
 
   public quiz: IQuiz;
   public name: string;
-  public tokens: string[] = [];
+  public answerTokens: string[] = [];
   public textValue: string;
   public activeTab = 0;
   public quizId: string;
@@ -64,8 +64,8 @@ export class QuizComponent implements OnInit {
           quiz => {
             this.quiz = quiz
             this.name = quiz.name;
-            this.tokens = this.quizService.getAnswerTokens(this.quiz);
-            this.textEditor.selectTokensAndUpdateText(this.tokens, this.quiz.richText);
+            this.answerTokens = this.quizService.getAnswerTokens(this.quiz);
+            this.textEditor.selectTokensAndUpdateText(this.answerTokens, this.quiz.richText);
             if (this.quizService.isProcessingOrHasBeenProcessed(this.quiz)) {
               this.activeTab = 1;
               this.startWatchQuizStatus();
@@ -79,9 +79,10 @@ export class QuizComponent implements OnInit {
   }
 
   clearTokens() {
-    this.tokens = [];
+    this.answerTokens = [];
     this.textEditor.clearTokens();
   }
+
 
   /**
    * If no tokens have been selected generate some suggested answer tokens
@@ -101,14 +102,16 @@ export class QuizComponent implements OnInit {
             return;
           }
           for (let i = 0; i < tokens.length 
-                && this.tokens.length < this.NUMBER_OF_SUGGESTED_KEY_PHRASES_TO_ADD; i++) {
+                && this.answerTokens.length < this.NUMBER_OF_SUGGESTED_KEY_PHRASES_TO_ADD; i++) {
             if (this.isValidToken(tokens[i], false)) {
-              this.tokens.push(tokens[i]);
+              this.answerTokens.push(tokens[i]);
             }
           }
-          let richText = this.textEditor.selectTokens(this.tokens);
+          let richText = this.textEditor.selectTokens(this.answerTokens);
+          // AS_TODO remove debug logging
           console.log(plainText);
           console.log(richText);
+          console.log("chip list",this.chipsList);
           this.chipsList.refresh();
         }
       );
@@ -159,14 +162,14 @@ export class QuizComponent implements OnInit {
   }
 
   get canClearTokens() {
-    if (this.tokens.length === 0) {
+    if (this.answerTokens.length === 0) {
       return false;
     }
     return this.quizService.calcUnprocessedCount(this.quiz) === 0;
   }
 
   get canGenerateQuiz() : boolean {
-    if (this.tokens.length === 0) {
+    if (this.answerTokens.length === 0) {
       return false;
     }
     if (isEmpty(this.name)) {
@@ -223,7 +226,7 @@ export class QuizComponent implements OnInit {
       this.setUserError(`Invalid key phrase: "${newToken}" is not a whole word or phrase.`, showMessage);
       return false;
     }
-    if (this.tokens.indexOf(newToken) >= 0) {
+    if (this.answerTokens.indexOf(newToken) >= 0) {
       this.setUserError(`Invalid key phrase: "${newToken}" already exists.`, showMessage);
       return false;
     }
@@ -231,7 +234,7 @@ export class QuizComponent implements OnInit {
       this.setUserError(`Invalid key phrase: "${newToken}" is ambiguous.`, showMessage);
       return false;
     }
-    for (let token of this.tokens) {
+    for (let token of this.answerTokens) {
       if (token.indexOf(newToken) >=0) {
         this.setUserError(`Invalid key phrase: "${newToken}" is a sub phrase of "${token}".`, showMessage);
         return false; 
@@ -242,7 +245,7 @@ export class QuizComponent implements OnInit {
 
   newToken(token : string) {
     if (this.isValidToken(token, true)) {
-      this.tokens.push(token);
+      this.answerTokens.push(token);
       this.chipsList.refresh();
       this.textEditor.selectTokens([token]);
     }
@@ -280,7 +283,7 @@ export class QuizComponent implements OnInit {
       name: this.name,
       plainText: this.textEditor.getPlainText(),
       richText: this.textEditor.getRichText(),
-      answerTokens: this.tokens
+      tokens: this.updateTokens(this.answerTokens)
     }
     this.quizService.saveAndGenerate(quizUpdate).subscribe((result : IQuiz) => {
       this.quizId = result._id;
@@ -290,6 +293,16 @@ export class QuizComponent implements OnInit {
       // update the url
       this.location.go(`/edit-quiz/${this.quizId}`);
     });
+  }
+
+  // AS_TODO need to preserver existing data!
+  updateTokens(answerTokens) {
+    let tokens = [];
+    answerTokens.forEach(answerToken => {
+      tokens.push({answerToken});
+    });
+    
+    return tokens;
   }
 
   startWatchQuizStatus() {

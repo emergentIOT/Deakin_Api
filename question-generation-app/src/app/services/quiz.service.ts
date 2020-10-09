@@ -24,7 +24,6 @@ export class QuizService {
   private apiUrlQuizTokens = this.appConfigService.apiUrl + '/api/v1/qa/quiz-tokens';
   private apiUrlGenerateAnswerTokens = this.appConfigService.apiUrl + '/api/v1/qa/generate-answer-tokens';
   private apiUrlQG = this.appConfigService.apiUrl + '/api/v1/qa/generate-questions';
-  // private apiUrl = 'assets/mock-data/quiz-list.mock.json';
   private quizUpdateSubject = new Subject<IQuiz>();
   private quizWatchSubscription : Subscription;
 
@@ -89,12 +88,12 @@ export class QuizService {
   }
 
   getAnswerTokens(quiz : IQuiz) : string[] {
-    let tokens : string[] = [];
+    let answerTokens : string[] = [];
     if (quiz && quiz.tokens) {
       quiz.tokens.forEach((token : IQuizToken) => 
-          tokens.push(token.answerToken));
+          answerTokens.push(token.answerToken));
     }
-    return tokens;
+    return answerTokens;
   }
 
   /**

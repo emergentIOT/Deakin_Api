@@ -42,7 +42,10 @@ const QuizSchema = {
         {
             questionToken: String, 
             answerToken: String,
-            status: String // pending, processing, processed, error 
+            status: String, // pending, processing, processed, error 
+            options:[{
+                name: String
+            }]
         }
     ]
 };
@@ -77,18 +80,21 @@ exports.Quiz = Quiz;
  * @param  {Function} cb callback.
  */
 exports.saveQuiz = function(quiz, cb) {
-
-    let { name, plainText, richText, answerTokens, _id } = quiz;
-
-    let tokens = [];
-    if (answerTokens) {
+    
+    let { name, plainText, richText, tokens, _id } = quiz;
+    
+    // AS_TODO Remove old code
+    /*if (answerTokens) {
         answerTokens.forEach(value => {
             if (utils.isNotEmpty(value)) {
                 tokens.push({answerToken: value.trim()})
             }
         });
-    }
 
+    }*/
+
+  
+    // AS_TODO remove debug logging
     console.log("saveQuiz", _id, tokens);
     let entity = {name, plainText, richText, tokens};
     if (utils.isNotEmpty(_id)) {

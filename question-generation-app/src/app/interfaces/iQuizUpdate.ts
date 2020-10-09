@@ -1,3 +1,4 @@
+import { IQuizToken } from './iQuizToken';
 
 
 export interface IQuizUpdate {
@@ -5,5 +6,5 @@ export interface IQuizUpdate {
   name: string;
   plainText: string;
   richText: string;
-  answerTokens?: string[];
+  tokens?: IQuizToken[];
 }
