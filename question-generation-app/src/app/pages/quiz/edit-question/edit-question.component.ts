@@ -6,13 +6,12 @@ import { IQuiz } from 'src/app/interfaces/iQuiz';
 import { IQuizToken } from 'src/app/interfaces/iQuizToken';
 import { isEmpty } from 'npm-stringutils';
 
-// AS_TODO Rename component and folder to 'edit-question'
 @Component({
-  selector: 'app-multiple-choice',
-  templateUrl: './multiple-choice.component.html',
-  styleUrls: ['./multiple-choice.component.scss']
+  selector: 'app-edit-question',
+  templateUrl: './edit-question.component.html',
+  styleUrls: ['./edit-question.component.scss']
 })
-export class MultipleChoiceComponent implements OnInit {
+export class EditQuestionComponent implements OnInit {
 
   mode = 'editQuestion';
   quiz: IQuiz;

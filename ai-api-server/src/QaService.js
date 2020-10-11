@@ -83,19 +83,6 @@ exports.saveQuiz = function(quiz, cb) {
     
     let { name, plainText, richText, tokens, _id } = quiz;
     
-    // AS_TODO Remove old code
-    /*if (answerTokens) {
-        answerTokens.forEach(value => {
-            if (utils.isNotEmpty(value)) {
-                tokens.push({answerToken: value.trim()})
-            }
-        });
-
-    }*/
-
-  
-    // AS_TODO remove debug logging
-    console.log("saveQuiz", _id, tokens);
     let entity = {name, plainText, richText, tokens};
     if (utils.isNotEmpty(_id)) {
         entity._id = _id;
