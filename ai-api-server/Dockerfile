@@ -25,8 +25,6 @@ RUN npm config set ai-api-server:ANSWER_TOKEN_GENERATION_AI_URL http://research-
 RUN npm config set ai-api-server:QUESTION_ANSWER_AI_URL http://research-gpu-poc-fs1.its.deakin.edu.au:8892/
 RUN npm config set ai-api-server:QUESTION_SERVICE_AI_URL http://research-gpu-poc-fs1.its.deakin.edu.au:8893/
 RUN npm config set ai-api-server:HOST_URL https://des-inno-ai-api.its.deakin.edu.au
-RUN npm config set ai-api-server:MICROSOFT_APP_ID a9f82b0d-0085-4b02-974e-2f55742b5b1a
-RUN npm config set ai-api-server:MICROSOFT_APP_PASSWORD JT1K-gfBF04.cTj~K.3FlGA5~7bsEjkh0D
 
 RUN npm install
 # RUN npm ci --only=production

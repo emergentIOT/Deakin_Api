@@ -9,7 +9,6 @@ const iVideoWs = require('./src/IVideoWs')
 const h5pQuizWs = require('./src/h5p-quiz-generator/H5PQuizWs');
 const questionService = require('./src/QuestionService');
 const feedbackService = require('./src/FeedbackService');
-const msBotService = require('./src/ms-teams-bot/MsBotService');
 
 // Make sure server is ran on a known and supported NodeJS Version.
 utils.assertNodeRuntime();
@@ -20,15 +19,14 @@ utils.assertNodeRuntime();
 
 // Install RAML API for Web Service API validation.
 const installRAML = function(done) {
-    // logger.info('Initialising RAML Validation Middleware');
-    // server.installRAML('raml/api-combined.raml', function(err, server) {
-    //     if (err) {
-    //         logger.error('Error: ' + err);
-    //         logger.error(err.stack);
-    //     }
-    //     done(err, server);
-    // });
-    done(null, server);
+    logger.info('Initialising RAML Validation Middleware');
+    server.installRAML('raml/api-combined.raml', function(err, server) {
+        if (err) {
+            logger.error('Error: ' + err);
+            logger.error(err.stack);
+        }
+        done(err, server);
+    });
 };
 
 // Install Server Web Service.
@@ -55,7 +53,6 @@ const installWebServices = function(server, done) {
         h5pQuizWs.installWs(server);
         questionService.installWs(server);
         feedbackService.installWs(server);
-        msBotService.installWs(server);
 
         server.addStatic('/mock-data', 'mock-data');
        
