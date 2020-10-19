@@ -52,7 +52,8 @@
                                         "notChosenFeedback": ""
                                     },
                                     "text": "<div><%= token.answerToken %><\/div>\n"
-                                },
+                                }<%= (token.options.length == 0) ? '' : ',' %>
+                                <% token.options.forEach(function(option){%>
                                 {
                                     "correct": false,
                                     "tipsAndFeedback": {
@@ -60,17 +61,10 @@
                                         "chosenFeedback": "",
                                         "notChosenFeedback": ""
                                     },
-                                    "text": "<div>Alt Answer 1<\/div>\n"
-                                },
-                                {
-                                    "correct": false,
-                                    "tipsAndFeedback": {
-                                        "tip": "",
-                                        "chosenFeedback": "",
-                                        "notChosenFeedback": ""
-                                    },
-                                    "text": "<div>Alt Answer 2<\/div>\n"
+                                    "text": "<div><%= option.name %><\/div>\n"
                                 }
+                                <%= (token.options[token.options.length - 1] === option) ? '' : ',' %>
+                                <% }); %>
                             ],
                             "overallFeedback": [
                                 {
