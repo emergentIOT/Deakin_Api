@@ -15,24 +15,18 @@
                             "notChosenFeedback": ""
                         }
                     },
+                   <% token.options.forEach(function(option){%>
                     {
                         "correct": false,
-                        "text": "<div>Alt Answer 1<\/div>\n",
-                        "tipsAndFeedback": {
-                            "tip": "",
-                            "chosenFeedback": "",
-                            "notChosenFeedback": ""
-                        }
-                    },
-                    {
-                        "correct": false,
-                        "text": "<div>Alt Answer 2<\/div>\n",
+                        "text": "<div><%= option.name %><\/div>\n",
                         "tipsAndFeedback": {
                             "tip": "",
                             "chosenFeedback": "",
                             "notChosenFeedback": ""
                         }
                     }
+                    <%= (token.options[token.options.length - 1] === option) ? '' : ',' %>
+                    <% }); %>
                 ],
                 "UI": {
                     "showSolutionButton": "Show solution",

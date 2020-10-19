@@ -108,6 +108,9 @@ const loadQuiz = function(quizId, cb) {
 
         data.quiz.tokens.forEach(token => {
             token.answerToken = toFirstCharacterUpperCase(token.answerToken);
+            token.options.forEach(option => {
+                option.name = toFirstCharacterUpperCase(option.name);
+            });
         });
 
 
