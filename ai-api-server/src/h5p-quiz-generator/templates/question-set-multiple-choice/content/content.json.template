@@ -14,8 +14,8 @@
                             "chosenFeedback": "",
                             "notChosenFeedback": ""
                         }
-                    },
-                   <% token.options.forEach(function(option){%>
+                    }<%= (token.options.length == 0) ? '' : ',' %>
+                    <% token.options.forEach(function(option){%>
                     {
                         "correct": false,
                         "text": "<div><%= option.name %><\/div>\n",
