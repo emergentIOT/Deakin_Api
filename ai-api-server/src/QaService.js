@@ -288,7 +288,13 @@ const generateAnswerTokensFetch = function(plainText, cb) {
       .then(json => {
 
         try {
-
+            logger.info("TG AI service result: ", json);
+            if (json.answer_tokens) {
+                // Cleanup trailing white space.
+                json.answer_tokens.forEach((token, index) => {
+                    json.answer_tokens[index] = token.trim();
+                });
+            } 
             logger.info("TG AI service result: ", json);
 
             cb(null, {answerTokens: json.answer_tokens});
