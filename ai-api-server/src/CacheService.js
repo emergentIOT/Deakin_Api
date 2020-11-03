@@ -57,6 +57,7 @@ exports.checkCache = function(cacheName, input1Hash, input2Hash, cb) {
             return;
         }
         if (result && result.data) {
+            result.data.isFromCache = true;
             cb(null, result.data);
         } else {
             cb(null, null);

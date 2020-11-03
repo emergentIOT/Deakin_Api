@@ -36,7 +36,8 @@ const QuestionAnswerLogSchema = {
         type: String,
         required: true
     },
-    feedbackScore: Number
+    feedbackScore: Number,
+    isFromCache: Boolean
 };
 
 dbService.schema('QuestionAnswerLog', QuestionAnswerLogSchema);
@@ -75,11 +76,11 @@ const sendFeedback = async function (req, res) {
 
 
 exports.saveQuestionAnswer = function({ contextRef, contextType, question, answer,
-                                        confidenceScore, entities, faqClass }, cb) {
+                                        confidenceScore, entities, faqClass, isFromCache }, cb) {
     
     
     let entity = {
-        contextRef, contextType, question, answer, confidenceScore, entities, faqClass
+        contextRef, contextType, question, answer, confidenceScore, entities, faqClass, isFromCache
     };
 
     dbService.save('QuestionAnswerLog', entity, function(err, result) {

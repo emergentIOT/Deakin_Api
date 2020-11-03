@@ -38,6 +38,9 @@ const loadQsData = function() {
 const askQuestion = async function (req, res) {
 
     let { question, context_ref, context_type, method, isDryRun } = req.query;
+    context_ref = utils.toLowerCase(context_ref);
+    context_type = utils.toLowerCase(context_type);
+    method = utils.toLowerCase(method);
 
     if (isDryRun) {
         let data = { 
@@ -63,7 +66,8 @@ const askQuestion = async function (req, res) {
             answer: processesAnswerResult.answer,
             confidenceScore: utils.notNull(result.confidence_score, 0),
             entities: result.entities,
-            faqClass: result.faq_class
+            faqClass: result.faq_class,
+            isFromCache: result.isFromCache
         }
         feedbackService.saveQuestionAnswer(saveResult, (err, result) => {
             if (handleError('qs.askQuestion#saveQuestionAnswer', res, err, question, context_type, context_ref)) {
@@ -89,6 +93,7 @@ const handleError = function(domain, res, err, question, contextType, contextRef
         let payload = {
             success: false,
             data: {
+                message: `${err}`,
                 answer: "Unexpected error with service.",
                 transactionId: 0
             }
@@ -162,7 +167,7 @@ const fetchAskQuestion = function(question, context_type, context_ref, cb) {
                 if (utils.isEmpty(json.answer)) {
                     logger.warn('Empty result: ', json);
                 }
-                cb(null, {...json})
+                cb(null, {isFromCache: false, ...json})
                 cacheService.saveCache(QS_AI_CACHE_NAME, questionHash, contextHash, {...json});
             } catch(err) {
                 cb(err);
