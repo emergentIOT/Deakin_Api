@@ -1,0 +1,73 @@
+{
+    "unit_chair": "Elicia Lanham; Campus: Melbourne Burwood Campus; Email: elicia.lanham@deakin.edu.au; Phone: +61 3 925 17602",
+    "Campus_Leader": "Geelong Waurn Ponds Campus Leader: Richard Dazeley; Email: richard.dazeley@deakin.edu.au; Phone: +61 3 522 78950",
+    "administrative_queries": "For administrative queries, contact your Unit Chair or Campus Leader or alternatively, drop in or contact Student Central to speak with a Student Advisor",
+    "feedback_on_teacher": "Every trimester, we ask students to tell us, through eVALUate, what helped and hindered their learning in each Unit. You are strongly encouraged to provide constructive feedback for this Unit when eVALUate opens (you will be emailed a link).",
+    "unit_learning_outcomes": "These are the Learning Outcomes (ULO) for this Unit\\nAt the completion of this Unit, successful students can:\\tDeakin Graduate Learning\\nOutcomes\\nULO1\\tDescribe the broad range of careers within the IT profession, and explain their respective skills, responsibilities, and professional practices.\\tGLO1, GLO6, GLO8\\nULO2\\tInvestigate new technologies, and analyse the information located to provide a high-level technical overview and to position it with respect to earlier advances in the field.\\tGLO1, GLO2, GLO8\\nULO3\\tDesign and develop websites using modern HTML and CSS standards.\\tGLO1, GLO3, GLO5, GLO7",
+    "mark_distribution": "In brief, these are the assessment tasks for this Unit (details below): Professional preparation document 15%, new technology website 15%, website development project (group) 20%, examination 50%.",
+    "misplaced_assignment": "It is your responsibility to keep a backup copy of every assignment where it is possible (eg written/digital reports, essays, videos, images). In the unusual event that one of your assignments is misplaced, you will need to submit the backup copy.",
+    "assignment_submission_where_how": "When you are required to submit an assignment through your unit site (accessed in DeakinSync), you should receive an email to your Deakin email address confirming that it has been submitted. You should check that you can see your assignment in the Submissions view of the Assignment folder after upload, and check for, and keep, the email receipt for the submission. Any work you submit may be checked by electronic or other means for the purposes of detecting collusion and/or plagiarism.",
+    "what_is_this_AT": {
+        "assignment_1": "Brief description of Assignment 1, along with student output, and whether it is a group assessment or not",
+        "assignment_2": "Brief description of Assignment 2 along with student output, and whether it is a group assessment or not",
+        "assignment_3": "This is an individual assessment. Students will be provided with a website template and are expected to create a professional website that presents their professional self, career aspirations and career plans. A website URL will need to be submitted, along with their professional profile"
+    },
+    "at_mark_distribution": {
+        "assignment_1": "Brief description of Assignment 1 mark distribution",
+        "assignment_2": "Brief description of Assignment 2 mark distribution",
+        "assignment_3": "The assignment consists of two parts: 10% new technology report presented on a website, 5% peer-review of new technology report. 10% New technology report: Students will research a disruptive\\new technology and present a report via a website. Using the website created in assessment 1, students will present their new technology report via their website). 5% Peer-review: In addition to the new technology report presented on a website, students will also be required to peer-review 5 other students new technology report (presented on their website) and provide a critique using review approach provided."
+    },
+    "at_mark_weightage": {
+        "assignment_1": "Brief description of Assignment 1 mark weight",
+        "assignment_2": "Brief description of Assignment 2 mark weight",
+        "assignment_3": "15% Marked and Graded"
+    },
+    "at_lo": {
+        "assignment_1": "ULO1 – through student ability to demonstrate knowledge of professional IT Practices. GLO1 – through student ability to apply their understanding of the information tech. components and the impact of the tech on society. GLO6 – through student ability to reflect upon their abilities and self-manage their time towards assessment construction.",
+        "assignment_2": "Brief description of Assignment 2 ULO and GLO",
+        "assignment_3": "Brief description of Assignment 3 ULO and GLO "
+    },
+    "feedback_on_student": "Students will be able to discuss their concerns and progress relating to this assessment task with their practical teacher and with the campus lecturer either through face-to-face consultation or via electronic communication channels.",
+    "at_submission_when": {
+        "assignment_1": "This assignment will be submitted electronically through the Assessment Folder in the Unit Site (accessed in DeakinSync) by 11:59pm (AEST) Friday Week 4, 29 March 2019.",
+        "assignment_2": "Brief detail of Assignment 2 submission time",
+        "assignment_3": "Brief detail of Assignment 3 submission time"
+    },
+    "exam_revision": "In the lead-up to the exam students will be provided with a unit review and sample questions. Students may ask exam related questions, either in-person or via electronic communication, to the campus lecturer.",
+    "key_event_dates": {
+        "trimester": "provide trimester beginning and end date",
+        "classes": "provide classes beginning and end date",
+        "intra_trimester": "provide intra trimester break date",
+        "exams": "provide exams beginning and end date",
+        "result": "provide result dates of exams and assignments",
+        "anzac": "provide anzac day date"
+    },
+    "time_table": {
+        "classes": "provide classes timetable",
+        "workshop": "provide workshop timetable",
+        "seminar": "provide seminar timetable"
+    },
+    "venue_of_event": {
+        "classes": "provide classes/lecture venue or link",
+        "workshop": "provide workshops venue or link",
+        "seminar": "provide seminar venue or link"
+    },
+    "digital_learning_resource": {
+        "classes": "provide classes/lecture recording link",
+        "workshop": "provide workshops recording link or other important information, like-workshops are not recorded",
+        "seminar": "provide seminar recording link or other important information",
+        "book": "There is no prescribed textbook for SIT124 Exploring IT. The SIT124 Exploring IT unit site provides a detailed 'reading list'. Please refer to this list for the most up to date resources.",
+        "lecture_slides": "lecture slides can be found at this link"
+    },
+    "referencing": "brief important information about referencing will be provided",
+    "group_queries": "general information about group formation and handling will be provided. Whether they can make their own group, what is the max and min strength of the group, whether they can work alone for a group assignment task; (find more group queries in the xl-sheet) ",
+    "peer_review": "general information about rules in and around peer reviewing ll be provided; like – how many reviews to be done, how to submit the review, some description of the peer review task; (find more peer reviews queries in the xl-sheet)",
+    "learning_tool_issue": {
+        "blackboard_collaborate": "provide info like how to access, how to resolve the logging issue, link to it, find more blackboard collaborate queries in the xl-sheet",
+        "future_learn": "provide workshops recording link or other important information, like-workshops are not recorded",
+        "ontrack": "provide general important information, how to access it, how to resolve the access problem, link to it, how to upload files etc. find more queries in the xl-sheet.",
+        "azure": "provide general important information, how to access it, how to resolve the access problem, how to add more members to the group etc. find more queries in the xl-sheet."
+    },
+    "pass_mark": "pass mark of the unit along with the brief explanation will be provided",
+    "quiz_queries": "information like, whether it is marked or not and how to submit the quiz etc will be provided. find more queries in the xl-sheet."
+}

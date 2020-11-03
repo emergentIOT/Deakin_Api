@@ -13,7 +13,7 @@
 					"script": {
 						"id": "e1832e3d-6068-4013-b179-705036e9465f",
 						"exec": [
-							"pm.environment.set(\"expected-question-answer\", \"Elicia Lanham; Campus: Melbourne Burwood Campus; Email: elicia.lanham@deakin.edu.au; Phone: +61 3 925 17602\");"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -29,8 +29,10 @@
 							"",
 							"pm.test(\"Answer Question\", function () {",
 							"    var jsonData = pm.response.json();",
-							"    let expected = pm.environment.get(\"expected-question-answer\");",
-							"    pm.expect(jsonData.data.answer).to.be.eql(expected);",
+							"    pm.expect(jsonData.data.transactionId).to.be.a('string');",
+							"    pm.environment.set(\"feedback-transactionId\", jsonData.data.transactionId);",
+							"    // let expected = \"Elicia Lanham; Campus: Melbourne Burwood Campus; Email: elicia.lanham@deakin.edu.au; Phone: +61 3 925 17602\";",
+							"    // pm.expect(jsonData.data.answer).to.be.eql(expected);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -41,14 +43,9 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://des-inno-ai-api.its.deakin.edu.au/api/v1/qs/ask-question?question=Who is the unit chair&isDryRun=false&context_ref=1234&context_type=unit_guide",
-					"protocol": "https",
+					"raw": "{{ai-api-server}}/api/v1/qs/ask-question?question=When is assignment one due&isDryRun=false&context_ref=test_001&context_type=unit_guide",
 					"host": [
-						"des-inno-ai-api",
-						"its",
-						"deakin",
-						"edu",
-						"au"
+						"{{ai-api-server}}"
 					],
 					"path": [
 						"api",
@@ -59,7 +56,7 @@
 					"query": [
 						{
 							"key": "question",
-							"value": "Who is the unit chair"
+							"value": "When is assignment one due"
 						},
 						{
 							"key": "isDryRun",
@@ -67,11 +64,41 @@
 						},
 						{
 							"key": "context_ref",
-							"value": "1234"
+							"value": "test_001"
 						},
 						{
 							"key": "context_type",
 							"value": "unit_guide"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send feedback",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ai-api-server}}/api/v1/fs/send-feedback?transactionId={{feedback-transactionId}}&feedback=Yes",
+					"host": [
+						"{{ai-api-server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"fs",
+						"send-feedback"
+					],
+					"query": [
+						{
+							"key": "transactionId",
+							"value": "{{feedback-transactionId}}"
+						},
+						{
+							"key": "feedback",
+							"value": "Yes"
 						}
 					]
 				}
