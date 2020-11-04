@@ -7,11 +7,28 @@ const cacheService = require('./CacheService');
 const aiUtils = require('./AiUtils');
 const fetch = require('node-fetch');
 const feedbackService = require('./FeedbackService');
+const dbService = require('du-dbservice').DbService();
 
 const questionServiceAiUrl = utils.getConfig('QUESTION_SERVICE_AI_URL', utils.CONFIG_REQUIRED);
 const questionServiceAiHost = utils.getConfig('QUESTION_SERVICE_AI_HOST');
 const QS_AI_CACHE_NAME = "QS_AI";
-const QS_UNIT_DATA = {};
+
+let QS_CLASS_DATA = {};
+
+/*
+ * The MongooseJS collection schema definition.
+ */
+const ClassDataSchema = { 
+    ref: {
+        type: String,
+        require: true
+    },
+    data: {}
+}
+
+dbService.schema('ClassData', ClassDataSchema);
+let ClassData = dbService.getModel('ClassData');
+exports.ClassData = ClassData;
 
 /**
  * Install Web Service API
@@ -19,6 +36,8 @@ const QS_UNIT_DATA = {};
 exports.installWs = async function (server) {
 
     server.get(server.getPath('/qs/ask-question'), askQuestion);
+    server.put(server.getPath('/qs/class-data/:ref'), saveClassData);
+    server.get(server.getPath('/qs/class-data/:ref'), getClassData);
 
     logger.info('Question service api installed at /qs');
 
@@ -27,7 +46,73 @@ exports.installWs = async function (server) {
 };
 
 const loadQsData = function() {
-    QS_UNIT_DATA["test_001"] = require("./qs-data/test_001.json");
+    ClassData.find({}).lean().exec((err, results) => {
+        if (err) {
+            throw err;
+        }
+        results.forEach(result => {
+            QS_CLASS_DATA[result.ref] = result.data;
+            let numberOfClasses = utils.sizeMap(result.data);
+            logger.info(`Classification data loaded for ${result.ref}, number of classes ${numberOfClasses}`);
+        });
+    });
+}
+
+/**
+ * PUT
+ * /class-data
+ * Save classification data.
+ */
+const saveClassData = async function(req, res) {
+
+    let ref = req.params.ref;
+    let data = req.body;
+    logger.debug("saveClassData", ref, data);
+    let entity = {ref, data};
+
+    if (utils.isNull(ref)) {
+        utilWs.handleError('qs.saveClassData', res, "Class data set reference is null");
+        return;
+    }
+
+    if (utils.isNull(data)) {
+        utilWs.handleError('qs.saveClassData', res, "Class data set is null");
+        return;
+    }
+   
+    dbService.upsert('ClassData', {ref: ref}, entity, (err, result) => {
+
+        if (utilWs.handleError('qs.saveClassData', res, err)) {
+            return;
+        }
+
+        QS_CLASS_DATA = {};
+        loadQsData();
+
+        return utilWs.sendSuccess('qs.saveClassData', {data: result._id}, res, true);
+
+    });
+
+}
+
+/**
+ * GET
+ * /class-data/:ref
+ * Get class data.
+ */
+const getClassData = async function(req, res) {
+    
+    ClassData.findOne({ref: req.params.ref}).lean().exec((err, classData) => {
+        if (utilWs.handleError('qs.getClassData', res, err)) {
+            return;
+        }
+        if (utils.isNull(classData)) {
+            utilWs.sendUserError('qs.getClassData', `Class data not found for ref = ${req.params.ref}`, res);
+            return;
+        }
+        utilWs.sendSuccess('qs.getClassData', {success: true, data: classData}, res, true);                      
+    });
+
 }
 
 /**
@@ -37,15 +122,15 @@ const loadQsData = function() {
  */
 const askQuestion = async function (req, res) {
 
-    let { question, context_ref, context_type, method, isDryRun } = req.query;
+    let { question, context_ref, context_type, client_ref, method, is_dry_run } = req.query;
     context_ref = utils.toLowerCase(context_ref);
     context_type = utils.toLowerCase(context_type);
     method = utils.toLowerCase(method);
 
-    if (isDryRun) {
+    if (is_dry_run) {
         let data = { 
             answer: `Echo: ${question}, context_ref = ${context_ref}, context_type = ${context_type}`, 
-            transactionId: "0"
+            transactionId: "none"
         };
         utilWs.sendSuccess('qs.askQuestion', { success: true, data }, res, true);
         return;
@@ -60,6 +145,7 @@ const askQuestion = async function (req, res) {
             return;
         }
         let saveResult = {
+            clientRef: client_ref,
             contextRef: context_ref, 
             contextType: context_type, 
             question, 
@@ -69,6 +155,7 @@ const askQuestion = async function (req, res) {
             faqClass: result.faq_class,
             isFromCache: result.isFromCache
         }
+
         feedbackService.saveQuestionAnswer(saveResult, (err, result) => {
             if (handleError('qs.askQuestion#saveQuestionAnswer', res, err, question, context_type, context_ref)) {
                 return;
@@ -81,7 +168,7 @@ const askQuestion = async function (req, res) {
                 }
             }, res, true);
         });
-        
+       
     });
 
 }
@@ -95,7 +182,7 @@ const handleError = function(domain, res, err, question, contextType, contextRef
             data: {
                 message: `${err}`,
                 answer: "Unexpected error with service.",
-                transactionId: 0
+                transactionId: "none"
             }
         };
         res.json(payload);
@@ -110,11 +197,11 @@ const handleError = function(domain, res, err, question, contextType, contextRef
 const processAnswer = function (contextRef, contextType, result) {
     let {confidence_score, entities, faq_class, entity_mapping} = result;
     
-    let unitData = QS_UNIT_DATA[contextRef];
-    if (utils.isNull(unitData)) {
-        return { success: false, message: `Cannot found unit data for ref = ${contextRef}`};
+    let classData = QS_CLASS_DATA[contextRef];
+    if (utils.isNull(classData)) {
+        return { success: false, message: `Cannot found class data for ref = ${contextRef}`};
     }
-    let faqClass = unitData[utils.toLowerCase(faq_class)];
+    let faqClass = classData[utils.toLowerCase(faq_class)];
     if (utils.isNull(faqClass)) {
         return { success: false, message: `Cannot found faq_class for ref = ${contextRef}, faq_class = ${faqClass}`};
     }

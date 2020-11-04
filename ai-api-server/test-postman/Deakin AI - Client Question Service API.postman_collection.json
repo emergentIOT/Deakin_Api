@@ -43,7 +43,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{ai-api-server}}/api/v1/qs/ask-question?question=When is assignment one due&isDryRun=false&context_ref=test_001&context_type=unit_guide",
+					"raw": "{{ai-api-server}}/api/v1/qs/ask-question?question=When is assignment one due&context_ref=test_001&context_type=unit_guide&client_ref=dev_test",
 					"host": [
 						"{{ai-api-server}}"
 					],
@@ -59,16 +59,16 @@
 							"value": "When is assignment one due"
 						},
 						{
-							"key": "isDryRun",
-							"value": "false"
-						},
-						{
 							"key": "context_ref",
 							"value": "test_001"
 						},
 						{
 							"key": "context_type",
 							"value": "unit_guide"
+						},
+						{
+							"key": "client_ref",
+							"value": "dev_test"
 						}
 					]
 				}

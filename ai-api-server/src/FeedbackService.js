@@ -8,6 +8,10 @@ const dbService = require('du-dbservice').DbService();
  * The MongooseJS collection schema definition.
  */
 const QuestionAnswerLogSchema = { 
+    clientRef: { // example ms-chat-bot, d2l-chat-bot
+        type: String,
+        required: true
+    },
     contextRef: {
         type: String,
         required: true
@@ -62,25 +66,30 @@ const sendFeedback = async function (req, res) {
     let transactionId = req.query.transactionId;
     let feedbackScore = parseBoolean(req.query.feedback) ? 1 : 0;
 
+
+    if (transactionId === "none") {
+        utilWs.sendSuccess('fs.sendFeedback', { success: false, data: { "message": "Feedback ignored"} }, res, true);
+        return;
+    }
+    
     let entity = {_id: transactionId, feedbackScore};
-    // Store response in MongoDB or Firebase here...
 
     dbService.save('QuestionAnswerLog', entity, function(err, result) {
         if (utilWs.handleError('fs.saveFeedback#questionAnswerLog', res, err)) {
             return;
         }
-        utilWs.sendSuccess('fs.sendFeedback', { success: true, data: { "message": "Feedback received"} }, res, true);
+        utilWs.sendSuccess('fs.sendFeedback', { success: true, data: { "message": "Feedback saved"} }, res, true);
     });
     
 }
 
 
-exports.saveQuestionAnswer = function({ contextRef, contextType, question, answer,
+exports.saveQuestionAnswer = function({ clientRef, contextRef, contextType, question, answer,
                                         confidenceScore, entities, faqClass, isFromCache }, cb) {
     
     
     let entity = {
-        contextRef, contextType, question, answer, confidenceScore, entities, faqClass, isFromCache
+        clientRef, contextRef, contextType, question, answer, confidenceScore, entities, faqClass, isFromCache
     };
 
     dbService.save('QuestionAnswerLog', entity, function(err, result) {
