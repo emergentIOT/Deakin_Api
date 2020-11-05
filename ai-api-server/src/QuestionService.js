@@ -141,7 +141,8 @@ const askQuestion = async function (req, res) {
             return;
         }
         let processesAnswerResult = processAnswer(context_ref, context_type, result);
-        if (handleError('qs.askQuestion#processAnswer', res, processesAnswerResult.message, question, context_type, context_ref)) {
+        if (handleError('qs.askQuestion#processAnswer', res, processesAnswerResult.message, question, 
+                            context_type, context_ref, processesAnswerResult.hasNoClassValue)) {
             return;
         }
         let saveResult = {
@@ -173,7 +174,7 @@ const askQuestion = async function (req, res) {
 
 }
 
-const handleError = function(domain, res, err, question, contextType, contextRef) {
+const handleError = function(domain, res, err, question, contextType, contextRef, hasNoClassValue) {
     if (err) {
         logger.error(`${domain}: question = ${question}, context_type = ${contextType}, context_ref = ${contextRef}`);
         logger.error(`${domain}: ${err}`);
@@ -185,6 +186,9 @@ const handleError = function(domain, res, err, question, contextType, contextRef
                 transactionId: "none"
             }
         };
+        if (hasNoClassValue) {
+            payload.data.hasNoClassValue = true;
+        }
         res.json(payload);
         return true;
     }
@@ -199,15 +203,16 @@ const processAnswer = function (contextRef, contextType, result) {
     
     let classData = QS_CLASS_DATA[contextRef];
     if (utils.isNull(classData)) {
-        return { success: false, message: `Cannot found class data for ref = ${contextRef}`};
+        return { success: false, message: `Cannot find context = ${contextRef}`};
     }
-    let faqClass = classData[utils.toLowerCase(faq_class)];
-    if (utils.isNull(faqClass)) {
-        return { success: false, message: `Cannot found faq_class for ref = ${contextRef}, faq_class = ${faqClass}`};
+    let classValue = classData[utils.toLowerCase(faq_class)];
+    if (utils.isNull(classValue) || utils.isEmpty(classValue)) {
+        return { success: false, hasNoClassValue: true, message: `Cannot find class for context = ${contextRef} and class = ${faq_class}`};
     }
-    let answer = faqClass;
+    let answer = classValue;
     if (typeof answer != 'string') {
-        answer = utils.toString(Object.values(faqClass), "\n");
+        answer = utils.toString(Object.values(classValue), "\n\n");
+        logger.info(answer)
     }
     return { success: true, answer};
 }
