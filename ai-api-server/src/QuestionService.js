@@ -142,7 +142,7 @@ const askQuestion = async function (req, res) {
         }
         let processesAnswerResult = processAnswer(context_ref, context_type, result);
         if (handleError('qs.askQuestion#processAnswer', res, processesAnswerResult.message, question, 
-                            context_type, context_ref, processesAnswerResult.hasNoClassValue)) {
+                            context_type, context_ref, processesAnswerResult.noValueForClass)) {
             return;
         }
         let saveResult = {
@@ -174,7 +174,7 @@ const askQuestion = async function (req, res) {
 
 }
 
-const handleError = function(domain, res, err, question, contextType, contextRef, hasNoClassValue) {
+const handleError = function(domain, res, err, question, contextType, contextRef, noValueForClass) {
     if (err) {
         logger.error(`${domain}: question = ${question}, context_type = ${contextType}, context_ref = ${contextRef}`);
         logger.error(`${domain}: ${err}`);
@@ -186,8 +186,8 @@ const handleError = function(domain, res, err, question, contextType, contextRef
                 transactionId: "none"
             }
         };
-        if (hasNoClassValue) {
-            payload.data.hasNoClassValue = true;
+        if (noValueForClass) {
+            payload.data.noValueForClass = noValueForClass;
         }
         res.json(payload);
         return true;
@@ -200,14 +200,18 @@ const handleError = function(domain, res, err, question, contextType, contextRef
  */
 const processAnswer = function (contextRef, contextType, result) {
     let {confidence_score, entities, faq_class, entity_mapping} = result;
+    faq_class = utils.toLowerCase(faq_class);
     
     let classData = QS_CLASS_DATA[contextRef];
     if (utils.isNull(classData)) {
         return { success: false, message: `Cannot find context = ${contextRef}`};
     }
-    let classValue = classData[utils.toLowerCase(faq_class)];
-    if (utils.isNull(classValue) || utils.isEmpty(classValue)) {
-        return { success: false, hasNoClassValue: true, message: `Cannot find class for context = ${contextRef} and class = ${faq_class}`};
+    let classValue = classData[faq_class];
+    if (utils.isNull(classValue)) {
+        return { success: false, noValueForClass: faq_class, message: `Cannot find class for context = ${contextRef} and class = ${faq_class}`};
+    }
+    if (utils.isEmpty(classValue)) {
+        return { success: false, noValueForClass: faq_class, message: `Class has no value for context = ${contextRef} and class = ${faq_class}`};
     }
     let answer = classValue;
     if (typeof answer != 'string') {
