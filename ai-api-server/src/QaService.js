@@ -343,12 +343,12 @@ exports.answerQuestions = function(plainText, questionToken, cb) {
         .then(json => {
             try {
                 logger.info("QA AI service result: ", json);
-
-                if (utils.isEmpty(json.answer)) {
-                    logger.warn('Empty result: ', json);
+                let answerText = json.answer ? json.answer.trim() : null;
+                if (utils.isEmpty(answerText)) {
+                    logger.warn('Empty answer: ', json);
                 }
-                cb(null, {answerText: json.answer})
-                saveCache(QA_AI_CACHE_NAME, plainTextHash, questionHash, {answerText: json.answer});
+                cb(null, {answerText});
+                saveCache(QA_AI_CACHE_NAME, plainTextHash, questionHash, {answerText});
             } catch(err) {
                 cb(err);
             }
