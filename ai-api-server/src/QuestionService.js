@@ -11,6 +11,9 @@ const dbService = require('du-dbservice').DbService();
 
 const questionServiceAiUrl = utils.getConfig('QUESTION_SERVICE_AI_URL', utils.CONFIG_REQUIRED);
 const questionServiceAiHost = utils.getConfig('QUESTION_SERVICE_AI_HOST');
+// Default to 0 / off
+const confidenceScoreLimit = utils.getConfig('QUESTION_SERVICE_CONFIDENCE_SCORE_LIMIT', 0);
+
 const QS_AI_CACHE_NAME = "QS_AI";
 
 let QS_CLASS_DATA = {};
@@ -142,7 +145,8 @@ const askQuestion = async function (req, res) {
         }
         let processesAnswerResult = processAnswer(context_ref, context_type, result);
         if (handleError('qs.askQuestion#processAnswer', res, processesAnswerResult.message, question, 
-                            context_type, context_ref, processesAnswerResult.noValueForClass)) {
+                            context_type, context_ref, 
+                            {noValueForClass: processesAnswerResult.noValueForClass})) {
             return;
         }
         let saveResult = {
@@ -157,14 +161,26 @@ const askQuestion = async function (req, res) {
             isFromCache: result.isFromCache
         }
 
+        if (saveResult.confidenceScore < confidenceScoreLimit) {
+            handleError('qs.askQuestion#processAnswer', res, `Confidence score ${saveResult.confidenceScore} is below limit ${confidenceScoreLimit}.`, 
+                            question, context_type, context_ref, 
+                            {
+                                confidenceScore: saveResult.confidenceScore,
+                                confidenceScoreBelowLimit: true
+                            })
+            return;
+        }
+ 
         feedbackService.saveQuestionAnswer(saveResult, (err, result) => {
-            if (handleError('qs.askQuestion#saveQuestionAnswer', res, err, question, context_type, context_ref)) {
+            if (handleError('qs.askQuestion#saveQuestionAnswer', res, err, question, context_type, context_ref, 
+                    {confidenceScore: saveResult.confidenceScore})) {
                 return;
             }
             utilWs.sendSuccess('qs.askQuestion', {
                 success: true,
                 data: {
-                    answer: processesAnswerResult.answer,
+                    answer: saveResult.answer,
+                    confidenceScore: saveResult.confidenceScore,
                     transactionId: result._id
                 }
             }, res, true);
@@ -174,7 +190,7 @@ const askQuestion = async function (req, res) {
 
 }
 
-const handleError = function(domain, res, err, question, contextType, contextRef, noValueForClass) {
+const handleError = function(domain, res, err, question, contextType, contextRef, data) {
     if (err) {
         logger.error(`${domain}: question = ${question}, context_type = ${contextType}, context_ref = ${contextRef}`);
         logger.error(`${domain}: ${err}`);
@@ -182,12 +198,12 @@ const handleError = function(domain, res, err, question, contextType, contextRef
             success: false,
             data: {
                 message: `${err}`,
-                answer: "Unexpected error with service.",
+                answer: "Unable to answer question.",
                 transactionId: "none"
             }
         };
-        if (noValueForClass) {
-            payload.data.noValueForClass = noValueForClass;
+        if (data) {
+            payload.data = {...payload.data, ...data};
         }
         res.json(payload);
         return true;
