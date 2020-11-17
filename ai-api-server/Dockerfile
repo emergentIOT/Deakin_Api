@@ -28,6 +28,7 @@ RUN npm config set ai-api-server:QUESTION_ANSWER_AI_URL http://research-gpu-poc-
 RUN npm config set ai-api-server:QUESTION_SERVICE_AI_URL https://des-inno-faq.its.deakin.edu.au
 RUN npm config set ai-api-server:QUESTION_SERVICE_AI_HOST des-inno-faq.its.deakin.edu.au
 RUN npm config set ai-api-server:HOST_URL https://des-inno-ai-api.its.deakin.edu.au
+RUN npm config set ai-api-server:QUESTION_SERVICE_CONFIDENCE_SCORE_LIMIT 0.2
 
 RUN npm install
 # RUN npm ci --only=production

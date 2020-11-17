@@ -21,6 +21,21 @@ let QS_CLASS_DATA = {};
 /*
  * The MongooseJS collection schema definition.
  */
+const ChannelDataSchema = { 
+    contextRef: {
+        type: String,
+        require: true
+    },
+    channelRef: {
+        type: String,
+        require: true
+    },
+    channelData: {}
+}
+
+/*
+ * The MongooseJS collection schema definition.
+ */
 const ClassDataSchema = { 
     ref: {
         type: String,
@@ -30,8 +45,11 @@ const ClassDataSchema = {
 }
 
 dbService.schema('ClassData', ClassDataSchema);
+dbService.schema('ChannelData', ChannelDataSchema);
 let ClassData = dbService.getModel('ClassData');
 exports.ClassData = ClassData;
+let ChannelData = dbService.getModel('ChannelData');
+exports.ChannelData = ChannelData;
 
 /**
  * Install Web Service API
@@ -41,6 +59,8 @@ exports.installWs = async function (server) {
     server.get(server.getPath('/qs/ask-question'), askQuestion);
     server.put(server.getPath('/qs/class-data/:ref'), saveClassData);
     server.get(server.getPath('/qs/class-data/:ref'), getClassData);
+    server.get(server.getPath('/qs/channel-data'), getChannelData);
+    server.put(server.getPath('/qs/channel-data'), saveChannelData);
 
     logger.info('Question service api installed at /qs');
 
@@ -59,6 +79,73 @@ const loadQsData = function() {
             logger.info(`Classification data loaded for ${result.ref}, number of classes ${numberOfClasses}`);
         });
     });
+}
+
+/**
+ * PUT
+ * /class-data
+ * Save classification data.
+ */
+const saveChannelData = async function(req, res) {
+
+    let {channelRef, contextRef, channelData} = req.body;
+    logger.info("saveChannelData", {channelRef, contextRef, channelData});
+    let entity = {channelRef, contextRef, channelData};
+
+    if (utils.isNull(channelRef)) {
+        utilWs.handleError('qs.saveChannelData', res, "Channel ref is null");
+        return;
+    }
+
+    if (utils.isNull(contextRef)) {
+        utilWs.handleError('qs.saveChannelData', res, "Context ref is null");
+        return;
+    }
+
+    if (utils.isNull(channelData)) {
+        utilWs.handleError('qs.saveChannelData', res, "Channel data is null");
+        return;
+    }
+   
+    dbService.upsert('ChannelData', {channelRef, contextRef}, entity, (err, result) => {
+
+        if (utilWs.handleError('qs.saveChannelData', res, err)) {
+            return;
+        }
+
+
+        return utilWs.sendSuccess('qs.saveChannelData', {data: result._id}, res, true);
+
+    });
+
+}
+
+/**
+ * GET
+ * /class-data/:ref
+ * Get class data.
+ */
+const getChannelData = async function(req, res) {
+    let {channelRef, contextRef} = req.query;
+    if (utils.isEmpty(channelRef) && utils.isEmpty(contextRef)) {
+        utilWs.sendUserError('qs.getChannelData', `Expected either channelRef or channelId query paramter`, res);
+        return;
+    }
+    let query = {};
+    if (utils.isNotEmpty(channelRef)) {
+        query.channelRef = channelRef;
+    }
+    if (utils.isNotEmpty(contextRef)) {
+        query.contextRef = contextRef;
+    }
+    
+    ChannelData.findOne(query).lean().exec((err, channelData) => {
+        if (utilWs.handleError('qs.getChannelData', res, err)) {
+            return;
+        }
+        utilWs.sendSuccess('qs.getChannelData', {success: true, data: channelData}, res, true);                      
+    });
+
 }
 
 /**
@@ -155,12 +242,11 @@ const askQuestion = async function (req, res) {
             contextType: context_type, 
             question, 
             answer: processesAnswerResult.answer,
-            confidenceScore: utils.notNull(result.confidence_score, 0),
+            confidenceScore: utils.notNull(result.confidence, 0),
             entities: result.entities,
             faqClass: result.faq_class,
             isFromCache: result.isFromCache
         }
-
         if (saveResult.confidenceScore < confidenceScoreLimit) {
             handleError('qs.askQuestion#processAnswer', res, `Confidence score ${saveResult.confidenceScore} is below limit ${confidenceScoreLimit}.`, 
                             question, context_type, context_ref, 
@@ -198,7 +284,7 @@ const handleError = function(domain, res, err, question, contextType, contextRef
             success: false,
             data: {
                 message: `${err}`,
-                answer: "Unable to answer question.",
+                answer: "Sorry, I didn't understand your question but I'll tag this for your unit chair to look at!",
                 transactionId: "none"
             }
         };
@@ -212,10 +298,10 @@ const handleError = function(domain, res, err, question, contextType, contextRef
 }
 /**
  * 
- * @param {answer: "", confidence_score: "1.0", entities: "[CLS] O O O O [SEP]", faq_class: "unit_chair"} result 
+ * @param {answer: "", confidence: "1.0", entities: "[CLS] O O O O [SEP]", faq_class: "unit_chair"} result 
  */
 const processAnswer = function (contextRef, contextType, result) {
-    let {confidence_score, entities, faq_class, entity_mapping} = result;
+    let {confidence, entities, faq_class, entity_mapping} = result;
     faq_class = utils.toLowerCase(faq_class);
     
     let classData = QS_CLASS_DATA[contextRef];

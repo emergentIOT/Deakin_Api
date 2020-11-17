@@ -80,3 +80,57 @@ description: Question service, currently support asking questions about a unit g
               }
       500:
         description: Unexpected Error or bad parameter  
+
+/channel-data:
+  get:
+    queryParameters: 
+      channelRef:
+        description: Get channel data by the channel ref 
+        type: string
+        required: false
+      contextRef:
+        description: Get the channel data by the context ref
+        type: string
+        required: false
+    responses:
+      200:
+        description: Retrieve the classification data
+        body:
+          application/json:
+            example: |
+                {
+                  success: true,
+                  contextRef: "<question context reference, example unit code>",
+                  channelRef: "<question context reference, example unit code>",
+                  data: {
+                    "<channel data>": "<value"
+                  }
+                }
+      500:
+        description: Unexpected Error or bad parameters
+  put:
+    description: Save the context and channel data
+    body:
+      application/json:
+        # properties: 
+        #   contextRef: 
+        #     type: string
+        #     required: true
+        #   channelRef:
+        #     type: string
+        #     required: true
+        #   data:
+        #     type: any
+        #     required: true
+    responses:
+      200:
+        description: Save the channel data
+        body:
+          application/json:
+            example: |
+              {
+                "success": true
+                "data": "<id>"
+              }
+      500:
+        description: Unexpected Error or bad parameter  
