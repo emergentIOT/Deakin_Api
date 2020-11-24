@@ -64,6 +64,10 @@ const AiCacheSchema = {
     input2Hash: {
         type: String,
         index: true
+    },    
+    dateModified: {
+        type: Date,
+        expires: 3600 * 23 * 1
     },
     data: {}
 }

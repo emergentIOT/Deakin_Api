@@ -21,7 +21,7 @@ const CacheSchema = {
     },
     dateModified: {
         type: Date,
-        expires: 3600 * 24 * 1
+        expires: 3600 * 23 * 1
     },
     data: {}
 }
