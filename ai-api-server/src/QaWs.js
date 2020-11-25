@@ -54,14 +54,13 @@ const saveQuiz = async function(req, res) {
  * /quizzes
  * Search and list quizzes.
  */
-const quizzes = async function(req, res){
-    //If No parameter comes in , keep it default skip=0 & limit=10  
+const quizzes = async function(req, res){ 
     let page = utils.notNull(Number(req.query.page), 1);
     let limit = utils.notNull(Number(req.query.limit), 6);
     
     //Search Query
     var search = req.query.search;
-    var SEARCH_RESULT_REGEXP = new RegExp(search);
+    var SEARCH_RESULT_REGEXP = new RegExp(search, "i");
     var LATEST_ID = -1;
     
     let query = {};
