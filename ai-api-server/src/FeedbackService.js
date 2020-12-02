@@ -1,13 +1,14 @@
 'use strict';
 
 const utilWs = require('du-utils').UtilWs();
+const utils = require('du-utils').UtilGeneral();
 const logger = require('du-logger').LoggingService('fb-ws');
 const dbService = require('du-dbservice').DbService();
 
 /*
  * The MongooseJS collection schema definition.
  */
-const QuestionAnswerLogSchema = { 
+let QuestionAnswerLogSchema = { 
     clientRef: { // example ms-chat-bot, d2l-chat-bot
         type: String,
         required: true
@@ -44,7 +45,19 @@ const QuestionAnswerLogSchema = {
     isFromCache: Boolean
 };
 
-dbService.schema('QuestionAnswerLog', QuestionAnswerLogSchema);
+QuestionAnswerLogSchema = dbService.schema('QuestionAnswerLog', QuestionAnswerLogSchema);
+
+QuestionAnswerLogSchema.index(
+    { 
+        clientRef: 'text', 
+        contextRef: 'text', 
+        contextType: 'text',
+        question: 'text',
+        answer: 'text',
+        faqClass: 'text'
+    }
+);
+
 let QuestionAnswerLog = dbService.getModel('QuestionAnswerLog');
 exports.QuestionAnswerLog = QuestionAnswerLog;
 
@@ -54,6 +67,7 @@ exports.QuestionAnswerLog = QuestionAnswerLog;
  */
 exports.installWs = async function (server) {
     server.get(server.getPath('/fs/send-feedback'), sendFeedback);
+    server.get(server.getPath('/fs/list'), listFeedback);
     logger.info('Feedback service api installed at /fs');
 };
 
@@ -100,6 +114,54 @@ exports.saveQuestionAnswer = function({ clientRef, contextRef, contextType, ques
     });
 
 }
+
+/**
+ * GET
+ * /quizzes
+ * Search and list quizzes.
+ */
+const listFeedback = async function(req, res){ 
+    let page = utils.notNull(Number(req.query.page), 1);
+    let limit = utils.notNull(Number(req.query.limit), 1000);
+    
+    //Search Query
+    let search = req.query.search;
+    // let searchResultRegExp = new RegExp(search, "i");
+    
+    let query = {};
+    let sort = { _id : -1 };
+        
+    if (utils.isNotNull(req.query.search)) {
+        query.$text = { $search: search };
+    }
+
+    if (utils.isNotNull(req.body.sort)) {
+        sort = req.body.sort;
+    }
+
+    if (utils.isNotNull(req.body.query)) {
+        query = {...query, ...req.body.query}
+    }
+          
+    QuestionAnswerLog.find(query)
+        .limit(limit)
+        .skip((page - 1) * limit)
+        .sort(sort)
+        .exec((err, result) => {
+        QuestionAnswerLog.count(query).exec((err, count) => {
+            utilWs.sendSuccess('fs.list', {
+                
+                page: page,
+                limit: limit,
+                totalCount: count,
+                data: result,
+
+            }, res, true);
+        });
+    });
+    
+}
+
 
 const parseBoolean = function(value) {
 

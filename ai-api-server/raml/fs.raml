@@ -27,3 +27,43 @@ description: Send Feedback
                 }
       500:
         description: Unexpected Error or bad parameters
+
+/list:
+  get:
+    description: Get list of feedback
+    queryParameters:
+      search:
+        description: Get list and filter on key phrase 
+        type: string
+        required: false
+      page:
+        description: The list page number
+        type: string
+        required: false
+      limit:
+        description: limit the number of items returned
+        type: string
+        required: false
+    body:
+      application/json:
+        properties:
+          sort:
+            type: object
+            required: false 
+            description: The mongo sort
+          query:
+            type: object
+            required: false
+            description: The mongo query   
+    responses:
+      200:
+        description: Retrieve feedback data
+        body:
+          application/json:
+            example: |
+                {
+                  "success": true,
+                  "data": {}
+                }
+      500:
+        description: Unexpected Error or bad parameters

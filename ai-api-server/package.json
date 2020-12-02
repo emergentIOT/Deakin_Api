@@ -32,6 +32,7 @@
         "du-server": "1.1.x",
         "du-utils": "1.0.x",
         "ejs": "^3.1.5",
+        "elastic-apm-node": "^3.8.0",
         "express-jwt": "^5.1.0",
         "fs": "0.0.1-security",
         "jsonwebtoken": "^7.3.0",
