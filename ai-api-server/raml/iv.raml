@@ -108,3 +108,25 @@ description: Interactive video and question answering AI service.
       500:
         description: Unexpected Error or bad parameter
 
+/srtToJson/{iVideoId}:
+  uriParameters:
+    iVideoId:
+      type: string
+  get:
+    responses:
+      200:
+        description: Convert srt to json
+        body:
+          application/json:
+            example: |
+                {
+                  success: true,
+                  data: [{
+                    "i": Number,
+                    "s": String,
+                    "e": String,
+                    "w": String
+                  }]
+                }
+      500:
+        description: Unexpected Error or bad parameters

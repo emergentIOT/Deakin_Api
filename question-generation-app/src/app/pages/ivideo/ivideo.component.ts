@@ -48,7 +48,8 @@ export class  IVideoComponent implements OnInit {
       
           this.iVideo = iVideo;
           
-          this.iVideoService.getTranscription(iVideo).subscribe(transcription => {
+          this.iVideoService.getTranscription(iVideo._id).subscribe(transcription => {
+            console.log("TRANSCRIPTION", transcription);
             this.transcriptionBlocks = transcription;
             this.transcriptionBlocks.forEach((b) => {
               this.transcriptionText += " " + b.w;
