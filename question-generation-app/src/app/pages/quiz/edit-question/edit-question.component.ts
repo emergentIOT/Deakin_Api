@@ -21,7 +21,7 @@ export class EditQuestionComponent implements OnInit {
   public answerTokens: string[] = [];
   questions: IQuizToken[];
   public loading: Boolean;
-  newOption : iOption = { name: "", feedbackOne: "", feedbackTwo: "" };
+  newOption : iOption = { name: "", choosenFeedback: "", notChoosenFeedback: "" };
 
   constructor(private quizService: QuizService,
               private route: ActivatedRoute,

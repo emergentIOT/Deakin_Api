@@ -45,8 +45,8 @@ const QuizSchema = {
             status: String, // pending, processing, processed, error 
             options:[{
                 name: String,
-                feedbackOne: String,
-                feedbackTwo: String
+                choosenFeedback: String,
+                notChoosenFeedback: String
             }]
         }
     ]
