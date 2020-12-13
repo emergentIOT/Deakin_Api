@@ -21,8 +21,7 @@ export class EditQuestionComponent implements OnInit {
   public answerTokens: string[] = [];
   questions: IQuizToken[];
   public loading: Boolean;
-  newOption : iOption = { name: "", choosenFeedback: "", notChoosenFeedback: "" };
-
+  
   constructor(private quizService: QuizService,
               private route: ActivatedRoute,
               private router: Router) {}
@@ -53,7 +52,8 @@ export class EditQuestionComponent implements OnInit {
   }
 
   addOption(qIndex: number) {
-    this.quiz.tokens[qIndex].options.push(this.newOption);
+    const newOption : iOption = { name: "", choosenFeedback: "", notChoosenFeedback: "" };
+    this.quiz.tokens[qIndex].options.push(newOption);
   }
 
   removeOption(answers: any[], aIndex) {
