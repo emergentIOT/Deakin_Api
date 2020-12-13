@@ -3,6 +3,7 @@
 @import "../../../../../node_modules/@syncfusion/ej2-base/styles/material.css";
 @import '../../../../../node_modules/@syncfusion/ej2-angular-popups/styles/material.css';
 @import '../../../../../node_modules//@des-ds-dev-kit/foundations/scss/index';
+@import '../../../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 .vertical-grid-spacing {
   margin-bottom: $des-layout-spacing-base;
@@ -18,13 +19,13 @@ input[type=text] {
 }
 
 //if option feild is empty
-.has-error{
+.has-error {
   border: 3px solid red;
   
 }
 
 //Each row of Options
-.row-options{
+.row-options {
   display: center;
   margin-left: auto;
   margin-right: auto;
@@ -33,7 +34,7 @@ input[type=text] {
 }
 
 //Input field for answerToken
-.answerTokenField{
+.answerTokenField {
   border: 2px solid #4DAF50;
   border-radius: 4px;
 }
@@ -42,6 +43,7 @@ input[type=text] {
 .inline-block-child {
   display: inline-block;
 }
+
 
 
 

@@ -1,6 +1,7 @@
 <div class="container">
 
   <div class="row-options">
+    
   <!--editQuestion mode to update options-->
     <div *ngIf="mode=='editQuestion'">
       
@@ -27,6 +28,18 @@
                   <input type="text" [class.has-error]="namecontrol.invalid && namecontrol.touched" 
                   name="questions-{{qIndex}}-{{aIndex}}" [(ngModel)]="option.name" 
                   #namecontrol="ngModel" style="margin-bottom: 15px;" required>
+
+                <!--Add component for Feedback -->  
+                <div>
+                  Feedback One
+                  <input type="text"  name="feedbackOne-{{qIndex}}-{{aIndex}}" [(ngModel)]="option.feedbackOne" 
+                  #namecontrol="ngModel" style="margin-bottom: 15px;" required>
+               
+                  Feedback Two
+                  <input type="text"  name="feedbackTwo-{{qIndex}}-{{aIndex}}" [(ngModel)]="option.feedbackTwo" 
+                  #namecontrol="ngModel" style="margin-bottom: 15px;" required>
+                
+                </div>
                 </div><br/>
                 <!--Remove Option-->
                 <div class="col-1">
