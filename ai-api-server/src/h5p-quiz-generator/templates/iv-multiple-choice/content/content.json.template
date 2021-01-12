@@ -44,24 +44,17 @@
                                 "disableImageZooming": false
                             },
                             "answers": [
-                                {
-                                    "correct": true,
-                                    "tipsAndFeedback": {
-                                        "tip": "",
-                                        "chosenFeedback": "",
-                                        "notChosenFeedback": ""
-                                    },
-                                    "text": "<div><%= token.answerToken %><\/div>\n"
-                                }<%= (token.options.length == 0) ? '' : ',' %>
+                                <% i = 0; %>
                                 <% token.options.forEach(function(option){%>
                                 {
-                                    "correct": false,
+                                    "correct": <%= (i==0) ? true : false %>,
+                                    "text": "<div><%= option.name %><\/div>\n",
                                     "tipsAndFeedback": {
                                         "tip": "",
-                                        "chosenFeedback": "",
-                                        "notChosenFeedback": ""
-                                    },
-                                    "text": "<div><%= option.name %><\/div>\n"
+                                        "chosenFeedback": "<div><%= option.chosenFeedback %><\/div>\n",
+                                        "notChosenFeedback": "<div><%= option.notChosenFeedback %><\/div>\n"
+                                    }
+                                    <% i++ ; %>
                                 }
                                 <%= (token.options[token.options.length - 1] === option) ? '' : ',' %>
                                 <% }); %>
