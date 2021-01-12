@@ -1,5 +1,5 @@
 export interface iOption {
     name: string;
-    choosenFeedback: string;
-    notChoosenFeedback: string;
+    chosenFeedback: string;
+    notChosenFeedback: string;
 }

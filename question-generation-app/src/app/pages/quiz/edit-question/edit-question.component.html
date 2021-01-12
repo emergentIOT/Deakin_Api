@@ -12,13 +12,13 @@
         <h3>{{question.questionToken}}</h3>
        
             <!--Answer token-->
-            <div class="row">
+            <!-- <div class="row">
               <div class="col-8">
                 <input type="text" class="answerTokenField" name="questions-{{qIndex}}" 
                 value="{{getAnswerText(question)}}" >
               </div>
             </div><br/>
-         
+          -->
           <!--Loop for Options-->
           <div *ngFor="let option of question.options;let aIndex= index;" style="padding: 10px;">
             <div class="form-group"
@@ -35,12 +35,12 @@
                     <app-accordion-item title="Tips & Feedback" >
                       <div class="mb-3">
                         <label for="choosenFeedback" class="form-label">Message displayed if option is selected</label>
-                        <input type="text" class="form-control" name="feedbackOne-{{qIndex}}-{{aIndex}}" [(ngModel)]="option.choosenFeedback" 
+                        <input type="text" class="form-control" name="feedbackOne-{{qIndex}}-{{aIndex}}" [(ngModel)]="option.chosenFeedback" 
                         style="margin-bottom: 15px;" >
                       </div>
                       <div class="mb-3">
                         <label for="notChoosenFeedback" class="form-label">Message displayed if option is not selected</label>
-                        <input type="text" class="form-control" name="feedbackTwo-{{qIndex}}-{{aIndex}}" [(ngModel)]="option.notChoosenFeedback" 
+                        <input type="text" class="form-control" name="feedbackTwo-{{qIndex}}-{{aIndex}}" [(ngModel)]="option.notChosenFeedback" 
                         style="margin-bottom: 15px;" >  
                       </div>
                     </app-accordion-item>

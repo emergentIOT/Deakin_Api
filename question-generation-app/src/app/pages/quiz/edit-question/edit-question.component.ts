@@ -13,31 +13,43 @@ import { iOption } from 'src/app/interfaces/iOption';
   styleUrls: ['./edit-question.component.scss']
 })
 export class EditQuestionComponent implements OnInit {
-
+   
   mode = 'editQuestion';
   quiz: IQuiz;
   public activeTab = 0;
   public quizId: string;
-  public answerTokens: string[] = [];
-  questions: IQuizToken[];
+  public answerTokens: IQuizToken[];
+  questions: IQuizToken[] = [];
   public loading: Boolean;
-  
+  newOption : iOption;
+  i = 0;
   constructor(private quizService: QuizService,
               private route: ActivatedRoute,
               private router: Router) {}
 
   ngOnInit(): void {
   
+   
     this.route.paramMap.subscribe(params => {
       this.quizId = params.get('quizId');
-      if(this.quizId){
+      if (this.quizId){
         this.quizService.getQuiz(this.quizId).subscribe(quiz => {
           
           this.quiz = quiz;
+          //Adding each answerToken for options.
+          this.quiz.tokens.forEach(item => {
+            if (this.quiz.tokens[this.i].options.length == 0){
+              this.newOption = { name: "", chosenFeedback: "", notChosenFeedback: "" };
+              this.newOption.name = item.answerToken;
+              this.quiz.tokens[this.i].options.push(this.newOption);
+            }
+          this.i++;
         })
-   
-      }
-    })
+      })
+        
+    }
+  })
+    
     
     this.mode = 'editQuestion';
   }
@@ -51,9 +63,11 @@ export class EditQuestionComponent implements OnInit {
     return name.charAt(0).toUpperCase() + name.slice(1);
   }
 
+
+
   addOption(qIndex: number) {
-    const newOption : iOption = { name: "", choosenFeedback: "", notChoosenFeedback: "" };
-    this.quiz.tokens[qIndex].options.push(newOption);
+    this.newOption = { name: "", chosenFeedback: "", notChosenFeedback: "" };
+    this.quiz.tokens[qIndex].options.push(this.newOption);
   }
 
   removeOption(answers: any[], aIndex) {
@@ -70,7 +84,6 @@ export class EditQuestionComponent implements OnInit {
         this.loading = false;
         this.router.navigate(['/edit-quiz/', this.quizId]);  
       });
-      console.log("new option", this.quiz);
   }
 
   
