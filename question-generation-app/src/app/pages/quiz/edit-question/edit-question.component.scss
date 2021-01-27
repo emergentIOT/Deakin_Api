@@ -1,5 +1,5 @@
 @import "../../../shared/scss/design-system-variables.scss";
-@import '../../../../../node_modules//@des-ds-dev-kit/foundations/scss/index';
+@import '../../../../../node_modules/@des-ds-dev-kit/foundations/scss/index';
 @import '../../../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 .vertical-grid-spacing {
   margin-bottom: $des-layout-spacing-base;
@@ -27,6 +27,7 @@ input[type=text] {
   margin-right: auto;
   width: 100%;
   margin-bottom: 100px;
+  margin-top: 25px;
 }
 
 //Input field for answerToken
