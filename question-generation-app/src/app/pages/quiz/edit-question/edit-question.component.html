@@ -69,7 +69,7 @@
     
     <!--Save Options to db-->
     <des-button (click)="saveOptions()" class="des-float-right" style="margin-top: 20px;" 
-    [disabled]="!editOptions.invalid ? null : 'true'">Save</des-button>
+    [disabled]="!editOptions.invalid ? null : 'true'" [disabled]="loading">Save</des-button>
 
   </form>
 
