@@ -18,11 +18,11 @@ export class EditQuestionComponent implements OnInit {
   quiz: IQuiz;
   public activeTab = 0;
   public quizId: string;
-  public answerTokens: IQuizToken[];
-  questions: IQuizToken[] = [];
   public loading: Boolean;
   newOption : iOption;
   i = 0;
+  deleteButton: Boolean;
+
   constructor(private quizService: QuizService,
               private route: ActivatedRoute,
               private router: Router) {}
@@ -54,7 +54,6 @@ export class EditQuestionComponent implements OnInit {
     this.mode = 'editQuestion';
   }
 
-
   getAnswerText(token : IQuizToken) : string {
     let name = token.answerToken;
     if (isEmpty(name)) {
@@ -62,8 +61,6 @@ export class EditQuestionComponent implements OnInit {
     }
     return name.charAt(0).toUpperCase() + name.slice(1);
   }
-
-
 
   addOption(qIndex: number) {
     this.newOption = { name: "", chosenFeedback: "", notChosenFeedback: "" };
@@ -76,7 +73,7 @@ export class EditQuestionComponent implements OnInit {
     }
   }
 
-  //saveQuiz With Options
+  //SaveQuiz with options
   saveOptions() {
     this.loading = true;
     this.quizService.save(this.quiz).subscribe(data => 
@@ -84,6 +81,21 @@ export class EditQuestionComponent implements OnInit {
         this.loading = false;
         this.router.navigate(['/edit-quiz/', this.quizId]);  
       });
+  }
+
+  //Highlight correct answer
+  correctOption(aIndex: number) {
+    if(aIndex == 0) {
+      this.deleteButton = false;
+      return {
+        'correctOption' : true
+      }
+    } else {
+      this.deleteButton = true;
+      return {
+        'border' : true
+      }
+    }
   }
 
   

@@ -17,7 +17,14 @@ input[type=text] {
 //if option feild is empty
 .has-error {
   border: 3px solid red;
-  
+}
+
+.options {
+  padding: 10px;
+}
+
+.correctOption {
+  border: 2px solid #17AC58;
 }
 
 //Each row of Options
