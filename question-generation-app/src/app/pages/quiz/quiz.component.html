@@ -107,7 +107,7 @@
                   <p class="answerToken">{{getAnswerText(token)}} </p> 
                 </div>
                
-              <div *ngFor="let option of token.options;">
+              <div *ngFor="let option of token.options | slice:1">
                 <div class="child">
                   <p class="options">{{option.name}} </p>
                 </div>

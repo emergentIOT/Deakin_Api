@@ -12,11 +12,11 @@ export class NavComponent implements OnInit {
   ngOnInit() {}
 
   login() {
-    this.appConnectService.initLoginFlow();
+    //this.appConnectService.initLoginFlow();
   }
 
   logout() {
-    this.appConnectService.logOut();
+    //this.appConnectService.logOut();
   }
 
   get isLoggedIn() {

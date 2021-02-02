@@ -16,11 +16,12 @@ import {NgxPaginationModule} from 'ngx-pagination'
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { DialogModule } from '@syncfusion/ej2-angular-popups';
 import { EditQuestionComponent } from './edit-question/edit-question.component';
+import { AccordionModule } from '../../shared/ui-components/accordion/accordion.module';
 @NgModule({
   declarations: [QuizComponent, QuizListComponent, TextEditorComponent, EditQuestionComponent],
   imports: [CommonModule, QuizRoutingModule, DesCardModule, DesButtonModule, TabsModule, 
     RichTextEditorModule, ChipListModule, FormsModule, Ng2SearchPipeModule, NgxPaginationModule, DialogModule,
-  ReactiveFormsModule],
+  ReactiveFormsModule, AccordionModule],
   exports: [QuizComponent, QuizListComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
