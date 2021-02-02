@@ -232,7 +232,7 @@ const parseSrtToJson = function (content) {
             nextLineType = lineTypes.TEXT;
         } else if (nextLineType == lineTypes.TEXT) {
             if (quotesArray[currentQuoteNumber].w != '') {
-              quotesArray[currentQuoteNumber].w += '\n';
+              quotesArray[currentQuoteNumber].w += ' ';
         }
         quotesArray[currentQuoteNumber].w += line;
       }

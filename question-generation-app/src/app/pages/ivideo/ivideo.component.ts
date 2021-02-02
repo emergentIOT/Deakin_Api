@@ -192,40 +192,16 @@ export class  IVideoComponent implements OnInit {
   }
 
   calcMatchedBlockIndexes(answerText : string, transcriptionBlocks : any[]) : number[] {
-
-    var answerTextSplit = answerText.split(' ');
-
     var matchedBlockIndexes = [];
-
     transcriptionBlocks.forEach((item: any, index) => {
-
-      if (matchedBlockIndexes.length == 0) {
-        matchedBlockIndexes = [];
-        if (item.w == answerTextSplit[0]) {
-          var tillRun = (index + answerTextSplit.length) - 1;
-          matchedBlockIndexes.push(index);
-
-          var answerTextSplitIndex = 1;
-          for (var i = index + 1; i <= tillRun; i++) {
-            if (answerTextSplit[answerTextSplitIndex] == transcriptionBlocks[i].w) {
-              matchedBlockIndexes.push(i);
-            }
-            else {
-              console.log('Did not match', answerTextSplit[answerTextSplitIndex] , transcriptionBlocks[i].w);
-              matchedBlockIndexes = [];
-              break;
-            }
-
-            answerTextSplitIndex++;
-          }
-        }
+      if(answerText.includes(item.w)) {
+        matchedBlockIndexes.push(index);
       }
-
     });
-
+    
     return matchedBlockIndexes;
-
   }
+
 
   /**
    * Note questions array is in reverse order to chip list array
