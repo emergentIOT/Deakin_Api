@@ -21,6 +21,7 @@ input[type=text] {
 
 .options {
   padding: 10px;
+  margin-top: 8px;
 }
 
 .correctOption {
@@ -48,7 +49,29 @@ input[type=text] {
   display: inline-block;
 }
 
+.text {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 16px;
+  color: #454347;   
+  padding: 8px;          
+}
 
+.highlightText {
+  color: #da0001;
+  margin-left: .2em;
+  position: relative;
+  top: -.2em;
+}
+
+.questions-label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 20px;
+    color: #454347;
+}
 
 
 
