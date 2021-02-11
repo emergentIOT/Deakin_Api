@@ -1,6 +1,6 @@
-<div class="container" style="border:1px solid #cecece; margin-top: 20px; margin-bottom: 20px;">
+<div class="container" style="margin-top: 20px;">
   <div class="card-header" >
-    <label class="questions-label">Questions<span class="highlightText">*</span></label>
+    <label class="question-header">Questions<span class="highlightText">*</span></label>
   </div>
   <div class="row-options">
     
@@ -10,21 +10,12 @@
       <form #editOptions="ngForm" >
       <!--Loop for Tokens-->
       <div *ngFor="let question of quiz?.tokens; let qIndex = index" >
-        <label class="questions-label">{{question.questionToken}}</label> <br/>
+         <br/>
        
         <div style="border:1px solid #cecece;">
         <fieldset>
+          <label class="questions-label">{{question.questionToken}}</label>
           <span class="text">Available options<span class="highlightText">*</span></span>
-        
-       
-            <!--Answer token-->
-            <!-- <div class="row">
-              <div class="col-8">
-                <input type="text" class="answerTokenField" name="questions-{{qIndex}}" 
-                value="{{getAnswerText(question)}}" >
-              </div>
-            </div><br/>
-          -->
           <!--Loop for Options-->
           <div *ngFor="let option of question.options;let aIndex= index;" class="options" >
             <div class="form-group"
@@ -32,34 +23,30 @@
             
             <div class="row">
                 <div class="col-8" >
-                  
-
                 <!--Feedback component -->  
                 <div class="border border-secondary">
                   <app-accordion>
                     <app-accordion-item title="{{option.name}}" >
-                      <span class="text">Text<span class="highlightText">*</span></span>
+                      <span class="optionText">Text<span class="highlightText">*</span></span>
                       <input type="text" [class.has-error]="namecontrol.invalid && namecontrol.touched" 
-                  name="questions-{{qIndex}}-{{aIndex}}" [(ngModel)]="option.name" 
-                  #namecontrol="ngModel" style="margin-bottom: 15px; border: 2px solid #d0d0d1;" required>
-                    <app-accordion>
-                      <app-accordion-item title="Tips & Feedback" >
-                      <div class="mb-3">
-                        <label for="choosenFeedback" class="form-label">Message displayed if option is selected</label>
-                        <input type="text" class="form-control" name="feedbackOne-{{qIndex}}-{{aIndex}}" [(ngModel)]="option.chosenFeedback" 
-                        style="margin-bottom: 15px;" >
-                      </div>
-                      <div class="mb-3">
-                        <label for="notChoosenFeedback" class="form-label">Message displayed if option is not selected</label>
-                        <input type="text" class="form-control" name="feedbackTwo-{{qIndex}}-{{aIndex}}" [(ngModel)]="option.notChosenFeedback" 
-                        style="margin-bottom: 15px;" >  
-                      </div>
-                    </app-accordion-item>
+                      name="questions-{{qIndex}}-{{aIndex}}" [(ngModel)]="option.name" 
+                      #namecontrol="ngModel" style="margin-bottom: 15px; border: 2px solid #d0d0d1;" required>
+                      <app-accordion>
+                        <app-accordion-item title="Tips & Feedback" >
+                          <div class="mb-3">
+                            <label for="choosenFeedback" class="form-label">Message displayed if option is selected</label>
+                            <input type="text" class="form-control" name="feedbackOne-{{qIndex}}-{{aIndex}}" [(ngModel)]="option.chosenFeedback" 
+                            style="margin-bottom: 15px;" >
+                          </div>
+                          <div class="mb-3">
+                            <label for="notChoosenFeedback" class="form-label">Message displayed if option is not selected</label>
+                            <input type="text" class="form-control" name="feedbackTwo-{{qIndex}}-{{aIndex}}" [(ngModel)]="option.notChosenFeedback" 
+                            style="margin-bottom: 15px;" >  
+                          </div>
+                        </app-accordion-item>
                     </app-accordion>
                     </app-accordion-item>
                   </app-accordion>
-          
-                
                 </div>
                 </div><br/>
                 
@@ -74,7 +61,7 @@
           </div><br/>
 
           <!--Add Option-->
-          <des-button (click)="addOption(qIndex)" style="margin-left: 10px;" class="des-float-left" type="outline">Add option</des-button>
+          <des-button (click)="addOption(qIndex)" class="addOption-button" type="outline">Add option</des-button>
           
           <!-- <hr/> -->
       </fieldset>
