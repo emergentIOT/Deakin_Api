@@ -21,15 +21,24 @@ services:
         - "traefik.http.routers.ai-api.rule=Host(`des-inno-ai-api.its.deakin.edu.au`)"
         - "traefik.http.routers.ai-api.entrypoints=web"
         - "traefik.http.routers.ai-api.service=ai-api"
-        - "traefik.http.services.ai-api.loadbalancer.server.port=7040"
+        - "traefik.http.services.ai-api.loadbalancer.server.port=7040"  
   ai-api-mongo:
     container_name: ai-api-mongo
-    restart: always
     image: docker-hub.artifactory.its.deakin.edu.au/mongo
     networks:
       - ai-api-mongo
     volumes:
       - mongo-data:/data/db
+    deploy:
+      mode: replicated
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      replicas: 1
+      placement:
+        constraints: [node.labels.supermaster == true]
       
 networks:
   ai-api-mongo:
