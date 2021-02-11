@@ -278,20 +278,9 @@ const askQuestion = async function (req, res) {
 
 const handleError = function(domain, res, err, question, contextType, contextRef, data) {
     if (err) {
-        logger.error(`${domain}: question = ${question}, context_type = ${contextType}, context_ref = ${contextRef}`);
+        logger.error(`${domain}: question = ${question}, context_type = ${contextType}, context_ref = ${contextRef}, data = ${data}`);
         logger.error(`${domain}: ${err}`);
-        let payload = {
-            success: false,
-            data: {
-                message: `${err}`,
-                answer: "Sorry, I didn't understand your question but I'll tag this for your unit chair to look at!",
-                transactionId: "none"
-            }
-        };
-        if (data) {
-            payload.data = {...payload.data, ...data};
-        }
-        res.json(payload);
+        res.status(500).send(domain + ': Unexpected error.');
         return true;
     }
     return false;
