@@ -1,5 +1,15 @@
 'use strict';
 
+let APM_SERVER = process.env['npm_package_config_APM_SERVER_URL'];
+if (APM_SERVER) {
+    global.apm = require('elastic-apm-node').start({
+        // use logLevel 'trace' to debug
+        logLevel: process.env['npm_package_config_APM_SERVER_LOG_LEVEL'] || 'error',
+        serverUrl: APM_SERVER,
+        secretToken: process.env['npm_package_config_APM_SERVER_SECRET_TOKEN']
+    });
+}
+
 const server = require('du-server').create('IDR Content Server');
 const utils = require('du-utils').UtilGeneral();
 const logger = require('du-logger').LoggingService('api-server');
@@ -12,19 +22,6 @@ const feedbackService = require('./src/FeedbackService');
 
 // Make sure server is ran on a known and supported NodeJS Version.
 utils.assertNodeRuntime();
-
-// Add this to the VERY top of the first file loaded in your app
-// var apm = require('elastic-apm-node').start({
-//     // Override service name from package.json
-//     // Allowed characters: a-z, A-Z, 0-9, -, _, and space
-//     // serviceName: '',
-
-//     // Use if APM Server requires a token
-//     // secretToken: '',
-
-//     // Set custom APM Server URL (default: http://localhost:8200)
-//     serverUrl: 'http://des-inno-docker-fs1.its.deakin.edu.au:9000/'
-// })
 
 //
 // Server Bootstrap Sequence.

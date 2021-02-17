@@ -14,16 +14,19 @@
         "test-mocha": "./node_modules/mocha/bin/mocha --reporter spec test/*-test.js",
         "test-livereload": "nodemon -x 'npm run test-mocha'",
         "start-nodemon": "./node_modules/.bin/nodemon --config ./.nodemon.json",
-        "start": "pm2 startOrReload process-local.json && pm2 logs ai-api-server",
+        "start": "pm2 flush ai-api-server && pm2 startOrReload process-local.json && pm2 logs ai-api-server",
         "start-server": "pm2 startOrReload process-server.json && pm2 save && pm2 logs ai-api-server",
         "update-server": "pm2 reload ai-api-server --update-env && pm2 save",
         "uninstall-server": "pm2 delete ai-api-server && pm2 save",
         "load-test-data-dev": "cd test-postman && ../node_modules/.bin/newman run --iteration-data ivideo-list-init-sample-data.json --environment client-api-gitlab-dev.postman_environment.json Deakin\\ AI\\ -\\ Client\\ Interactive\\ Video\\ API\\ Populate.postman_collection.json",
-        "load-test-data-local": "cd test-postman && ../node_modules/.bin/newman run --iteration-data ivideo-list-init-sample-data.json --environment client-api-local.postman_environment.json Deakin\\ AI\\ -\\ Client\\ Interactive\\ Video\\ API\\ Populate.postman_collection.json"
+        "load-test-data-local": "cd test-postman && ../node_modules/.bin/newman run --iteration-data ivideo-list-init-sample-data.json --environment client-api-local.postman_environment.json Deakin\\ AI\\ -\\ Client\\ Interactive\\ Video\\ API\\ Populate.postman_collection.json",
+        "load-all-feedback-to-elastic": "node -e 'require(\"./src/FeedbackService.js\").loadAllToElastic();'"
+    
     },
     "engineStrict": true,
     "author": "joel.shotton@deakin.edu.au",
     "dependencies": {
+        "@elastic/elasticsearch": "^7.10.0",
         "adm-zip": "^0.4.16",
         "async": "^2.5.0",
         "du-dbservice": "1.2.x",
