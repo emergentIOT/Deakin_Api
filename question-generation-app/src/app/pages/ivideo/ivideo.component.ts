@@ -48,8 +48,7 @@ export class  IVideoComponent implements OnInit {
       
           this.iVideo = iVideo;
           
-          this.iVideoService.getTranscription(iVideo._id).subscribe(transcription => {
-            console.log("TRANSCRIPTION", transcription);
+          this.iVideoService.getTranscription(this.iVideo).subscribe(transcription => {
             this.transcriptionBlocks = transcription;
             this.transcriptionBlocks.forEach((b) => {
               this.transcriptionText += " " + b.w;
@@ -192,14 +191,38 @@ export class  IVideoComponent implements OnInit {
   }
 
   calcMatchedBlockIndexes(answerText : string, transcriptionBlocks : any[]) : number[] {
+    var answerTextSplit = answerText.split(' ');
+
     var matchedBlockIndexes = [];
+
     transcriptionBlocks.forEach((item: any, index) => {
-      if(answerText.includes(item.w)) {
-        matchedBlockIndexes.push(index);
+
+      if (matchedBlockIndexes.length == 0) {
+        matchedBlockIndexes = [];
+        if (item.w == answerTextSplit[0]) {
+          var tillRun = (index + answerTextSplit.length) - 1;
+          matchedBlockIndexes.push(index);
+
+          var answerTextSplitIndex = 1;
+          for (var i = index + 1; i <= tillRun; i++) {
+            if (answerTextSplit[answerTextSplitIndex] == transcriptionBlocks[i].w) {
+              matchedBlockIndexes.push(i);
+            }
+            else {
+              console.log('Did not match', answerTextSplit[answerTextSplitIndex] , transcriptionBlocks[i].w);
+              matchedBlockIndexes = [];
+              break;
+            }
+
+            answerTextSplitIndex++;
+          }
+        }
       }
+
     });
-    
+
     return matchedBlockIndexes;
+
   }
 
 

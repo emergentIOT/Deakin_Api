@@ -40,14 +40,14 @@ export class IVideoService {
       map<IResponse<IVideo>, IVideo>(res => res.data));
   }
 
-  // getTranscription(iVideo : IVideo) : Observable<any> {
-  //   return this.http.get<any>(this.appConfigService.apiUrl + iVideo.transcriptionUrl);
-  // }
-
-  getTranscription(ivideoId: string) : Observable<any> {
-    return this.http.get<IResponse<any>>(`${this.apiUrlIVideoSrtToJson}/${ivideoId}`).pipe(
-      map<IResponse<IVideo>, IVideo>(res  => res.data));
+  getTranscription(iVideo : IVideo) : Observable<any> {
+    return this.http.get<any>(this.appConfigService.apiUrl + iVideo.transcriptionUrl);
   }
+
+  // getTranscription(ivideoId: string) : Observable<any> {
+  //   return this.http.get<IResponse<any>>(`${this.apiUrlIVideoSrtToJson}/${ivideoId}`).pipe(
+  //     map<IResponse<IVideo>, IVideo>(res  => res.data));
+  // }
 
   listIVideos() : Observable<IVideoList> {
     return this.http.get<IVideoList>(this.apiUrlIVideos).pipe(publishReplay(1), refCount());
