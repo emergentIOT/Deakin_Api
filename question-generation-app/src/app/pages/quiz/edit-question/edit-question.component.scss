@@ -14,13 +14,20 @@ input[type=text] {
   font-weight: lighter;
 }
 
+.question-header {
+  font-weight: 900;
+  font-size: 18px;
+}
+
 //if option feild is empty
 .has-error {
   border: 3px solid red;
 }
 
 .options {
-  padding: 10px;
+  //padding: 10px;
+  margin-top: 8px;
+  margin-left: 20px;
 }
 
 .correctOption {
@@ -48,6 +55,42 @@ input[type=text] {
   display: inline-block;
 }
 
+.text {
+  display: block;
+  font-size: 14px;  
+  padding: 10px; 
+  margin-left: 11px;
+  margin-top: 20px;   
+  margin-bottom: -12px      
+}
+
+.optionText {
+  display: block;
+  font-size: 14px;
+  color: #454347;   
+  margin-bottom: 1px;  
+}
+
+.highlightText {
+  color: #da0001;
+  margin-left: .2em;
+  position: relative;
+  top: -.2em;
+}
+
+.questions-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  margin-top: 20px;
+  font-size: 18px;
+  color: #454347;
+  margin-left: 20px;
+}
+
+.addOption-button {  
+  margin-left: 20px;
+}
 
 
 

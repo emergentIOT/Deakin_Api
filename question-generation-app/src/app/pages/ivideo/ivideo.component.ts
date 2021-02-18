@@ -48,7 +48,7 @@ export class  IVideoComponent implements OnInit {
       
           this.iVideo = iVideo;
           
-          this.iVideoService.getTranscription(iVideo).subscribe(transcription => {
+          this.iVideoService.getTranscription(this.iVideo).subscribe(transcription => {
             this.transcriptionBlocks = transcription;
             this.transcriptionBlocks.forEach((b) => {
               this.transcriptionText += " " + b.w;
@@ -191,7 +191,6 @@ export class  IVideoComponent implements OnInit {
   }
 
   calcMatchedBlockIndexes(answerText : string, transcriptionBlocks : any[]) : number[] {
-
     var answerTextSplit = answerText.split(' ');
 
     var matchedBlockIndexes = [];
@@ -225,6 +224,7 @@ export class  IVideoComponent implements OnInit {
     return matchedBlockIndexes;
 
   }
+
 
   /**
    * Note questions array is in reverse order to chip list array

@@ -1,10 +1,18 @@
 <div class="container">
-
+ 
   <a class="des-button des-format-text" [href]="exportH5pUrl" 
-    style="position: absolute; right: 80px; margin: 8px;" >Export to H5P</a>
+    style="position: absolute; right: 95px; margin: 8px;" >Export to H5P</a>
+
+  <!--Edit quiz options icon-->
+  <a class="des-button des-format-text" [routerLink]="['/edit-question', quizId]" 
+    style="position: absolute; right: 60px; margin: 8px;" ><i class="fas fa-edit"></i></a>
+  
   <!--Delete quiz icon-->
-  <button  class="des-float-right" [disabled]="canDeleteQuiz ? null : 'disabled'" (click)="onOpenDialog($event)" 
-    style="position: absolute; right: 30px; margin: 4px; height: 30px;" ><i class="fa fa-trash"></i></button>
+  <a class="des-button des-format-text" [disabled]="canDeleteQuiz ? null : 'disabled'" (click)="onOpenDialog($event)"
+    style="position: absolute; right: 30px; margin: 8px;" ><i class="fa fa-trash"></i></a>
+
+  <!-- <button  class="des-float-right" [disabled]="canDeleteQuiz ? null : 'disabled'" (click)="onOpenDialog($event)" 
+    style="position: absolute; right: 30px; margin: 4px; height: 30px;" ><i class="fa fa-trash"></i></button> -->
 
   <!-- <des-button-group>
     <label><des-button>1</des-button> Upload content</label>
@@ -98,7 +106,7 @@
                   <img *ngIf="isError(token)" class="loading-img" src="/assets/error.png"/> 
                   <span [ngClass]="{'loading-answer-text': isProcessing(token) || isError(token)}">{{getQuestionText(token)}}</span>
                 </a>
-                <a class="des-float-right" [routerLink]="['/edit-question', quizId]" ><i class="fas fa-edit"></i></a>
+               
                 
               </h2>
               <div class="container">

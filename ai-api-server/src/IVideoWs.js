@@ -5,6 +5,9 @@ const utils = require('du-utils').UtilGeneral();
 const logger = require('du-logger').LoggingService('interactive-video-ws');
 const async = require('async');
 const qaService = require('./QaService');
+const fs = require('fs');
+const path = require('path');
+
 
 /*
  * The MongooseJS collection schema definition.
@@ -38,7 +41,8 @@ exports.installWs = async function(server) {
     server.get(server.getPath('/iv/ivideo/:iVideoId'), getIVideo);
     server.delete(server.getPath('/iv/ivideo/:iVideoId'), delIVideo);
     server.put(server.getPath('/iv/answer-question/:iVideoId'), answerQuestion);
-    
+    server.get(server.getPath('/iv/srtToJson/:iVideoId'), srtToJson);
+
     logger.info('Interactive video web services installed at /iv');
 
 };
@@ -171,3 +175,6 @@ const answerQuestion = async function(req, res) {
     //});
  
  }
+
+
+

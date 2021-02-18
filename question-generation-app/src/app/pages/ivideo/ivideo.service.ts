@@ -19,6 +19,8 @@ export class IVideoService {
   private apiUrlIVideos = this.appConfigService.apiUrl + '/api/v1/iv/ivideos';
   private apiUrlIVideo = this.appConfigService.apiUrl + '/api/v1/iv/ivideo';
   private apiUrlIVideoQuestionAnswer = this.appConfigService.apiUrl + '/api/v1/iv/answer-question'
+  private apiUrlIVideoSrtToJson = this.appConfigService.apiUrl + '/api/v1/iv/srtToJson';
+
   constructor(
     private http: HttpClient,
     private appConfigService: AppConfigService
@@ -41,6 +43,11 @@ export class IVideoService {
   getTranscription(iVideo : IVideo) : Observable<any> {
     return this.http.get<any>(this.appConfigService.apiUrl + iVideo.transcriptionUrl);
   }
+
+  // getTranscription(ivideoId: string) : Observable<any> {
+  //   return this.http.get<IResponse<any>>(`${this.apiUrlIVideoSrtToJson}/${ivideoId}`).pipe(
+  //     map<IResponse<IVideo>, IVideo>(res  => res.data));
+  // }
 
   listIVideos() : Observable<IVideoList> {
     return this.http.get<IVideoList>(this.apiUrlIVideos).pipe(publishReplay(1), refCount());
